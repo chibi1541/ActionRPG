@@ -2,7 +2,9 @@
 
 
 #include "BaseCharacter.h"
+
 #include "AbilitySystemComponent.h"
+#include "Ability/AbilitySet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BaseCharacter)
 
@@ -28,7 +30,7 @@ void ABaseCharacter::BeginPlay()
 	{
 		RLOG_L( Warning );
 		AbilitySystemComponent->InitAbilityActorInfo( this, this );
-		AddStartupGameplayAbilities();
+		InitAbilitySet();
 	}
 }
 
@@ -40,6 +42,17 @@ void ABaseCharacter::AddStartupGameplayAbilities()
 		{
 			RLOG_L( Warning );
 			AbilitySystemComponent->GiveAbility( FGameplayAbilitySpec( startupAbility, 1, INDEX_NONE, this ) );
+		}
+	}
+}
+
+void ABaseCharacter::InitAbilitySet()
+{
+	for( const UAbilitySet* AbilitySet : AbilitySets )
+	{
+		if( AbilitySet != nullptr )
+		{
+			AbilitySet->GiveToAbilitySystem( AbilitySystemComponent );
 		}
 	}
 }
