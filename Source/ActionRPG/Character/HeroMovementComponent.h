@@ -21,7 +21,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-protected:
+public:
 
 	void Move( const FInputActionValue& Value );
 

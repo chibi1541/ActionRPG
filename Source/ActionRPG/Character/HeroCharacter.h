@@ -3,12 +3,16 @@
 #pragma once
 
 #include "Character/BaseCharacter.h"
+
 #include "HeroCharacter.generated.h"
 
 
 class USpringArmComponent;
 class UCameraComponent;
 class UHeroMovementComponent;
+class UInputMappingContext;
+class UHeroInputConfig;
+struct FInputActionValue;
 
 /**
  *
@@ -28,6 +32,12 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
+	virtual void Move( const FInputActionValue& Value );
+	virtual void Look( const FInputActionValue& Value );
+
+	//void Input_AbilityInputTagPressed( FGameplayTag InputTag );
+	//void Input_AbilityInputTagReleased( FGameplayTag InputTag );
+
 protected:
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = ( AllowPrivateAccess = "true" ) )
 	TObjectPtr<USpringArmComponent> CameraBoom;
@@ -35,8 +45,15 @@ protected:
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = ( AllowPrivateAccess = "true" ) )
 	TObjectPtr<UCameraComponent> FollowCamera;
 
-	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Components, meta = ( AllowPrivateAccess = "true" ) )
-	TObjectPtr<UHeroMovementComponent> HeroMovementComp;
+	//UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Components, meta = ( AllowPrivateAccess = "true" ) )
+	//TObjectPtr<UHeroMovementComponent> HeroMovementComp;
+
+	//Input
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Input, meta = ( AllowPrivateAccess = "true" ) )
+	TObjectPtr<UInputMappingContext> DefaultMappingContext;
+
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Input, meta = ( AllowPrivateAccess = "true" ) )
+	TObjectPtr<UHeroInputConfig> InputConfig;
 
 public:
 	/** Returns CameraBoom subobject **/

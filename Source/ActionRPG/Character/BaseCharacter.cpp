@@ -28,21 +28,8 @@ void ABaseCharacter::BeginPlay()
 
 	if( AbilitySystemComponent->IsValidLowLevel() == true )
 	{
-		RLOG_L( Warning );
 		AbilitySystemComponent->InitAbilityActorInfo( this, this );
 		InitAbilitySet();
-	}
-}
-
-void ABaseCharacter::AddStartupGameplayAbilities()
-{
-	if( AbilitySystemComponent->IsValidLowLevel() == true )
-	{
-		for( TSubclassOf<UGameplayAbility>& startupAbility : GameplayAbilities )
-		{
-			RLOG_L( Warning );
-			AbilitySystemComponent->GiveAbility( FGameplayAbilitySpec( startupAbility, 1, INDEX_NONE, this ) );
-		}
 	}
 }
 
