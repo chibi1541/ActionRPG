@@ -10,7 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Character/HeroInputComponent.h"
 #include "InputActionValue.h"
-#include "GameplayTagsManager.h"
+#include "Ability/ActionRPGGlobalTags.h"
 
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(HeroCharacter)
@@ -48,9 +48,6 @@ AHeroCharacter::AHeroCharacter( const FObjectInitializer& ObjectInitializer /*= 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>( TEXT( "FollowCamera" ) );
 	FollowCamera->SetupAttachment( CameraBoom, USpringArmComponent::SocketName ); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
-
-	UGameplayTagsManager& Manager = UGameplayTagsManager::Get();
-
 }
 
 void AHeroCharacter::SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent )
@@ -71,10 +68,12 @@ void AHeroCharacter::SetupPlayerInputComponent( class UInputComponent* PlayerInp
 
 	UHeroInputComponent* HeroIC = CastChecked<UHeroInputComponent>( PlayerInputComponent );
 
+	const FActionRPGGlobalTags& GameplayTags = FActionRPGGlobalTags::Get();
+
 	//HeroIC->BindAbilityActions(InputConfig, )
 
-	//HeroIC->BindNativeAction( InputConfig, InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::Move, true );
-	//HeroIC->BindNativeAction( InputConfig, InputTag_Look, ETriggerEvent::Triggered, this, &ThisClass::Look, true );
+	HeroIC->BindNativeAction( InputConfig, GameplayTags.InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::Move, true );
+	HeroIC->BindNativeAction( InputConfig, GameplayTags.InputTag_Look, ETriggerEvent::Triggered, this, &ThisClass::Look, true );
 }
 
 void AHeroCharacter::BeginPlay()

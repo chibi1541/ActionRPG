@@ -45,9 +45,6 @@ protected:
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = ( AllowPrivateAccess = "true" ) )
 	TObjectPtr<UCameraComponent> FollowCamera;
 
-	//UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Components, meta = ( AllowPrivateAccess = "true" ) )
-	//TObjectPtr<UHeroMovementComponent> HeroMovementComp;
-
 	//Input
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Input, meta = ( AllowPrivateAccess = "true" ) )
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
