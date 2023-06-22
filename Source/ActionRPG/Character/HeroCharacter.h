@@ -12,7 +12,9 @@ class UCameraComponent;
 class UHeroMovementComponent;
 class UInputMappingContext;
 class UHeroInputConfig;
+class UARPGAbilitySystemComponent;
 struct FInputActionValue;
+struct FGameplayTag;
 
 /**
  *
@@ -25,6 +27,8 @@ class ACTIONRPG_API AHeroCharacter : public ABaseCharacter
 public:
 	AHeroCharacter( const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get() );
 
+	UARPGAbilitySystemComponent* GetARPGAbilitySystemComponent() const;
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent ) override;
@@ -35,8 +39,8 @@ protected:
 	virtual void Move( const FInputActionValue& Value );
 	virtual void Look( const FInputActionValue& Value );
 
-	//void Input_AbilityInputTagPressed( FGameplayTag InputTag );
-	//void Input_AbilityInputTagReleased( FGameplayTag InputTag );
+	void Input_AbilityInputTagPressed( FGameplayTag InputTag );
+	void Input_AbilityInputTagReleased( FGameplayTag InputTag );
 
 protected:
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = ( AllowPrivateAccess = "true" ) )

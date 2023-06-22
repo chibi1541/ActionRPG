@@ -1,7 +1,9 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "ActionRPGGameMode.h"
+
 #include "Character/HeroCharacter.h"
+#include "Character/ARPGPlayerController.h"
 #include "UObject/ConstructorHelpers.h"
 
 AActionRPGGameMode::AActionRPGGameMode()
@@ -13,4 +15,5 @@ AActionRPGGameMode::AActionRPGGameMode()
 		DefaultPawnClass = HeroBPClass.Class;
 	}
 
+	PlayerControllerClass = AARPGPlayerController::StaticClass();
 }

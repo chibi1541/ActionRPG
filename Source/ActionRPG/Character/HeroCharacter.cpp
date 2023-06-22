@@ -3,15 +3,15 @@
 
 #include "Character/HeroCharacter.h"
 
-#include "Components/CapsuleComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Camera/CameraComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "EnhancedInputSubsystems.h"
-#include "Character/HeroInputComponent.h"
-#include "InputActionValue.h"
 #include "Ability/ActionRPGGlobalTags.h"
-
+#include "Ability/ARPGAbilitySystemComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Camera/CameraComponent.h"
+#include "Character/HeroInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "InputActionValue.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(HeroCharacter)
 
@@ -50,6 +50,11 @@ AHeroCharacter::AHeroCharacter( const FObjectInitializer& ObjectInitializer /*= 
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 }
 
+UARPGAbilitySystemComponent* AHeroCharacter::GetARPGAbilitySystemComponent() const
+{
+	return CastChecked<UARPGAbilitySystemComponent>( AbilitySystemComponent );
+}
+
 void AHeroCharacter::SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent )
 {
 	Super::SetupPlayerInputComponent( PlayerInputComponent );
@@ -70,7 +75,7 @@ void AHeroCharacter::SetupPlayerInputComponent( class UInputComponent* PlayerInp
 
 	const FActionRPGGlobalTags& GameplayTags = FActionRPGGlobalTags::Get();
 
-	//HeroIC->BindAbilityActions(InputConfig, )
+	HeroIC->BindAbilityActions( InputConfig, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased );
 
 	HeroIC->BindNativeAction( InputConfig, GameplayTags.InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::Move, true );
 	HeroIC->BindNativeAction( InputConfig, GameplayTags.InputTag_Look, ETriggerEvent::Triggered, this, &ThisClass::Look, true );
@@ -116,12 +121,18 @@ void AHeroCharacter::Look( const FInputActionValue& Value )
 	}
 }
 
-//void AHeroCharacter::Input_AbilityInputTagPressed( FGameplayTag InputTag )
-//{
-//	
-//}
-//
-//void AHeroCharacter::Input_AbilityInputTagReleased( FGameplayTag InputTag )
-//{
-//
-//}
+void AHeroCharacter::Input_AbilityInputTagPressed( FGameplayTag InputTag )
+{
+	if( UARPGAbilitySystemComponent* ArpgASC = GetARPGAbilitySystemComponent() )
+	{
+		ArpgASC->AbilityInputTagPressed( InputTag );
+	}
+}
+
+void AHeroCharacter::Input_AbilityInputTagReleased( FGameplayTag InputTag )
+{
+	if( UARPGAbilitySystemComponent* ArpgASC = GetARPGAbilitySystemComponent() )
+	{
+		ArpgASC->AbilityInputTagReleased( InputTag );
+	}
+}
