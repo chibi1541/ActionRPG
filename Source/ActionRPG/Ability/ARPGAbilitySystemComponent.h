@@ -4,7 +4,11 @@
 
 #include "ActionRPG_Lib.h"
 #include "AbilitySystemComponent.h"
+#include "NativeGameplayTags.h"
 #include "ARPGAbilitySystemComponent.generated.h"
+
+// Input을 막는(조작 불가능) 상태의 GameplayTag
+ACTIONRPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN( TAG_AbilityInputBlocked );
 
 /**
  *
@@ -17,9 +21,12 @@ class ACTIONRPG_API UARPGAbilitySystemComponent : public UAbilitySystemComponent
 public:
 	UARPGAbilitySystemComponent( const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get() );
 	
+	void ClearAbilityInput();
+	
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
-	
+
+	void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
 
 protected:
 	
@@ -27,6 +34,7 @@ protected:
 
 	TArray<FGameplayAbilitySpecHandle> InputReleasedSpecHandles;
 
+	// 키 입력 상태 유지 시에 지속적으로 작동하는 Abilities (추후에 작업)
 	TArray<FGameplayAbilitySpecHandle> InputHeldSpecHandles;
 
 };
