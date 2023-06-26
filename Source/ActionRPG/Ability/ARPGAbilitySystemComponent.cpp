@@ -111,3 +111,8 @@ void UARPGAbilitySystemComponent::ProcessAbilityInput( float DeltaTime, bool bGa
 	InputReleasedSpecHandles.Reset();
 }
 
+void UARPGAbilitySystemComponent::ApplyAbilityBlockAndCancelTags( const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bEnableBlockTags, const FGameplayTagContainer& BlockTags, bool bExecuteCancelTags, const FGameplayTagContainer& CancelTags )
+{
+	Super::ApplyAbilityBlockAndCancelTags( AbilityTags, RequestingAbility, bEnableBlockTags, BlockTags, bExecuteCancelTags, CancelTags );
+}
+

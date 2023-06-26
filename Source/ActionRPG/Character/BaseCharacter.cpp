@@ -20,7 +20,7 @@ ABaseCharacter::ABaseCharacter( const FObjectInitializer& ObjectInitializer /*= 
 
 class UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
 {
-	return AbilitySystemComponent;
+	return GetARPGAbilitySystemComponent();
 }
 
 void ABaseCharacter::BeginPlay()

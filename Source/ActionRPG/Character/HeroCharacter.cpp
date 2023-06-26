@@ -50,11 +50,6 @@ AHeroCharacter::AHeroCharacter( const FObjectInitializer& ObjectInitializer /*= 
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 }
 
-UARPGAbilitySystemComponent* AHeroCharacter::GetARPGAbilitySystemComponent() const
-{
-	return CastChecked<UARPGAbilitySystemComponent>( AbilitySystemComponent );
-}
-
 void AHeroCharacter::SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent )
 {
 	Super::SetupPlayerInputComponent( PlayerInputComponent );

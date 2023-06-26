@@ -27,8 +27,6 @@ class ACTIONRPG_API AHeroCharacter : public ABaseCharacter
 public:
 	AHeroCharacter( const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get() );
 
-	UARPGAbilitySystemComponent* GetARPGAbilitySystemComponent() const;
-
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent ) override;

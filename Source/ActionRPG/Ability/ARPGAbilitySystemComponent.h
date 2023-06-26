@@ -29,6 +29,9 @@ public:
 	void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
 
 protected:
+	virtual void ApplyAbilityBlockAndCancelTags(const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bEnableBlockTags, const FGameplayTagContainer& BlockTags, bool bExecuteCancelTags, const FGameplayTagContainer& CancelTags) override;
+
+protected:
 	
 	TArray<FGameplayAbilitySpecHandle> InputPressedSpecHandles;
 

@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "BaseCharacter.generated.h"
 
+class UARPGAbilitySystemComponent;
 class UAbilitySystemComponent;
 class UGameplayAbility;
 class UAbilitySet;
@@ -19,6 +20,7 @@ class ACTIONRPG_API ABaseCharacter : public ACharacter, public IAbilitySystemInt
 public:
 	ABaseCharacter( const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get() );
 
+	UARPGAbilitySystemComponent* GetARPGAbilitySystemComponent() const { return AbilitySystemComponent; }
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 
@@ -30,7 +32,7 @@ protected:
 
 protected:
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "Ability", meta = ( AllowPrivateAccess = "true" ) )
-	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+	TObjectPtr<UARPGAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Ability", meta = ( AllowPrivateAccess = "true" ) )
 	TArray<TObjectPtr<UAbilitySet>> AbilitySets;
