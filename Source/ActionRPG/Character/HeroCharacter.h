@@ -13,6 +13,7 @@ class UHeroMovementComponent;
 class UInputMappingContext;
 class UHeroInputConfig;
 class UARPGAbilitySystemComponent;
+class UTagRelationship;
 struct FInputActionValue;
 struct FGameplayTag;
 
@@ -34,6 +35,8 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
+	virtual void InitAbilitySystem() override;
+
 	virtual void Move( const FInputActionValue& Value );
 	virtual void Look( const FInputActionValue& Value );
 
@@ -53,6 +56,9 @@ protected:
 
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Input, meta = ( AllowPrivateAccess = "true" ) )
 	TObjectPtr<UHeroInputConfig> InputConfig;
+
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Ability, meta = ( AllowPrivateAccess = "true" ) )
+	TObjectPtr<UTagRelationship> TagRelationshipTable;
 
 public:
 	/** Returns CameraBoom subobject **/

@@ -28,7 +28,7 @@ public:
 
 protected:
 
-	virtual void InitAbilitySet();
+	virtual void InitAbilitySystem();
 
 protected:
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "Ability", meta = ( AllowPrivateAccess = "true" ) )

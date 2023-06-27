@@ -30,11 +30,11 @@ void ABaseCharacter::BeginPlay()
 	if( AbilitySystemComponent->IsValidLowLevel() == true )
 	{
 		AbilitySystemComponent->InitAbilityActorInfo( this, this );
-		InitAbilitySet();
+		InitAbilitySystem();
 	}
 }
 
-void ABaseCharacter::InitAbilitySet()
+void ABaseCharacter::InitAbilitySystem()
 {
 	for( const UAbilitySet* AbilitySet : AbilitySets )
 	{

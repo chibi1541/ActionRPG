@@ -81,6 +81,16 @@ void AHeroCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
+void AHeroCharacter::InitAbilitySystem()
+{
+	Super::InitAbilitySystem();
+
+	if( TagRelationshipTable != nullptr )
+	{
+		AbilitySystemComponent->SetTagRelationshipTable( TagRelationshipTable );
+	}
+}
+
 void AHeroCharacter::Move( const FInputActionValue& Value )
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();

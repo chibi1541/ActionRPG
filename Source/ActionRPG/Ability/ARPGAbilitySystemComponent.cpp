@@ -3,6 +3,8 @@
 
 #include "Ability/ARPGAbilitySystemComponent.h"
 
+#include "Ability/TagRelationship.h"
+
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARPGAbilitySystemComponent)
 
 UE_DEFINE_GAMEPLAY_TAG( TAG_AbilityInputBlocked, "Gameplay.AbilityInputBlocked" );
@@ -111,8 +113,21 @@ void UARPGAbilitySystemComponent::ProcessAbilityInput( float DeltaTime, bool bGa
 	InputReleasedSpecHandles.Reset();
 }
 
+void UARPGAbilitySystemComponent::SetTagRelationshipTable( UTagRelationship* NewTable )
+{
+	TagRelationshipTable = NewTable;
+}
+
 void UARPGAbilitySystemComponent::ApplyAbilityBlockAndCancelTags( const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bEnableBlockTags, const FGameplayTagContainer& BlockTags, bool bExecuteCancelTags, const FGameplayTagContainer& CancelTags )
 {
+	FGameplayTagContainer ModifiedBlockTags = BlockTags;
+	FGameplayTagContainer ModifiedCancelTags = CancelTags;
+
+	if( TagRelationshipTable != nullptr )
+	{
+		TagRelationshipTable->GetAbilityTagsToBlockAndCancel( AbilityTags, &ModifiedBlockTags, &ModifiedCancelTags );
+	}
+
 	Super::ApplyAbilityBlockAndCancelTags( AbilityTags, RequestingAbility, bEnableBlockTags, BlockTags, bExecuteCancelTags, CancelTags );
 }
 
