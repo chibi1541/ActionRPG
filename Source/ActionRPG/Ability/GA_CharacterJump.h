@@ -3,14 +3,15 @@
 #pragma once
 
 #include "ActionRPG_Lib.h"
-#include "Abilities/GameplayAbility.h"
+#include "Ability/ARPGGameplayAbility.h"
+
 #include "GA_CharacterJump.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ACTIONRPG_API UGA_CharacterJump : public UGameplayAbility
+class ACTIONRPG_API UGA_CharacterJump : public UARPGGameplayAbility
 {
 	GENERATED_BODY()
 		

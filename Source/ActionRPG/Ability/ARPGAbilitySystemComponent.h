@@ -32,8 +32,11 @@ public:
 
 	void SetTagRelationshipTable( UTagRelationship* NewTable );
 
+	void GetAdditionalActivationTagRequirements(const FGameplayTagContainer& AbilityTags, OUT FGameplayTagContainer& OutActivationRequired, OUT FGameplayTagContainer& OutActivationBlocked ) const;
+
 protected:
 	virtual void ApplyAbilityBlockAndCancelTags( const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bEnableBlockTags, const FGameplayTagContainer& BlockTags, bool bExecuteCancelTags, const FGameplayTagContainer& CancelTags ) override;
+
 
 protected:
 

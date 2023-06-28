@@ -131,3 +131,11 @@ void UARPGAbilitySystemComponent::ApplyAbilityBlockAndCancelTags( const FGamepla
 	Super::ApplyAbilityBlockAndCancelTags( AbilityTags, RequestingAbility, bEnableBlockTags, BlockTags, bExecuteCancelTags, CancelTags );
 }
 
+void UARPGAbilitySystemComponent::GetAdditionalActivationTagRequirements( const FGameplayTagContainer& AbilityTags, OUT FGameplayTagContainer& OutActivationRequired, OUT FGameplayTagContainer& OutActivationBlocked ) const
+{
+	if( TagRelationshipTable != nullptr )
+	{
+		TagRelationshipTable->GetRequiredAndBlockedActivationTags( AbilityTags, &OutActivationRequired, &OutActivationBlocked );
+	}
+}
+
