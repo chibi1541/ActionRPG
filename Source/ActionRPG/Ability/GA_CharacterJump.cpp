@@ -6,10 +6,13 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(GA_CharacterJump)
 
-UGA_CharacterJump::UGA_CharacterJump()
+UGA_CharacterJump::UGA_CharacterJump( const FObjectInitializer& ObjectIntializer )
+	:Super( ObjectIntializer )
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;
-	AbilityTags.AddTag( FGameplayTag::RequestGameplayTag( FName( "Ability.Jump" ) ) );
+	AbilityTags.AddTag( FGameplayTag::RequestGameplayTag( FName( "Ability.Action.Jump" ) ) );
+	ActivationOwnedTags.AddTag( FGameplayTag::RequestGameplayTag( FName( "Ability.State.Jump" ) ) );
+	ActivationBlockedTags.AddTag( FGameplayTag::RequestGameplayTag( FName( "Ability.State" ) ) );
 }
 
 void UGA_CharacterJump::ActivateAbility( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData )

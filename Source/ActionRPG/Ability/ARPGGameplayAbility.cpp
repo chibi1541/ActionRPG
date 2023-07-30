@@ -8,6 +8,23 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARPGGameplayAbility)
 
+UARPGGameplayAbility::UARPGGameplayAbility( const FObjectInitializer& ObjectInitializer )
+	:Super( ObjectInitializer )
+{
+	{
+		static FName PressFuncName = FName( TEXT( "K2_InputPressed" ) );
+		UFunction* InputPressFunction = GetClass()->FindFunctionByName( PressFuncName );
+		bInputPressBlueprintCanUse = InputPressFunction && ensure( InputPressFunction->GetOuter() ) && InputPressFunction->GetOuter()->IsA( UBlueprintGeneratedClass::StaticClass() );
+
+	}
+
+	{
+		static FName ReleaseFuncName = FName( TEXT( "K2_InputReleased" ) );
+		UFunction* InputReleaseFunction = GetClass()->FindFunctionByName( ReleaseFuncName );
+		bInputReleaseBlueprintCanUse = InputReleaseFunction && ensure( InputReleaseFunction->GetOuter() ) && InputReleaseFunction->GetOuter()->IsA( UBlueprintGeneratedClass::StaticClass() );
+	}
+}
+
 bool UARPGGameplayAbility::DoesAbilitySatisfyTagRequirements( const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags ) const
 {
 	bool bBlocked = false;
@@ -102,3 +119,52 @@ bool UARPGGameplayAbility::DoesAbilitySatisfyTagRequirements( const UAbilitySyst
 
 	return true;
 }
+
+void UARPGGameplayAbility::InputReleased( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo )
+{
+	if( ActionPolicyType != EARPGAbilityActivationPolicy::WhileInputHeld )
+		return;
+
+	if( OnReleased.IsBound() )
+	{
+		RLOG( Warning, TEXT( "Call Input Released Delegate!" ) );
+
+		OnReleased.Broadcast();
+	}
+
+	if( bInputReleaseBlueprintCanUse )
+	{
+		if( K2_InputReleased( Handle, *ActorInfo, ActivationInfo ) == false )
+		{
+			RLOG( Warning, TEXT( "Call Input Release Error!" ) );
+		}
+	}
+	else
+	{
+		RLOG( Warning, TEXT( "Can't Call Input Release!" ) );
+	}
+
+}
+
+void UARPGGameplayAbility::InputPressed( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo )
+{
+	RLOG( Warning, TEXT( "Call Input Press" ) );
+
+
+	if( OnPressed.IsBound() )
+	{
+		RLOG( Warning, TEXT( "Call Input Pressed Delegate!" ) );
+
+		OnPressed.Broadcast();
+	}
+
+
+	if( bInputPressBlueprintCanUse )
+	{
+		if( K2_InputPressed( Handle, *ActorInfo, ActivationInfo ) == false )
+		{
+			RLOG( Warning, TEXT( "Call Input Press Error!" ) );
+		}
+	}
+}
+

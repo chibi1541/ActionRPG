@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Character/BaseCharacter.h"
+#include "NativeGameplayTags.h"
 
 #include "HeroCharacter.generated.h"
 
@@ -17,6 +18,8 @@ class UTagRelationship;
 struct FInputActionValue;
 struct FGameplayTag;
 
+
+ACTIONRPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN( TAG_MovingLocked );
 /**
  *
  */

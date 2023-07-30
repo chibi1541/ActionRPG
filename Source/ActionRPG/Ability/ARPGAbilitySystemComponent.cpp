@@ -2,6 +2,7 @@
 
 
 #include "Ability/ARPGAbilitySystemComponent.h"
+#include "Ability/ARPGGameplayAbility.h"
 
 #include "Ability/TagRelationship.h"
 
@@ -33,8 +34,15 @@ void UARPGAbilitySystemComponent::AbilityInputTagPressed( const FGameplayTag& In
 			if( AbilitySpec.Ability != nullptr &&
 				( AbilitySpec.DynamicAbilityTags.HasTagExact( InputTag ) ) )
 			{
-				InputPressedSpecHandles.AddUnique( AbilitySpec.Handle );
-				InputHeldSpecHandles.AddUnique( AbilitySpec.Handle );
+				const UARPGGameplayAbility* AbilityCDO = CastChecked<UARPGGameplayAbility>( AbilitySpec.Ability );
+				if( AbilityCDO->GetActivationPolicyType() == EARPGAbilityActivationPolicy::OnInputTriggered )
+				{
+					InputPressedSpecHandles.AddUnique( AbilitySpec.Handle );
+				}
+				else if( AbilityCDO->GetActivationPolicyType() == EARPGAbilityActivationPolicy::WhileInputHeld )
+				{
+					InputHeldSpecHandles.AddUnique( AbilitySpec.Handle );
+				}
 			}
 		}
 	}
@@ -66,6 +74,17 @@ void UARPGAbilitySystemComponent::ProcessAbilityInput( float DeltaTime, bool bGa
 
 	static TArray<FGameplayAbilitySpecHandle> AbilitiesToActivate;
 	AbilitiesToActivate.Reset();
+
+	for( const FGameplayAbilitySpecHandle& SpecHandle : InputHeldSpecHandles )
+	{
+		if( FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle( SpecHandle ) )
+		{
+			if( AbilitySpec->Ability != nullptr && AbilitySpec->IsActive() == false )
+			{
+				AbilitiesToActivate.AddUnique( AbilitySpec->Handle );
+			}
+		}
+	}
 
 	for( const FGameplayAbilitySpecHandle& SpecHandle : InputPressedSpecHandles )
 	{

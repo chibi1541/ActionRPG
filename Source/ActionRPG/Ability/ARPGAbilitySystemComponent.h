@@ -9,7 +9,7 @@
 
 class UTagRelationship;
 
-// InputÀ» ¸·´Â(Á¶ÀÛ ºÒ°¡´É) »óÅÂÀÇ GameplayTag
+// Inputï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½Ò°ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ GameplayTag
 ACTIONRPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN( TAG_AbilityInputBlocked );
 
 /**
@@ -44,7 +44,6 @@ protected:
 
 	TArray<FGameplayAbilitySpecHandle> InputReleasedSpecHandles;
 
-	// Å° ÀÔ·Â »óÅÂ À¯Áö ½Ã¿¡ Áö¼ÓÀûÀ¸·Î ÀÛµ¿ÇÏ´Â Abilities (ÃßÈÄ¿¡ ÀÛ¾÷)
 	TArray<FGameplayAbilitySpecHandle> InputHeldSpecHandles;
 
 

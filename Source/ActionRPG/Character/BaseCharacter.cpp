@@ -6,15 +6,16 @@
 #include "AbilitySystemComponent.h"
 #include "Ability/AbilitySet.h"
 #include "Ability/ARPGAbilitySystemComponent.h"
+#include "Character/ARPGMovementComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BaseCharacter)
 
 ABaseCharacter::ABaseCharacter( const FObjectInitializer& ObjectInitializer /*= FObjectInitializer::Get() */ )
-	:Super( ObjectInitializer )
+	:Super( ObjectInitializer.SetDefaultSubobjectClass<UARPGMovementComponent>( ACharacter::CharacterMovementComponentName ) )
 {
 	AbilitySystemComponent = CreateDefaultSubobject<UARPGAbilitySystemComponent>( TEXT( "ASC" ) );
 
-	// ½Ì±ÛÇÃ·¹ÀÌ ¿ë ¼³Á¤
+	// ï¿½Ì±ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	AbilitySystemComponent.Get()->ReplicationMode = EGameplayEffectReplicationMode::Full;
 }
 
