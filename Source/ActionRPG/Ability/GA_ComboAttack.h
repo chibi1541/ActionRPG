@@ -29,7 +29,6 @@ protected:
 
 	virtual void InputPressed( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo ) override;
 
-
 	UFUNCTION()
 	void OnCancelled();
 

@@ -8,6 +8,8 @@
 
 #include "HitTraceComponent.generated.h"
 
+struct FGameplayTag;
+
 UENUM( BlueprintType )
 enum class ETraceShapeType : uint8
 {
@@ -143,8 +145,6 @@ protected:
 	virtual void AddHitArray( const TArray<FHitResult> HitResults );
 
 	virtual void UpdateLastSocketLocation();
-
-	
 
 public:
 	UFUNCTION( BlueprintCallable, Category = "HitTrace" )

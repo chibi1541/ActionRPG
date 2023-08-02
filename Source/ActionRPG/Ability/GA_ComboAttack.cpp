@@ -19,17 +19,6 @@ UGA_ComboAttack::UGA_ComboAttack( const FObjectInitializer& ObjectInitializer )
 	AnimRootMotionTranslationScale = 1.f;
 }
 
-//void UGA_ComboAttack::OnAvatarSet( const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec )
-//{
-//	const auto Character = Cast<ACharacter>( ActorInfo->AvatarActor );
-//
-//	HitTraceComp = Cast<UHitTraceComponent>( Character->GetComponentByClass( UHitTraceComponent::StaticClass() ) );
-//	if( HitTraceComp == nullptr )
-//	{
-//		RLOG( Error, TEXT( "HitTraceComp is null" ) );
-//	}
-//}
-
 void UGA_ComboAttack::ActivateAbility( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData )
 {
 	if( CommitAbility( Handle, ActorInfo, ActivationInfo ) == false )
@@ -68,11 +57,6 @@ void UGA_ComboAttack::ActivateAbility( const FGameplayAbilitySpecHandle Handle, 
 	{
 		RLOG( Error, TEXT( "HitTraceComp is null" ) );
 		return;
-	}
-
-	if( HitTraceComp != nullptr)
-	{
-		HitTraceComp->ToggleTraceCheck( true );
 	}
 }
 
