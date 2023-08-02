@@ -8,6 +8,7 @@
 #include "GA_ComboAttack.generated.h"
 
 class UAmimMontage;
+class UHitTraceComponent;
 struct FGameplayTag;
 
 /**
@@ -22,9 +23,12 @@ public:
 	UGA_ComboAttack( const FObjectInitializer& ObjectInitializer );
 
 protected:
+	// virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+
 	virtual void ActivateAbility( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData ) override;
 
 	virtual void InputPressed( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo ) override;
+
 
 	UFUNCTION()
 	void OnCancelled();
@@ -40,25 +44,28 @@ private:
 	void SetCurComboIndex( int CurrentIndex );
 
 protected:
-	UPROPERTY( EditDefaultsOnly, Category = "AnimMontage|Montages", meta = ( AllowPrivateAccess = "true" ) )
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack|AttackTrace" )
+	TObjectPtr<UHitTraceComponent> HitTraceComp;
+
+	UPROPERTY( EditDefaultsOnly, Category = "AnimMontage|Montages" )
 	TArray<TObjectPtr<UAnimMontage>> AttackMontages;
 
-	UPROPERTY( EditDefaultsOnly, Category = "AnimMontage|EventTag", meta = ( AllowPrivateAccess = "true" ) )
+	UPROPERTY( EditDefaultsOnly, Category = "AnimMontage|EventTag" )
 	FGameplayTag EventTag;
 
-	UPROPERTY( EditDefaultsOnly, Category = "AnimMontage|Rate", meta = ( AllowPrivateAccess = "true" ) )
+	UPROPERTY( EditDefaultsOnly, Category = "AnimMontage|Rate" )
 	float Rate;
 
-	UPROPERTY( EditDefaultsOnly, Category = "AnimMontage|Trigger", meta = ( AllowPrivateAccess = "true" ) )
+	UPROPERTY( EditDefaultsOnly, Category = "AnimMontage|Trigger" )
 	bool OnlyTriggerOnce;
 
-	UPROPERTY( EditDefaultsOnly, Category = "AnimMontage|StopSetting", meta = ( AllowPrivateAccess = "true" ) )
+	UPROPERTY( EditDefaultsOnly, Category = "AnimMontage|StopSetting" )
 	bool StopWhenAbilityEnds;
 
-	UPROPERTY( EditDefaultsOnly, Category = "AnimMontage|Rate", meta = ( AllowPrivateAccess = "true" ) )
+	UPROPERTY( EditDefaultsOnly, Category = "AnimMontage|Rate" )
 	float AnimRootMotionTranslationScale;
 
-	UPROPERTY( EditDefaultsOnly, Category = "ComboState", meta = ( AllowPrivateAccess = "true" ) )
+	UPROPERTY( EditDefaultsOnly, Category = "ComboState" )
 	int MaxComboIndex;
 
 	bool bNextAttack;
