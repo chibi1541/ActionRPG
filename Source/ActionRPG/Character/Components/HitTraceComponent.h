@@ -138,9 +138,9 @@ protected:
 
 	virtual void HitOtherSocketsAtDifferentTime();
 
-	virtual void TracebyChannelType( const FVector Start, const FVector End );
+	virtual void TracedbyChannelType( const FVector Start, const FVector End );
 
-	virtual void TracebyObjectType( const FVector Start, const FVector End );
+	virtual void TracedbyObjectType( const FVector Start, const FVector End );
 
 	virtual void AddHitArray( const TArray<FHitResult> HitResults );
 

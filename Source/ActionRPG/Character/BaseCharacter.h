@@ -5,6 +5,7 @@
 #include "ActionRPG_Lib.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayCueInterface.h"
 #include "BaseCharacter.generated.h"
 
 class UARPGAbilitySystemComponent;
@@ -13,7 +14,7 @@ class UGameplayAbility;
 class UAbilitySet;
 
 UCLASS( config = Game )
-class ACTIONRPG_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface
+class ACTIONRPG_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayCueInterface
 {
 	GENERATED_BODY()
 

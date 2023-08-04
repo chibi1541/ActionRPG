@@ -18,4 +18,8 @@ class ACTIONRPG_API ABaseMonster : public ABaseCharacter
 
 public:
 	ABaseMonster( const FObjectInitializer& ObjectInitializer );
+
+protected:
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HitReact|Montage" )
+		TObjectPtr<UAnimMontage> HitMontage;
 };

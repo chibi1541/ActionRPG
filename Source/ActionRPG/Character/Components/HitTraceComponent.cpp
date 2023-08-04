@@ -70,12 +70,12 @@ void UHitTraceComponent::HitSameSocketAtDifferentTimes()
 		{
 			case ETraceQueryType::ChannelQuery:
 			{
-				TracebyChannelType( *Start, End );
+				TracedbyChannelType( *Start, End );
 				break;
 			}
 			case ETraceQueryType::ObjectQuery:
 			{
-				TracebyObjectType( *Start, End );
+				TracedbyObjectType( *Start, End );
 				break;
 			}
 		}
@@ -99,12 +99,12 @@ void UHitTraceComponent::HitOtherSocketsAtSameTime()
 			{
 				case ETraceQueryType::ChannelQuery:
 				{
-					TracebyChannelType( Start, End );
+					TracedbyChannelType( Start, End );
 					break;
 				}
 				case ETraceQueryType::ObjectQuery:
 				{
-					TracebyObjectType( Start, End );
+					TracedbyObjectType( Start, End );
 					break;
 				}
 			}
@@ -116,11 +116,10 @@ void UHitTraceComponent::HitOtherSocketsAtDifferentTime()
 {
 	for( const auto SocketName_0 : SocketNames )
 	{
-		for( const auto SocketName_2 : SocketNames )
+		for( const auto SocketName_1 : SocketNames )
 		{
-			TArray<FHitResult> OutHits1;
 			FVector Start = PrimitiveComp->GetSocketLocation( SocketName_0 );
-			FVector* End = LastSocketLocations.Find( SocketName_2 );
+			FVector* End = LastSocketLocations.Find( SocketName_1 );
 
 			if( End == nullptr )
 			{
@@ -131,12 +130,12 @@ void UHitTraceComponent::HitOtherSocketsAtDifferentTime()
 			{
 				case ETraceQueryType::ChannelQuery:
 				{
-					TracebyChannelType( Start, *End );
+					TracedbyChannelType( Start, *End );
 					break;
 				}
 				case ETraceQueryType::ObjectQuery:
 				{
-					TracebyObjectType( Start, *End );
+					TracedbyObjectType( Start, *End );
 					break;
 				}
 			}
@@ -144,7 +143,7 @@ void UHitTraceComponent::HitOtherSocketsAtDifferentTime()
 	}
 }
 
-void UHitTraceComponent::TracebyChannelType( const FVector Start, const FVector End )
+void UHitTraceComponent::TracedbyChannelType( const FVector Start, const FVector End )
 {
 	TArray<FHitResult> OutHits;
 
@@ -177,7 +176,7 @@ void UHitTraceComponent::TracebyChannelType( const FVector Start, const FVector 
 	AddHitArray( OutHits );
 }
 
-void UHitTraceComponent::TracebyObjectType( const FVector Start, const FVector End )
+void UHitTraceComponent::TracedbyObjectType( const FVector Start, const FVector End )
 {
 	TArray<FHitResult> OutHits;
 
