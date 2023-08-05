@@ -9,5 +9,5 @@
 
 ABaseMonster::ABaseMonster( const FObjectInitializer& ObjectInitializer )
 {
-	// AIControllerClass = ABaseAIController::StaticClass();
+	AIControllerClass = ABaseAIController::StaticClass();
 }

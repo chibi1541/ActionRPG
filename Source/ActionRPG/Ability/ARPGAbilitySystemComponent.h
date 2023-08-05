@@ -9,7 +9,6 @@
 
 class UTagRelationship;
 
-// Input�� ����(���� �Ұ���) ������ GameplayTag
 ACTIONRPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN( TAG_AbilityInputBlocked );
 
 /**
@@ -32,7 +31,12 @@ public:
 
 	void SetTagRelationshipTable( UTagRelationship* NewTable );
 
-	void GetAdditionalActivationTagRequirements(const FGameplayTagContainer& AbilityTags, OUT FGameplayTagContainer& OutActivationRequired, OUT FGameplayTagContainer& OutActivationBlocked ) const;
+	void GetAdditionalActivationTagRequirements( const FGameplayTagContainer& AbilityTags, OUT FGameplayTagContainer& OutActivationRequired, OUT FGameplayTagContainer& OutActivationBlocked ) const;
+
+	// For AI
+	bool TryActivateAbilityByInputTag( const FGameplayTag& InputTag );
+
+	bool GetAbilitySpecByInputTag( const FGameplayTag& InputTag, FGameplayAbilitySpec& OutSpec );
 
 protected:
 	virtual void ApplyAbilityBlockAndCancelTags( const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bEnableBlockTags, const FGameplayTagContainer& BlockTags, bool bExecuteCancelTags, const FGameplayTagContainer& CancelTags ) override;

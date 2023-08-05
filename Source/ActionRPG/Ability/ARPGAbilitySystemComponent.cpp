@@ -158,3 +158,48 @@ void UARPGAbilitySystemComponent::GetAdditionalActivationTagRequirements( const 
 	}
 }
 
+bool UARPGAbilitySystemComponent::TryActivateAbilityByInputTag( const FGameplayTag& InputTag )
+{
+	bool Return = false;
+
+	if( InputTag.IsValid() )
+	{
+		for( const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items )
+		{
+			if( AbilitySpec.Ability != nullptr &&
+				( AbilitySpec.DynamicAbilityTags.HasTagExact( InputTag ) ) )
+			{
+				Return = TryActivateAbility( AbilitySpec.Handle );
+				if( Return )
+				{
+					const UARPGGameplayAbility* AbilityCDO = CastChecked<UARPGGameplayAbility>( AbilitySpec.Ability );
+					if( AbilityCDO->GetActivationPolicyType() == EARPGAbilityActivationPolicy::OnInputTriggered )
+					{
+						InputPressedSpecHandles.AddUnique( AbilitySpec.Handle );
+					}
+				}
+			}
+		}
+	}
+
+	return Return;
+}
+
+bool UARPGAbilitySystemComponent::GetAbilitySpecByInputTag( const FGameplayTag& InputTag, FGameplayAbilitySpec& OutSpec )
+{
+	if( InputTag.IsValid() )
+	{
+		for( FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items )
+		{
+			if( AbilitySpec.Ability != nullptr &&
+				( AbilitySpec.DynamicAbilityTags.HasTagExact( InputTag ) ) )
+			{
+				OutSpec = AbilitySpec;
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+

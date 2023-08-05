@@ -2,8 +2,10 @@
 
 
 #include "Ability/GA_ComboAttack.h"
+
 #include "Character/Components/HitTraceComponent.h"
-#include "GameFramework/Character.h"
+#include "Character/Components/AttackComponent.h"
+#include "Character/HeroCharacter.h"
 
 #include "AbilityTask/AT_PlayMontagesWithGameplayEvent.h"
 
@@ -13,11 +15,29 @@
 UGA_ComboAttack::UGA_ComboAttack( const FObjectInitializer& ObjectInitializer )
 	:Super( ObjectInitializer )
 {
+	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	Rate = 1.f;
 	OnlyTriggerOnce = false;
 	StopWhenAbilityEnds = true;
 	AnimRootMotionTranslationScale = 1.f;
 }
+
+void UGA_ComboAttack::OnAvatarSet( const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec )
+{
+	UAttackComponent* AttackComp = Cast<UAttackComponent>( ActorInfo->AvatarActor->GetComponentByClass( UAttackComponent::StaticClass() ) );
+	if( AttackComp != nullptr )
+	{
+		if( auto AttackAbility = Cast<UGA_ComboAttack>( Spec.GetPrimaryInstance() ) )
+		{
+			AttackAbility->AttackMontages = AttackComp->GetAttackMontages();
+			MaxComboIndex = AttackAbility->AttackMontages.Num();
+
+			RLOG( Warning, TEXT( "%s, %d" ), *AttackAbility->GetName(), AttackMontages.Num() );
+		}
+	}
+}
+
+
 
 void UGA_ComboAttack::ActivateAbility( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData )
 {
