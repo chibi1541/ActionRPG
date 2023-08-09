@@ -12,6 +12,7 @@
  */
 class UBehaviorTree;
 class UBlackboardData;
+class UARPGAbilitySystemComponent;
 
 UCLASS()
 class ACTIONRPG_API ABaseAIController : public AAIController
@@ -28,7 +29,10 @@ public:
 	static const FName HomePosKey;
 	static const FName PatrolPosKey;
 	static const FName TargetKey;
-
+	static const FName ASCKey;
+	
+private:
+	UARPGAbilitySystemComponent* GetARPGAbilitySystemComponent() const;
 
 protected:
 	UPROPERTY( VisibleAnywhere, Category = "AILogic", meta = ( AllowPrivateAccess = "true" ) )
@@ -36,4 +40,6 @@ protected:
 
 	UPROPERTY( VisibleAnywhere, Category = "AILogic", meta = ( AllowPrivateAccess = "true" ) )
 	TObjectPtr<UBlackboardData> BlackboardData;
+
+
 };

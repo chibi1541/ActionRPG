@@ -16,3 +16,11 @@ DECLARE_LOG_CATEGORY_EXTERN( ActionRPG, Log, All );
 #define RCHECK(Expr, ...) {if(!(Expr))\
 {RLOG(Error,TEXT("ASSERTION : %s"),TEXT("'"#Expr"'"));\
 return __VA_ARGS__;}}
+
+#define DEFINE_ENUM_TO_STRING(EnumType, EnumPackage) FString EnumToString(const EnumType Value) \
+{ \
+	static const UEnum* TypeEnum = FindObject<UEnum>(nullptr, TEXT(EnumPackage) TEXT(".") TEXT(#EnumType)); \
+	return TypeEnum->GetNameStringByIndex(static_cast<int32>(Value)); \
+}
+
+#define DECLARE_ENUM_TO_STRING(EnumType) FString EnumToString(const EnumType Value)

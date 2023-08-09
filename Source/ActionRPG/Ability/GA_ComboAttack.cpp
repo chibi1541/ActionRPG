@@ -82,6 +82,8 @@ void UGA_ComboAttack::ActivateAbility( const FGameplayAbilitySpecHandle Handle, 
 
 void UGA_ComboAttack::InputPressed( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo )
 {
+	RLOG( Warning, TEXT( "Call Pressed Input Func" ) );
+
 	if( CurComboIndex + 1 < MaxComboIndex )
 	{
 		bNextAttack = true;

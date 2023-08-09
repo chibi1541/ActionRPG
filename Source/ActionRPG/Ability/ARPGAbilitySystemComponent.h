@@ -36,11 +36,14 @@ public:
 	// For AI
 	bool TryActivateAbilityByInputTag( const FGameplayTag& InputTag );
 
-	bool GetAbilitySpecByInputTag( const FGameplayTag& InputTag, FGameplayAbilitySpec& OutSpec );
+	FGameplayAbilitySpec* GetAbilitySpecByInputTag( const FGameplayTag& InputTag );
+
 
 protected:
 	virtual void ApplyAbilityBlockAndCancelTags( const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bEnableBlockTags, const FGameplayTagContainer& BlockTags, bool bExecuteCancelTags, const FGameplayTagContainer& CancelTags ) override;
-
+	
+	UFUNCTION( BlueprintCallable, Category = "Abilities" )
+	virtual void CancelAbilitiseWithTags( const FGameplayTagContainer& WithTags, const FGameplayTagContainer& WithoutTags );
 
 protected:
 

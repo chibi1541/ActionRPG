@@ -13,7 +13,7 @@
 ABaseCharacter::ABaseCharacter( const FObjectInitializer& ObjectInitializer /*= FObjectInitializer::Get() */ )
 	:Super( ObjectInitializer.SetDefaultSubobjectClass<UARPGMovementComponent>( ACharacter::CharacterMovementComponentName ) )
 {
-	AbilitySystemComponent = CreateDefaultSubobject<UARPGAbilitySystemComponent>( TEXT( "ASC" ) );
+	AbilitySystemComponent = CreateDefaultSubobject<UARPGAbilitySystemComponent>( TEXT( "ARPGASC" ) );
 
 	AbilitySystemComponent.Get()->ReplicationMode = EGameplayEffectReplicationMode::Full;
 }

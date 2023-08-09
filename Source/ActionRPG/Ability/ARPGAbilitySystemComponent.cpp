@@ -150,6 +150,11 @@ void UARPGAbilitySystemComponent::ApplyAbilityBlockAndCancelTags( const FGamepla
 	Super::ApplyAbilityBlockAndCancelTags( AbilityTags, RequestingAbility, bEnableBlockTags, BlockTags, bExecuteCancelTags, CancelTags );
 }
 
+void UARPGAbilitySystemComponent::CancelAbilitiseWithTags( const FGameplayTagContainer& WithTags, const FGameplayTagContainer& WithoutTags )
+{
+	CancelAbilities( &WithTags, &WithoutTags );
+}
+
 void UARPGAbilitySystemComponent::GetAdditionalActivationTagRequirements( const FGameplayTagContainer& AbilityTags, OUT FGameplayTagContainer& OutActivationRequired, OUT FGameplayTagContainer& OutActivationBlocked ) const
 {
 	if( TagRelationshipTable != nullptr )
@@ -164,19 +169,19 @@ bool UARPGAbilitySystemComponent::TryActivateAbilityByInputTag( const FGameplayT
 
 	if( InputTag.IsValid() )
 	{
-		for( const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items )
+		for( FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items )
 		{
 			if( AbilitySpec.Ability != nullptr &&
 				( AbilitySpec.DynamicAbilityTags.HasTagExact( InputTag ) ) )
 			{
-				Return = TryActivateAbility( AbilitySpec.Handle );
-				if( Return )
+				if( AbilitySpec.Ability->GetInstancingPolicy() == EGameplayAbilityInstancingPolicy::InstancedPerActor &&
+					AbilitySpec.IsActive() )
 				{
-					const UARPGGameplayAbility* AbilityCDO = CastChecked<UARPGGameplayAbility>( AbilitySpec.Ability );
-					if( AbilityCDO->GetActivationPolicyType() == EARPGAbilityActivationPolicy::OnInputTriggered )
-					{
-						InputPressedSpecHandles.AddUnique( AbilitySpec.Handle );
-					}
+					Return = true;
+				}
+				else
+				{
+					Return = TryActivateAbility( AbilitySpec.Handle );
 				}
 			}
 		}
@@ -185,7 +190,7 @@ bool UARPGAbilitySystemComponent::TryActivateAbilityByInputTag( const FGameplayT
 	return Return;
 }
 
-bool UARPGAbilitySystemComponent::GetAbilitySpecByInputTag( const FGameplayTag& InputTag, FGameplayAbilitySpec& OutSpec )
+FGameplayAbilitySpec* UARPGAbilitySystemComponent::GetAbilitySpecByInputTag( const FGameplayTag& InputTag )
 {
 	if( InputTag.IsValid() )
 	{
@@ -194,12 +199,11 @@ bool UARPGAbilitySystemComponent::GetAbilitySpecByInputTag( const FGameplayTag& 
 			if( AbilitySpec.Ability != nullptr &&
 				( AbilitySpec.DynamicAbilityTags.HasTagExact( InputTag ) ) )
 			{
-				OutSpec = AbilitySpec;
-				return true;
+				return &AbilitySpec;
 			}
 		}
 	}
 
-	return false;
+	return nullptr;
 }
 

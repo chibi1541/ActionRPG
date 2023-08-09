@@ -9,7 +9,7 @@
 AActionRPGGameMode::AActionRPGGameMode()
 {
 	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> HeroBPClass( TEXT( "/Script/Engine.Blueprint'/Game/Blueprints/B_HeroCharacter.B_HeroCharacter_C'" ) );
+	static ConstructorHelpers::FClassFinder<APawn> HeroBPClass( TEXT( "/Game/Blueprints/B_HeroCharacter" ) );
 	if( HeroBPClass.Class != NULL )
 	{
 		DefaultPawnClass = HeroBPClass.Class;
