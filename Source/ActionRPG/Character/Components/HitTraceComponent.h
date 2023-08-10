@@ -8,8 +8,6 @@
 
 #include "HitTraceComponent.generated.h"
 
-struct FGameplayTag;
-
 UENUM( BlueprintType )
 enum class ETraceShapeType : uint8
 {
