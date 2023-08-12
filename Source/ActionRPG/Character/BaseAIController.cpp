@@ -5,25 +5,28 @@
 
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Ability/ARPGAbilitySystemComponent.h"
+#include "Character/BaseCharacter.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BaseAIController)
 
 const FName ABaseAIController::HomePosKey( TEXT( "HomePos" ) );
 const FName ABaseAIController::PatrolPosKey( TEXT( "PatrolPos" ) );
 const FName ABaseAIController::TargetKey( TEXT( "Target" ) );
+const FName ABaseAIController::ASCKey(TEXT("ASC"));
 
 ABaseAIController::ABaseAIController( const FObjectInitializer& ObjectInitializer )
 	:Super( ObjectInitializer )
 {
 	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTObject(
-	TEXT("/Script/AIModule.BehaviorTree'/Game/Blueprints/AI/BT_Monster.BT_Monster'"));
-	if(BTObject.Succeeded())
+		TEXT( "/Game/Blueprints/AI/BT_Monster" ) );
+	if( BTObject.Succeeded() )
 	{
 		BehaviorTree = BTObject.Object;
 	}
 
 	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBObject(
-		TEXT( "/Script/AIModule.BlackboardData'/Game/Blueprints/AI/BB_Monster.BB_Monster'" ) );
+		TEXT( "/Game/Blueprints/AI/BB_Monster" ) );
 	if( BBObject.Succeeded() )
 	{
 		BlackboardData = BBObject.Object;
@@ -34,13 +37,19 @@ void ABaseAIController::OnPossess( APawn* InPawn )
 {
 	Super::OnPossess( InPawn );
 
-	RLOG(Warning, TEXT("BaseAIController OnPossessed"));
+	RLOG( Warning, TEXT( "BaseAIController OnPossessed" ) );
 
 	UBlackboardComponent* BlackboardComponent = Blackboard;
 
 	if( UseBlackboard( BlackboardData, BlackboardComponent ) )
 	{
 		Blackboard->SetValueAsVector( HomePosKey, InPawn->GetActorLocation() );
+
+		const auto AICharacter = CastChecked<ABaseCharacter>( InPawn );
+		if( UARPGAbilitySystemComponent* ARPGASC = AICharacter->GetARPGAbilitySystemComponent() )
+		{
+			Blackboard->SetValueAsObject( ASCKey, ARPGASC );
+		}
 
 		if( RunBehaviorTree( BehaviorTree ) == false )
 		{
@@ -57,3 +66,10 @@ void ABaseAIController::OnUnPossess()
 		BehaviorTreeComponent->StopTree( EBTStopMode::Safe );
 	}
 }
+
+UARPGAbilitySystemComponent* ABaseAIController::GetARPGAbilitySystemComponent() const
+{
+	const ABaseCharacter* AICharacter = CastChecked<ABaseCharacter>( GetCharacter() );
+	return ( AICharacter ? AICharacter->GetARPGAbilitySystemComponent() : nullptr );
+}
+

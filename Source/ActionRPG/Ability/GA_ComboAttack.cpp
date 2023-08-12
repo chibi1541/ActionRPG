@@ -3,6 +3,10 @@
 
 #include "Ability/GA_ComboAttack.h"
 
+#include "Character/Components/HitTraceComponent.h"
+#include "Character/Components/AttackComponent.h"
+#include "Character/HeroCharacter.h"
+
 #include "AbilityTask/AT_PlayMontagesWithGameplayEvent.h"
 
 
@@ -11,11 +15,29 @@
 UGA_ComboAttack::UGA_ComboAttack( const FObjectInitializer& ObjectInitializer )
 	:Super( ObjectInitializer )
 {
+	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	Rate = 1.f;
 	OnlyTriggerOnce = false;
 	StopWhenAbilityEnds = true;
 	AnimRootMotionTranslationScale = 1.f;
 }
+
+void UGA_ComboAttack::OnAvatarSet( const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec )
+{
+	UAttackComponent* AttackComp = Cast<UAttackComponent>( ActorInfo->AvatarActor->GetComponentByClass( UAttackComponent::StaticClass() ) );
+	if( AttackComp != nullptr )
+	{
+		if( auto AttackAbility = Cast<UGA_ComboAttack>( Spec.GetPrimaryInstance() ) )
+		{
+			AttackAbility->AttackMontages = AttackComp->GetAttackMontages();
+			MaxComboIndex = AttackAbility->AttackMontages.Num();
+
+			RLOG( Warning, TEXT( "%s, %d" ), *AttackAbility->GetName(), AttackMontages.Num() );
+		}
+	}
+}
+
+
 
 void UGA_ComboAttack::ActivateAbility( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData )
 {
@@ -31,13 +53,13 @@ void UGA_ComboAttack::ActivateAbility( const FGameplayAbilitySpecHandle Handle, 
 		AttackMontages,
 		EventTag,
 		OnlyTriggerOnce,
-		Rate, 
+		Rate,
 		StopWhenAbilityEnds,
 		AnimRootMotionTranslationScale );
 
 
 	MontagesPlayTask->OnPlayMontage.AddDynamic( this, &UGA_ComboAttack::SetCurComboIndex );
-	MontagesPlayTask->OnNextMontagePlayCheck.BindUFunction( this, FName("NextAttackAvailable"));
+	MontagesPlayTask->OnNextMontagePlayCheck.BindUFunction( this, FName( "NextAttackAvailable" ) );
 	MontagesPlayTask->OnBlendOut.AddDynamic( this, &UGA_ComboAttack::OnCompleted );
 	MontagesPlayTask->OnCompleted.AddDynamic( this, &UGA_ComboAttack::OnCompleted );
 	MontagesPlayTask->OnCancelled.AddDynamic( this, &UGA_ComboAttack::OnCancelled );
@@ -47,10 +69,21 @@ void UGA_ComboAttack::ActivateAbility( const FGameplayAbilitySpecHandle Handle, 
 	bNextAttack = false;
 
 	MontagesPlayTask->ReadyForActivation();
+
+	const auto Character = Cast<ACharacter>( GetAvatarActorFromActorInfo() );
+
+	HitTraceComp = Cast<UHitTraceComponent>( Character->GetComponentByClass( UHitTraceComponent::StaticClass() ) );
+	if( HitTraceComp == nullptr )
+	{
+		RLOG( Error, TEXT( "HitTraceComp is null" ) );
+		return;
+	}
 }
 
 void UGA_ComboAttack::InputPressed( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo )
 {
+	RLOG( Warning, TEXT( "Call Pressed Input Func" ) );
+
 	if( CurComboIndex + 1 < MaxComboIndex )
 	{
 		bNextAttack = true;
@@ -63,11 +96,21 @@ void UGA_ComboAttack::InputPressed( const FGameplayAbilitySpecHandle Handle, con
 
 void UGA_ComboAttack::OnCancelled()
 {
+	if( HitTraceComp != nullptr )
+	{
+		HitTraceComp->ToggleTraceCheck( false );
+	}
+
 	EndAbility( CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true );
 }
 
 void UGA_ComboAttack::OnCompleted()
 {
+	if( HitTraceComp != nullptr )
+	{
+		HitTraceComp->ToggleTraceCheck( false );
+	}
+
 	EndAbility( CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false );
 }
 

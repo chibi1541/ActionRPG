@@ -11,7 +11,7 @@
 class UAnimMontage;
 
 DECLARE_DYNAMIC_DELEGATE_RetVal( bool, FPlayNextMontageCheckDelegate );
-DECLARE_DYNAMIC_MULTICAST_DELEGATE( FMontageWaitSimpleDelegate );
+DECLARE_DYNAMIC_MULTICAST_DELEGATE( FMontageEndWaitDelegate );
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam( FMontagePlayDelegate, int, CurrentIndex );
 
 /**
@@ -29,18 +29,18 @@ public:
 private:
 	UFUNCTION( BlueprintCallable, Category = "Ability|Tasks", meta = ( DisplayName = "PlayMontagesSequentially",
 		HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE" ) )
-	static UAT_PlayMontagesSequentially* K2_CreatePlayMontagesSequentiallyProxy( UGameplayAbility* OwningAbility,
+		static UAT_PlayMontagesSequentially* K2_CreatePlayMontagesSequentiallyProxy( UGameplayAbility* OwningAbility,
 		FName TaskInstanceName, TArray<UAnimMontage*> MontageList, float Rate = 1.f, bool bStopWhenAbilityEnds = true, float AnimRootMotionTranslationScale = 1.f );
 
 protected:
 	UFUNCTION()
-	virtual void OnMontageBlendingOut( UAnimMontage* Montage, bool bInterrupted );
+		virtual void OnMontageBlendingOut( UAnimMontage* Montage, bool bInterrupted );
 
 	UFUNCTION()
-	virtual void OnMontageInterrupted();
+		virtual void OnMontageInterrupted();
 
 	UFUNCTION()
-	virtual void OnMontageEnded( UAnimMontage* Montage, bool bInterrupted );
+		virtual void OnMontageEnded( UAnimMontage* Montage, bool bInterrupted );
 
 	virtual void Activate() override;
 
@@ -65,33 +65,33 @@ public:
 	FMontagePlayDelegate OnPlayMontage;
 
 	UPROPERTY( BlueprintAssignable )
-	FMontageWaitSimpleDelegate	OnCompleted;
+		FMontageEndWaitDelegate	OnCompleted;
 
 	UPROPERTY( BlueprintAssignable )
-	FMontageWaitSimpleDelegate	OnBlendOut;
+		FMontageEndWaitDelegate	OnBlendOut;
 
 	UPROPERTY( BlueprintAssignable )
-	FMontageWaitSimpleDelegate	OnInterrupted;
+		FMontageEndWaitDelegate	OnInterrupted;
 
 	UPROPERTY( BlueprintAssignable )
-	FMontageWaitSimpleDelegate	OnCancelled;
+		FMontageEndWaitDelegate	OnCancelled;
 
 protected:
 	UPROPERTY()
-	TArray<TObjectPtr<UAnimMontage>> PlayMontageList;
+		TArray<TObjectPtr<UAnimMontage>> PlayMontageList;
 
 	FOnMontageBlendingOutStarted BlendingOutDelegate;
 	FOnMontageEnded MontageEndedDelegate;
 	FDelegateHandle InterruptedHandle;
 
 	UPROPERTY()
-	float Rate;
+		float Rate;
 
 	UPROPERTY()
-	float AnimRootMotionTranslationScale;
+		float AnimRootMotionTranslationScale;
 
 	UPROPERTY()
-	bool bStopWhenAbilityEnds;
+		bool bStopWhenAbilityEnds;
 
 	int MontagePlayIndex;
 };

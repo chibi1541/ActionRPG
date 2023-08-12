@@ -13,15 +13,19 @@
 ABaseCharacter::ABaseCharacter( const FObjectInitializer& ObjectInitializer /*= FObjectInitializer::Get() */ )
 	:Super( ObjectInitializer.SetDefaultSubobjectClass<UARPGMovementComponent>( ACharacter::CharacterMovementComponentName ) )
 {
-	AbilitySystemComponent = CreateDefaultSubobject<UARPGAbilitySystemComponent>( TEXT( "ASC" ) );
+	AbilitySystemComponent = CreateDefaultSubobject<UARPGAbilitySystemComponent>( TEXT( "ARPGASC" ) );
 
-	// �̱��÷��� �� ����
 	AbilitySystemComponent.Get()->ReplicationMode = EGameplayEffectReplicationMode::Full;
 }
 
 class UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
 {
 	return GetARPGAbilitySystemComponent();
+}
+
+void ABaseCharacter::GetOwnedGameplayTags( FGameplayTagContainer& TagContainer ) const
+{
+	AbilitySystemComponent->GetOwnedGameplayTags( TagContainer );
 }
 
 void ABaseCharacter::BeginPlay()

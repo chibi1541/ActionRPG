@@ -5,6 +5,9 @@
 #include "ActionRPG_Lib.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayCueInterface.h"
+#include "GameplayTagAssetInterface.h"
+
 #include "BaseCharacter.generated.h"
 
 class UARPGAbilitySystemComponent;
@@ -13,7 +16,7 @@ class UGameplayAbility;
 class UAbilitySet;
 
 UCLASS( config = Game )
-class ACTIONRPG_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface
+class ACTIONRPG_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayCueInterface, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
 
@@ -23,6 +26,7 @@ public:
 	UARPGAbilitySystemComponent* GetARPGAbilitySystemComponent() const { return AbilitySystemComponent; }
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	virtual void GetOwnedGameplayTags( FGameplayTagContainer& TagContainer ) const override;
 
 	virtual void BeginPlay();
 

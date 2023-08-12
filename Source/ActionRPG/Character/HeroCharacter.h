@@ -47,20 +47,20 @@ protected:
 	void Input_AbilityInputTagReleased( FGameplayTag InputTag );
 
 protected:
-	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = ( AllowPrivateAccess = "true" ) )
+	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = Camera )
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
-	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = ( AllowPrivateAccess = "true" ) )
+	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = Camera )
 	TObjectPtr<UCameraComponent> FollowCamera;
 
 	//Input
-	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Input, meta = ( AllowPrivateAccess = "true" ) )
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Input )
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
-	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Input, meta = ( AllowPrivateAccess = "true" ) )
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Input )
 	TObjectPtr<UHeroInputConfig> InputConfig;
 
-	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Ability, meta = ( AllowPrivateAccess = "true" ) )
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Ability )
 	TObjectPtr<UTagRelationship> TagRelationshipTable;
 
 public:
@@ -68,5 +68,4 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-
 };

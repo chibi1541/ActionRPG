@@ -150,11 +150,60 @@ void UARPGAbilitySystemComponent::ApplyAbilityBlockAndCancelTags( const FGamepla
 	Super::ApplyAbilityBlockAndCancelTags( AbilityTags, RequestingAbility, bEnableBlockTags, BlockTags, bExecuteCancelTags, CancelTags );
 }
 
+void UARPGAbilitySystemComponent::CancelAbilitiseWithTags( const FGameplayTagContainer& WithTags, const FGameplayTagContainer& WithoutTags )
+{
+	CancelAbilities( &WithTags, &WithoutTags );
+}
+
 void UARPGAbilitySystemComponent::GetAdditionalActivationTagRequirements( const FGameplayTagContainer& AbilityTags, OUT FGameplayTagContainer& OutActivationRequired, OUT FGameplayTagContainer& OutActivationBlocked ) const
 {
 	if( TagRelationshipTable != nullptr )
 	{
 		TagRelationshipTable->GetRequiredAndBlockedActivationTags( AbilityTags, &OutActivationRequired, &OutActivationBlocked );
 	}
+}
+
+bool UARPGAbilitySystemComponent::TryActivateAbilityByInputTag( const FGameplayTag& InputTag )
+{
+	bool Return = false;
+
+	if( InputTag.IsValid() )
+	{
+		for( FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items )
+		{
+			if( AbilitySpec.Ability != nullptr &&
+				( AbilitySpec.DynamicAbilityTags.HasTagExact( InputTag ) ) )
+			{
+				if( AbilitySpec.Ability->GetInstancingPolicy() == EGameplayAbilityInstancingPolicy::InstancedPerActor &&
+					AbilitySpec.IsActive() )
+				{
+					Return = true;
+				}
+				else
+				{
+					Return = TryActivateAbility( AbilitySpec.Handle );
+				}
+			}
+		}
+	}
+
+	return Return;
+}
+
+FGameplayAbilitySpec* UARPGAbilitySystemComponent::GetAbilitySpecByInputTag( const FGameplayTag& InputTag )
+{
+	if( InputTag.IsValid() )
+	{
+		for( FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items )
+		{
+			if( AbilitySpec.Ability != nullptr &&
+				( AbilitySpec.DynamicAbilityTags.HasTagExact( InputTag ) ) )
+			{
+				return &AbilitySpec;
+			}
+		}
+	}
+
+	return nullptr;
 }
 
