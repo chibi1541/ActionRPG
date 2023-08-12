@@ -23,6 +23,11 @@ class UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
 	return GetARPGAbilitySystemComponent();
 }
 
+void ABaseCharacter::GetOwnedGameplayTags( FGameplayTagContainer& TagContainer ) const
+{
+	AbilitySystemComponent->GetOwnedGameplayTags( TagContainer );
+}
+
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();

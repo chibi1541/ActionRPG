@@ -25,13 +25,12 @@ public:
 	virtual void HitReaction( const FVector AttackVec );
 
 	UFUNCTION()
-	virtual void OnMontageBlendingOut( UAnimMontage* Montage, bool bInterrupted );
-
-	UFUNCTION()
 	virtual void OnMontageEnded( UAnimMontage* Montage, bool bInterrupted );
 
 protected:
 	virtual void BeginPlay() override;
+
+	virtual bool IsBeatenNow();
 
 protected:
 	FOnMontageBlendingOutStarted BlendingOutDelegate;
@@ -61,5 +60,5 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UAnimInstance> AnimInstance;
-
 };
+

@@ -38,6 +38,31 @@ void UGetHitComponent::BeginPlay()
 
 }
 
+bool UGetHitComponent::IsBeatenNow()
+{
+	if( AnimInstance )
+	{
+		if( HitMontage_Front && AnimInstance->Montage_IsPlaying( HitMontage_Front ) )
+		{
+			return true;
+		}
+		else if( HitMontage_Rear && AnimInstance->Montage_IsPlaying( HitMontage_Rear ) )
+		{
+			return true;
+		}
+		else if( HitMontage_Right && AnimInstance->Montage_IsPlaying( HitMontage_Right ) )
+		{
+			return true;
+		}
+		else if( HitMontage_Left && AnimInstance->Montage_IsPlaying( HitMontage_Left ) )
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 UAnimMontage* UGetHitComponent::GetMontagetoPlay( const FVector AttackVec ) const
 {
 	UAnimMontage* Return = HitMontage_Front;
@@ -88,37 +113,24 @@ void UGetHitComponent::HitReaction( const FVector AttackVec )
 		return;
 	}
 
+	bool SameGetHitMontage = AnimInstance->Montage_IsPlaying( PlayMontage );
+
 	AnimInstance->Montage_Play( PlayMontage );
 
-	BlendingOutDelegate.BindUObject( this, &UGetHitComponent::OnMontageBlendingOut );
-	AnimInstance->Montage_SetBlendingOutDelegate( BlendingOutDelegate, PlayMontage );
-
-	MontageEndedDelegate.BindUObject( this, &UGetHitComponent::OnMontageEnded );
-	AnimInstance->Montage_SetEndDelegate( BlendingOutDelegate, PlayMontage );
+	if( SameGetHitMontage == false )
+	{
+		MontageEndedDelegate.BindUObject( this, &UGetHitComponent::OnMontageEnded );
+		AnimInstance->Montage_SetEndDelegate( MontageEndedDelegate, PlayMontage );
+	}
 
 	ASC->AddLooseGameplayTags( GrantingTags );
 	ASC->CancelAbilities( &CancelAbilityTaskTag );
 }
 
-void UGetHitComponent::OnMontageBlendingOut( UAnimMontage* Montage, bool bInterrupted )
-{
-	ASC->RemoveLooseGameplayTags( GrantingTags );
-
-	FAnimMontageInstance* MontageInstance = AnimInstance->GetActiveInstanceForMontage( Montage );
-	if( MontageInstance )
-	{
-		MontageInstance->OnMontageBlendingOutStarted.Unbind();
-		MontageInstance->OnMontageEnded.Unbind();
-	}
-}
-
 void UGetHitComponent::OnMontageEnded( UAnimMontage* Montage, bool bInterrupted )
 {
-	FAnimMontageInstance* MontageInstance = AnimInstance->GetActiveInstanceForMontage( Montage );
-	if( MontageInstance )
-	{
-		MontageInstance->OnMontageBlendingOutStarted.Unbind();
-		MontageInstance->OnMontageEnded.Unbind();
-	}
+	ASC->RemoveLooseGameplayTags( GrantingTags );
 }
+
+
 
