@@ -12,6 +12,7 @@
 #include "InputActionValue.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Character/Attribute/ARPGVITAttributeSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(HeroCharacter)
 
@@ -50,6 +51,8 @@ AHeroCharacter::AHeroCharacter( const FObjectInitializer& ObjectInitializer /*= 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>( TEXT( "FollowCamera" ) );
 	FollowCamera->SetupAttachment( CameraBoom, USpringArmComponent::SocketName ); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+	VITAttributeSet = CreateDefaultSubobject<UARPGVITAttributeSet>( TEXT( "ARPGVITAttributeSet" ) );
 }
 
 void AHeroCharacter::SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent )
@@ -81,6 +84,11 @@ void AHeroCharacter::SetupPlayerInputComponent( class UInputComponent* PlayerInp
 void AHeroCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if( AbilitySystemComponent )
+	{
+		InitializerAttributes();
+	}
 }
 
 void AHeroCharacter::InitAbilitySystem()
@@ -144,5 +152,25 @@ void AHeroCharacter::Input_AbilityInputTagReleased( FGameplayTag InputTag )
 	if( UARPGAbilitySystemComponent* ArpgASC = GetARPGAbilitySystemComponent() )
 	{
 		ArpgASC->AbilityInputTagReleased( InputTag );
+	}
+}
+
+void AHeroCharacter::InitializerAttributes()
+{
+	Super::InitializerAttributes();
+
+	if( !VITAttributeInitializer )
+	{
+		RLOG( Error, TEXT( "VITAttributeInitializer is Missing : %s" ), *GetName() );
+		return;
+	}
+
+	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+	EffectContext.AddSourceObject( this );
+
+	FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec( VITAttributeInitializer, GetCharacterLevel(), EffectContext );
+	if( NewHandle.IsValid() )
+	{
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *NewHandle.Data.Get(), AbilitySystemComponent.Get() );
 	}
 }

@@ -15,6 +15,7 @@ class UInputMappingContext;
 class UHeroInputConfig;
 class UARPGAbilitySystemComponent;
 class UTagRelationship;
+class UARPGVITAttributeSet;
 struct FInputActionValue;
 struct FGameplayTag;
 
@@ -46,6 +47,8 @@ protected:
 	void Input_AbilityInputTagPressed( FGameplayTag InputTag );
 	void Input_AbilityInputTagReleased( FGameplayTag InputTag );
 
+	virtual void InitializerAttributes() override;
+
 protected:
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = Camera )
 	TObjectPtr<USpringArmComponent> CameraBoom;
@@ -62,6 +65,11 @@ protected:
 
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Ability )
 	TObjectPtr<UTagRelationship> TagRelationshipTable;
+
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Vitality" )
+	TSubclassOf<UGameplayEffect> VITAttributeInitializer;
+
+	TWeakObjectPtr<UARPGVITAttributeSet> VITAttributeSet;
 
 public:
 	/** Returns CameraBoom subobject **/

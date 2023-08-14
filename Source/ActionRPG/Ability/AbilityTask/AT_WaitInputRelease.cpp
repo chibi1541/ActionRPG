@@ -4,7 +4,7 @@
 #include "Ability/AbilityTask/AT_WaitInputRelease.h"
 #include "Ability/ARPGGameplayAbility.h"
 #include "Engine/World.h"
-
+#include "AbilitySystemLog.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(AT_WaitInputRelease)
 
@@ -16,7 +16,7 @@ UAT_WaitInputRelease::UAT_WaitInputRelease( const FObjectInitializer& ObjectInit
 
 UAT_WaitInputRelease* UAT_WaitInputRelease::CreateWaitInputRelease( UGameplayAbility* OwningAbility )
 {
-	UAT_WaitInputRelease* NewTask = NewAbilityTask<UAT_WaitInputRelease>(OwningAbility);
+	UAT_WaitInputRelease* NewTask = NewAbilityTask<UAT_WaitInputRelease>( OwningAbility );
 	return NewTask;
 }
 
@@ -24,8 +24,8 @@ void UAT_WaitInputRelease::OnReleaseCallBack()
 {
 	float ElapsedTime = GetWorld()->GetTimeSeconds() - StartTime;
 
-	UARPGGameplayAbility* ARPGAbility = Cast<UARPGGameplayAbility>(Ability.Get());
-	if(ARPGAbility == nullptr)
+	UARPGGameplayAbility* ARPGAbility = Cast<UARPGGameplayAbility>( Ability.Get() );
+	if( ARPGAbility == nullptr )
 	{
 		return;
 	}
@@ -48,5 +48,5 @@ void UAT_WaitInputRelease::Activate()
 		return;
 	}
 
-	DelegateHandle = ARPGAbility->OnReleased.AddUObject(this, &UAT_WaitInputRelease::OnReleaseCallBack );
+	DelegateHandle = ARPGAbility->OnReleased.AddUObject( this, &UAT_WaitInputRelease::OnReleaseCallBack );
 }

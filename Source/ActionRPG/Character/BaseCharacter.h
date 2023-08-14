@@ -14,6 +14,8 @@ class UARPGAbilitySystemComponent;
 class UAbilitySystemComponent;
 class UGameplayAbility;
 class UAbilitySet;
+class UARPGBaseAttributeSet;
+class UGameplayEffect;
 
 UCLASS( config = Game )
 class ACTIONRPG_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayCueInterface, public IGameplayTagAssetInterface
@@ -30,15 +32,27 @@ public:
 
 	virtual void BeginPlay();
 
-protected:
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseCharacter|Attributes" )
+	int32 GetCharacterLevel() const;
 
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseCharacter|Attributes" )
+	int32 GetVitality() const;
+
+protected:
 	virtual void InitAbilitySystem();
 
+	virtual void InitializerAttributes();
+
 protected:
-	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "Ability", meta = ( AllowPrivateAccess = "true" ) )
+	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "Ability" )
 	TObjectPtr<UARPGAbilitySystemComponent> AbilitySystemComponent;
 
-	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Ability", meta = ( AllowPrivateAccess = "true" ) )
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Ability" )
 	TArray<TObjectPtr<UAbilitySet>> AbilitySets;
+
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Attribute" )
+	TSubclassOf<UGameplayEffect> AttributeInitializer;
+
+	TWeakObjectPtr<UARPGBaseAttributeSet> BaseAttributeSet;
 
 };

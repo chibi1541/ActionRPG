@@ -7,6 +7,7 @@
 #include "Ability/AbilitySet.h"
 #include "Ability/ARPGAbilitySystemComponent.h"
 #include "Character/ARPGMovementComponent.h"
+#include "Character/Attribute/ARPGBaseAttributeSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BaseCharacter)
 
@@ -16,6 +17,8 @@ ABaseCharacter::ABaseCharacter( const FObjectInitializer& ObjectInitializer /*= 
 	AbilitySystemComponent = CreateDefaultSubobject<UARPGAbilitySystemComponent>( TEXT( "ARPGASC" ) );
 
 	AbilitySystemComponent.Get()->ReplicationMode = EGameplayEffectReplicationMode::Full;
+
+	BaseAttributeSet = CreateDefaultSubobject<UARPGBaseAttributeSet>( TEXT( "ARPGBaseAttributeSet" ) );
 }
 
 class UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
@@ -32,10 +35,12 @@ void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if( AbilitySystemComponent->IsValidLowLevel() == true )
+	if( AbilitySystemComponent )
 	{
 		AbilitySystemComponent->InitAbilityActorInfo( this, this );
 		InitAbilitySystem();
+
+		InitializerAttributes();
 	}
 }
 
@@ -48,4 +53,42 @@ void ABaseCharacter::InitAbilitySystem()
 			AbilitySet->GiveToAbilitySystem( AbilitySystemComponent );
 		}
 	}
+}
+
+void ABaseCharacter::InitializerAttributes()
+{
+	if( !AttributeInitializer )
+	{
+		RLOG(Error, TEXT( "AttributeInitializer is Missing : %s" ), *GetName() );
+		return;
+	}
+
+	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+	EffectContext.AddSourceObject( this );
+
+	FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec( AttributeInitializer, GetCharacterLevel(), EffectContext );
+	if( NewHandle.IsValid() )
+	{
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *NewHandle.Data.Get(), AbilitySystemComponent.Get() );
+	}
+}
+
+int32 ABaseCharacter::GetCharacterLevel() const
+{
+	if( BaseAttributeSet.IsValid() )
+	{
+		return static_cast< int32 >( BaseAttributeSet->GetCharacterLevel() );
+	}
+
+	return 0;
+}
+
+int32 ABaseCharacter::GetVitality() const
+{
+	if( BaseAttributeSet.IsValid() )
+	{
+		return static_cast< int32 >( BaseAttributeSet->GetVitality() );
+	}
+
+	return 0;
 }
