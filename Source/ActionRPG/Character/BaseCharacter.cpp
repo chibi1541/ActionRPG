@@ -75,7 +75,7 @@ void ABaseCharacter::InitializerAttributes()
 
 int32 ABaseCharacter::GetCharacterLevel() const
 {
-	if( BaseAttributeSet.IsValid() )
+	if( BaseAttributeSet )
 	{
 		return static_cast< int32 >( BaseAttributeSet->GetCharacterLevel() );
 	}
@@ -83,9 +83,39 @@ int32 ABaseCharacter::GetCharacterLevel() const
 	return 0;
 }
 
+int32 ABaseCharacter::GetStrength() const
+{
+	if( BaseAttributeSet )
+	{
+		return static_cast< int32 >( BaseAttributeSet->GetStrength() );
+	}
+
+	return 0;
+}
+
+int32 ABaseCharacter::GetAgility() const
+{
+	if( BaseAttributeSet )
+	{
+		return static_cast< int32 >( BaseAttributeSet->GetAgility() );
+	}
+
+	return 0;
+}
+
+int32 ABaseCharacter::GetIntelligence() const
+{
+	if( BaseAttributeSet )
+	{
+		return static_cast< int32 >( BaseAttributeSet->GetIntelligence() );
+	}
+
+	return 0;
+}
+
 int32 ABaseCharacter::GetVitality() const
 {
-	if( BaseAttributeSet.IsValid() )
+	if( BaseAttributeSet )
 	{
 		return static_cast< int32 >( BaseAttributeSet->GetVitality() );
 	}

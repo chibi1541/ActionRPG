@@ -29,6 +29,9 @@ public:
 	virtual void PreAttributeChange( const FGameplayAttribute& Attribute, float& NewValue ) override;
 	virtual void PostGameplayEffectExecute( const FGameplayEffectModCallbackData& Data ) override;
 
+protected:
+	void AdjustAttributeForMaxChange( FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty );
+
 public:
 
 	UPROPERTY( BlueprintReadOnly, Category = "HP" )
@@ -54,6 +57,10 @@ public:
 	UPROPERTY( BlueprintReadOnly, Category = "Defence" )
 	FGameplayAttributeData Defence;
 	ATTRIBUTE_ACCESSORS( UARPGVITAttributeSet, Defence )
+
+	UPROPERTY( BlueprintReadOnly, Category = "Defence" )
+	FGameplayAttributeData MaxShieldGauge;
+	ATTRIBUTE_ACCESSORS( UARPGVITAttributeSet, MaxShieldGauge )
 
 	UPROPERTY( BlueprintReadOnly, Category = "Defence" )
 	FGameplayAttributeData ShieldGauge;

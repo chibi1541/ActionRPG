@@ -37,24 +37,12 @@ void UARPGVITAttributeSet::PostGameplayEffectExecute( const FGameplayEffectModCa
 		SourceActor = Source->AbilityActorInfo->AvatarActor.Get();
 		SourceCharacter = Cast<ABaseCharacter>( SourceActor );
 	}
-
-	if( Data.EvaluatedData.Attribute == GetHealthRateAttribute() )
-	{
-		SetMaxHealth( GetHealthRate() * SourceCharacter->GetVitality() );
-		SetHealth( GetMaxHealth() );
-	}
-	else if( Data.EvaluatedData.Attribute == GetStaminaRateAttribute() )
-	{
-		SetMaxStamina( GetStaminaRate() * SourceCharacter->GetVitality() );
-		SetStamina( GetMaxStamina() );
-	}
-	else if( Data.EvaluatedData.Attribute == GetDefenceRateAttribute() )
-	{
-		SetDefence( GetDefenceRate() * SourceCharacter->GetVitality() );
-	}
-	else if( Data.EvaluatedData.Attribute == GetShieldGaugeRateAttribute() )
-	{
-		SetShieldGauge( GetShieldGaugeRate() * SourceCharacter->GetVitality() );
-	}
 }
 
+void UARPGVITAttributeSet::AdjustAttributeForMaxChange( FGameplayAttributeData& AffectedAttribute,
+	const FGameplayAttributeData& MaxAttribute,
+	float NewMaxValue,
+	const FGameplayAttribute& AffectedAttributeProperty )
+{
+	
+}

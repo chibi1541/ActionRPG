@@ -7,6 +7,11 @@
 
 #include "BaseMonster.generated.h"
 
+class UARPGAbilitySystemComponent;
+class UARPGBaseAttributeSet;
+class UARProtoMonsterAttributeSet;
+class UGameplayEffect;
+
 /**
  *
  */
@@ -19,7 +24,17 @@ class ACTIONRPG_API ABaseMonster : public ABaseCharacter
 public:
 	ABaseMonster( const FObjectInitializer& ObjectInitializer );
 
+protected:	
+	virtual void InitializerAttributes() override;
+
 protected:
+
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HitReact|Montage" )
-		TObjectPtr<UAnimMontage> HitMontage;
+	TObjectPtr<UAnimMontage> HitMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attribute")
+	TSubclassOf<UGameplayEffect> MonsterAttributeInitializer;
+
+	UPROPERTY()
+	TObjectPtr<UARProtoMonsterAttributeSet> MonsterAttributeSet;
 };

@@ -35,9 +35,8 @@ public:
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent ) override;
-
-	// To add mapping context
-	virtual void BeginPlay();
+	
+	virtual void BeginPlay() override;
 
 	virtual void InitAbilitySystem() override;
 
@@ -48,6 +47,14 @@ protected:
 	void Input_AbilityInputTagReleased( FGameplayTag InputTag );
 
 	virtual void InitializerAttributes() override;
+
+	virtual void SetHealth( float Health );
+	virtual void SetStamina( float Stamina );
+	virtual void SetShieldGauge( float ShieldGauge );
+
+	virtual float GetMaxHealth() const;
+	virtual float GetMaxStamina() const;
+	virtual float GetMaxShieldGauge() const;
 
 protected:
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = Camera )
@@ -69,7 +76,11 @@ protected:
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Vitality" )
 	TSubclassOf<UGameplayEffect> VITAttributeInitializer;
 
-	TWeakObjectPtr<UARPGVITAttributeSet> VITAttributeSet;
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Vitality" )
+	TSubclassOf<UGameplayEffect> VITRateAttributeInitializer;
+
+	UPROPERTY()
+	TObjectPtr<UARPGVITAttributeSet> VITAttributeSet;
 
 public:
 	/** Returns CameraBoom subobject **/

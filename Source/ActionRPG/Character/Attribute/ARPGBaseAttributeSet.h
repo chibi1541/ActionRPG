@@ -26,7 +26,7 @@ class ACTIONRPG_API UARPGBaseAttributeSet : public UAttributeSet
 public:
 	UARPGBaseAttributeSet( const FObjectInitializer& ObjectInitializer );
 
-
+	virtual void PreAttributeChange( const FGameplayAttribute& Attribute, float& NewValue ) override;
 
 public:
 

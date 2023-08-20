@@ -36,7 +36,17 @@ public:
 	int32 GetCharacterLevel() const;
 
 	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseCharacter|Attributes" )
+	int32 GetStrength() const;
+
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseCharacter|Attributes" )
+	int32 GetAgility() const;
+
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseCharacter|Attributes" )
+	int32 GetIntelligence() const;
+
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseCharacter|Attributes" )
 	int32 GetVitality() const;
+
 
 protected:
 	virtual void InitAbilitySystem();
@@ -53,6 +63,7 @@ protected:
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Attribute" )
 	TSubclassOf<UGameplayEffect> AttributeInitializer;
 
-	TWeakObjectPtr<UARPGBaseAttributeSet> BaseAttributeSet;
+	UPROPERTY()
+	TObjectPtr<UARPGBaseAttributeSet> BaseAttributeSet;
 
 };

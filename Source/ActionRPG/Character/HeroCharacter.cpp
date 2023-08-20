@@ -85,10 +85,9 @@ void AHeroCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if( AbilitySystemComponent )
-	{
-		InitializerAttributes();
-	}
+	SetHealth(GetMaxHealth());
+	SetStamina(GetMaxStamina());
+	SetShieldGauge(GetMaxShieldGauge());
 }
 
 void AHeroCharacter::InitAbilitySystem()
@@ -165,12 +164,81 @@ void AHeroCharacter::InitializerAttributes()
 		return;
 	}
 
-	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
-	EffectContext.AddSourceObject( this );
+	FGameplayEffectContextHandle VITEffectContext = AbilitySystemComponent->MakeEffectContext();
+	VITEffectContext.AddSourceObject( this );
 
-	FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec( VITAttributeInitializer, GetCharacterLevel(), EffectContext );
-	if( NewHandle.IsValid() )
+	FGameplayEffectSpecHandle NewHandle_0 = AbilitySystemComponent->MakeOutgoingSpec( VITAttributeInitializer, GetCharacterLevel(), VITEffectContext );
+	if( NewHandle_0.IsValid() )
 	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *NewHandle.Data.Get(), AbilitySystemComponent.Get() );
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *NewHandle_0.Data.Get(), AbilitySystemComponent.Get() );
 	}
+
+	if( !VITRateAttributeInitializer )
+	{
+		RLOG( Error, TEXT( "VITRateAttributeInitializer is Missing : %s" ), *GetName() );
+		return;
+	}
+
+	FGameplayEffectContextHandle VITRateEffectContext = AbilitySystemComponent->MakeEffectContext();
+	VITRateEffectContext.AddSourceObject( this );
+
+	FGameplayEffectSpecHandle NewHandle_1 = AbilitySystemComponent->MakeOutgoingSpec( VITRateAttributeInitializer, GetCharacterLevel(), VITRateEffectContext );
+	if( NewHandle_1.IsValid() )
+	{
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *NewHandle_1.Data.Get(), AbilitySystemComponent.Get() );
+	}
+}
+
+void AHeroCharacter::SetHealth( float Health )
+{
+	if( VITAttributeSet )
+	{
+		VITAttributeSet->SetHealth(Health);
+	}
+}
+
+void AHeroCharacter::SetStamina( float Stamina )
+{
+	if( VITAttributeSet )
+	{
+		VITAttributeSet->SetStamina( Stamina );
+	}
+}
+
+void AHeroCharacter::SetShieldGauge( float ShieldGauge )
+{
+	if( VITAttributeSet )
+	{
+		VITAttributeSet->SetShieldGauge( ShieldGauge );
+	}
+}
+
+float AHeroCharacter::GetMaxHealth() const
+{
+	if( VITAttributeSet )
+	{
+		return VITAttributeSet->GetMaxHealth();
+	}
+
+	return 0.f;
+}
+
+float AHeroCharacter::GetMaxStamina() const
+{
+	if( VITAttributeSet )
+	{
+		return VITAttributeSet->GetMaxStamina();
+	}
+
+	return 0.f;
+}
+
+float AHeroCharacter::GetMaxShieldGauge() const
+{
+	if( VITAttributeSet )
+	{
+		return VITAttributeSet->GetMaxShieldGauge();
+	}
+
+	return 0.f;
 }

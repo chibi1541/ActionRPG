@@ -12,3 +12,8 @@ UARPGBaseAttributeSet::UARPGBaseAttributeSet( const FObjectInitializer& ObjectIn
 {
 
 }
+
+void UARPGBaseAttributeSet::PreAttributeChange( const FGameplayAttribute& Attribute, float& NewValue )
+{
+	RLOG( Warning, TEXT( "Call PreAttributeChange Execute : %s, %f" ), *( Attribute.AttributeName ), NewValue );
+}
