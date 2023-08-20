@@ -7,6 +7,7 @@
 #include "Ability/ARPGAbilitySystemComponent.h"
 #include "Character/Attribute/ARPGBaseAttributeSet.h"
 #include "Character/Attribute/ARProtoMonsterAttributeSet.h"
+#include "Character/Attribute/ARPGVITAttributeSet.h"
 #include "GameplayEffect.h"
 #include "GameplayEffectExtension.h"
 
@@ -18,6 +19,7 @@ ABaseMonster::ABaseMonster( const FObjectInitializer& ObjectInitializer )
 	AIControllerClass = ABaseAIController::StaticClass();
 
 	MonsterAttributeSet = CreateDefaultSubobject<UARProtoMonsterAttributeSet>( "ARProtoMonsterAttributeSet" );
+	VITBaseAttributeSet = CreateDefaultSubobject<UARPGVITAttributeSet>( "ARPGVITAttributeSet" );
 }
 
 void ABaseMonster::InitializerAttributes()

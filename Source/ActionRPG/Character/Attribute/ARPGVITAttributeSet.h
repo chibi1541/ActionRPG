@@ -5,8 +5,10 @@
 #include "ActionRPG_Lib.h"
 #include "AttributeSet.h"
 #include "AbilitySystemComponent.h"
+#include "GameplayTagContainer.h"
 
 #include "ARPGVITAttributeSet.generated.h"
+
 
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
 	GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
@@ -81,4 +83,13 @@ public:
 	UPROPERTY( BlueprintReadOnly, Category = "Characteristic" )
 	FGameplayAttributeData ShieldGaugeRate;
 	ATTRIBUTE_ACCESSORS( UARPGVITAttributeSet, ShieldGaugeRate )
+
+	UPROPERTY( BlueprintReadOnly, Category = "Meta_Attribute" )
+	FGameplayAttributeData ReceivedDamage;
+	ATTRIBUTE_ACCESSORS( UARPGVITAttributeSet, ReceivedDamage )
+
+private:
+	FGameplayTag GuardCheckTag;
+	FGameplayTag GuardAbilityTag;
+
 };

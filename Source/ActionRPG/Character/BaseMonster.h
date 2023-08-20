@@ -10,6 +10,7 @@
 class UARPGAbilitySystemComponent;
 class UARPGBaseAttributeSet;
 class UARProtoMonsterAttributeSet;
+class UARPGVITAttributeSet;
 class UGameplayEffect;
 
 /**
@@ -37,4 +38,7 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UARProtoMonsterAttributeSet> MonsterAttributeSet;
+
+	UPROPERTY()
+	TObjectPtr<UARPGVITAttributeSet> VITBaseAttributeSet;
 };
