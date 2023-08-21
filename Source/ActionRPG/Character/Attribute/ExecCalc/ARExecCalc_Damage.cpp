@@ -6,6 +6,7 @@
 #include "Ability/ARPGAbilitySystemComponent.h"
 #include "Character/Attribute/ARPGVITAttributeSet.h"
 #include "Character/Attribute/ARProtoMonsterAttributeSet.h"
+#include "Ability/ActionRPGGlobalTags.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARExecCalc_Damage)
 
@@ -52,6 +53,26 @@ void UARExecCalc_Damage::Execute_Implementation( const FGameplayEffectCustomExec
 	EvaluationParameters.SourceTags = SourceTags;
 	EvaluationParameters.TargetTags = TargetTags;
 
+	const FActionRPGGlobalTags& GameplayTags = FActionRPGGlobalTags::Get();
+
+	if( TargetAbilitySystemComponent &&
+		TargetAbilitySystemComponent->HasMatchingGameplayTag( GameplayTags.AbilityStateTag_Guard ) )
+	{
+		if( SourceActor && TargetActor )
+		{
+			FVector AttackerLocation = SourceActor->GetActorForwardVector();
+			FVector TargetLocation = TargetActor->GetActorForwardVector();
+			float DotProduct = FVector::DotProduct( TargetLocation, AttackerLocation );
+
+			// Apply BackAttack, Cancel GuardAbility
+			if( DotProduct >= 0.5f )
+			{
+				FGameplayTagContainer TagContainer = FGameplayTagContainer( GameplayTags.AbilityActionTag_Guard );
+				TargetAbilitySystemComponent->CancelAbilities( &TagContainer );
+			}
+		}
+	}
+
 	float AttackDamage = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude( DamageStatics().AttackDamageDef, EvaluationParameters, AttackDamage );
 
@@ -61,7 +82,7 @@ void UARExecCalc_Damage::Execute_Implementation( const FGameplayEffectCustomExec
 
 	float MitigatedDamage = AttackDamage * ( 100 / ( 100 + Defence ) );
 
-	if( MitigatedDamage > 0.f)
+	if( MitigatedDamage > 0.f )
 	{
 		OutExecutionOutput.AddOutputModifier( FGameplayModifierEvaluatedData( UARPGVITAttributeSet::GetReceivedDamageAttribute(), EGameplayModOp::Additive, MitigatedDamage ) );
 	}

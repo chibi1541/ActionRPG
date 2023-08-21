@@ -8,6 +8,7 @@
 #include "GameplayEffect.h"
 #include "GameplayEffectExtension.h"
 #include "Ability/GA_Guard.h"
+#include "Ability/ActionRPGGlobalTags.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARPGVITAttributeSet)
 
@@ -15,8 +16,7 @@
 UARPGVITAttributeSet::UARPGVITAttributeSet( const FObjectInitializer& ObjectInitializer )
 	:Super( ObjectInitializer )
 {
-	GuardCheckTag = FGameplayTag::RequestGameplayTag( FName( "Ability.State.Guard" ) );
-	GuardAbilityTag = FGameplayTag::RequestGameplayTag( FName( "Ability.Action.Guard" ) );
+
 }
 
 void UARPGVITAttributeSet::PreAttributeChange( const FGameplayAttribute& Attribute, float& NewValue )
@@ -48,8 +48,10 @@ void UARPGVITAttributeSet::PostGameplayEffectExecute( const FGameplayEffectModCa
 
 		if( TempDamage > 0.f )
 		{
+			const FActionRPGGlobalTags& GameplayTags = FActionRPGGlobalTags::Get();
+			
 			// Check Guard GameplayTag
-			if( Data.Target.HasMatchingGameplayTag( GuardCheckTag ) )
+			if( Data.Target.HasMatchingGameplayTag( GameplayTags.AbilityStateTag_Guard ) )
 			{
 				// Minus Shield Gauge
 				const float NewShieldGauge = GetShieldGauge() - TempDamage;
@@ -57,7 +59,7 @@ void UARPGVITAttributeSet::PostGameplayEffectExecute( const FGameplayEffectModCa
 				if( NewShieldGauge <= 0.f )
 				{
 					// Remove Guard Ability
-					FGameplayTagContainer TagContainer = FGameplayTagContainer( GuardAbilityTag );
+					FGameplayTagContainer TagContainer = FGameplayTagContainer( GameplayTags.AbilityActionTag_Guard );
 					Data.Target.CancelAbilities( &TagContainer );
 
 					// Minus health Value

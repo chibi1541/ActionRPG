@@ -9,9 +9,17 @@
 
 struct ACTIONRPG_API FActionRPGGlobalTags : public FGameplayTagNativeAdder
 {
-	// Tags
+	// Input Tags
 	FGameplayTag InputTag_Move;
 	FGameplayTag InputTag_Look;
+
+	// Ability Tags (Ability.Action)
+	FGameplayTag AbilityActionTag_Guard;
+
+	// State Tags (Ability.State)
+	FGameplayTag AbilityStateTag_Guard;
+
+
 
 	FORCEINLINE static const FActionRPGGlobalTags& Get() { return ActionRPGTags; }
 
@@ -22,6 +30,8 @@ protected:
 
 		InputTag_Move = Manager.AddNativeGameplayTag(TEXT("InputTag.Move"));
 		InputTag_Look = Manager.AddNativeGameplayTag(TEXT("InputTag.Look"));
+		AbilityActionTag_Guard = Manager.AddNativeGameplayTag( TEXT( "Ability.Action.Guard" ) );
+		AbilityStateTag_Guard = Manager.AddNativeGameplayTag( TEXT( "Ability.State.Guard" ) );
 	}
 
 private:

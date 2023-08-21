@@ -88,8 +88,4 @@ public:
 	FGameplayAttributeData ReceivedDamage;
 	ATTRIBUTE_ACCESSORS( UARPGVITAttributeSet, ReceivedDamage )
 
-private:
-	FGameplayTag GuardCheckTag;
-	FGameplayTag GuardAbilityTag;
-
 };
