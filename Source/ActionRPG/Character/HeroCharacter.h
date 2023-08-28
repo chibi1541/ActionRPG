@@ -18,6 +18,7 @@ class UTagRelationship;
 class UARVitRefAttribSet;
 class UARAttackAttribSet;
 class UARAgiRefAttribSet;
+class UARIntRefAttribSet;
 struct FInputActionValue;
 struct FGameplayTag;
 
@@ -36,6 +37,9 @@ public:
 
 	UFUNCTION( BlueprintCallable, Category = "ActionRPG|HealthAttributes" )
 		virtual float GetMaxHealth() const;
+
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|HealthAttributes" )
+		virtual float GetMaxMana() const;
 
 	UFUNCTION( BlueprintCallable, Category = "ActionRPG|HealthAttributes" )
 		virtual float GetMaxStamina() const;
@@ -66,6 +70,7 @@ protected:
 	virtual void InitializerAttributes() override;
 
 	virtual void SetHealth( float Health );
+	virtual void SetMana( float Mana );
 	virtual void SetStamina( float Stamina );
 	virtual void SetShieldGauge( float ShieldGauge );
 
@@ -97,6 +102,9 @@ protected:
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Attribute|Agility" )
 		TSubclassOf<UGameplayEffect> AgilityRefAttribInitializer;
 
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Attribute|Intelligence" )
+		TSubclassOf<UGameplayEffect> IntelligenceRefAttribInitializer;
+
 	UPROPERTY()
 		TObjectPtr<UARVitRefAttribSet> VitRefAttribSet;
 
@@ -105,6 +113,9 @@ protected:
 
 	UPROPERTY()
 		TObjectPtr<UARAgiRefAttribSet> AgiRefAttribSet;
+
+	UPROPERTY()
+		TObjectPtr<UARIntRefAttribSet> IntRefAttribSet;
 
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "ClassType" )
 		EHeroClass HeroClass;

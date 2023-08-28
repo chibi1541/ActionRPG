@@ -15,6 +15,7 @@
 #include "Character/Attribute/ARVitRefAttribSet.h"
 #include "Character/Attribute/ARAttackAttribSet.h"
 #include "Character/Attribute/ARAgiRefAttribSet.h"
+#include "Character/Attribute/ARIntRefAttribSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(HeroCharacter)
 
@@ -55,8 +56,12 @@ AHeroCharacter::AHeroCharacter( const FObjectInitializer& ObjectInitializer /*= 
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	VitRefAttribSet = CreateDefaultSubobject<UARVitRefAttribSet>( TEXT( "ARVitRefAttribSet" ) );
+
 	AttackAttribSet = CreateDefaultSubobject<UARAttackAttribSet>( TEXT( "ARAttackAttribSet" ) );
+
 	AgiRefAttribSet = CreateDefaultSubobject<UARAgiRefAttribSet>( TEXT( "ARAgiRefAttribSet" ) );
+
+	IntRefAttribSet = CreateDefaultSubobject<UARIntRefAttribSet>( TEXT( "ARIntRefAttribSet" ) );
 }
 
 void AHeroCharacter::SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent )
@@ -92,6 +97,7 @@ void AHeroCharacter::BeginPlay()
 	SetHealth( GetMaxHealth() );
 	SetStamina( GetMaxStamina() );
 	SetShieldGauge( GetMaxShieldGauge() );
+	SetMana( GetMaxMana() );
 
 	GetCharacterMovement()->MaxWalkSpeed = GetMoveSpeed();
 }
@@ -208,6 +214,21 @@ void AHeroCharacter::InitializerAttributes()
 	{
 		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *AGIHandle.Data.Get(), AbilitySystemComponent.Get() );
 	}
+
+	if( !IntelligenceRefAttribInitializer )
+	{
+		RLOG( Error, TEXT( "IntelligenceRefAttribInitializer is Missing : %s" ), *GetName() );
+		return;
+	}
+
+	FGameplayEffectContextHandle INTEffectContext = AbilitySystemComponent->MakeEffectContext();
+	INTEffectContext.AddSourceObject( this );
+
+	FGameplayEffectSpecHandle INTHandle = AbilitySystemComponent->MakeOutgoingSpec( IntelligenceRefAttribInitializer, GetCharacterLevel(), INTEffectContext );
+	if( INTHandle.IsValid() )
+	{
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *INTHandle.Data.Get(), AbilitySystemComponent.Get() );
+	}
 }
 
 void AHeroCharacter::SetHealth( float Health )
@@ -215,6 +236,14 @@ void AHeroCharacter::SetHealth( float Health )
 	if( VitRefAttribSet )
 	{
 		VitRefAttribSet->SetHealth( Health );
+	}
+}
+
+void AHeroCharacter::SetMana( float Mana )
+{
+	if( IntRefAttribSet )
+	{
+		IntRefAttribSet->SetMana( Mana );
 	}
 }
 
@@ -244,6 +273,16 @@ float AHeroCharacter::GetMaxHealth() const
 	return 0.f;
 }
 
+float AHeroCharacter::GetMaxMana() const
+{
+	if( IntRefAttribSet )
+	{
+		return IntRefAttribSet->GetMaxMana();
+	}
+
+	return 0.f;
+}
+
 float AHeroCharacter::GetMaxStamina() const
 {
 	if( VitRefAttribSet )
@@ -266,7 +305,7 @@ float AHeroCharacter::GetMaxShieldGauge() const
 
 float AHeroCharacter::GetMoveSpeed() const
 {
-	if(AgiRefAttribSet)
+	if( AgiRefAttribSet )
 	{
 		return AgiRefAttribSet->GetModifiedMoveSpeed();
 	}

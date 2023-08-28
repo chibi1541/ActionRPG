@@ -1,2 +1,2 @@
-﻿---,AttackDamageCoeff,HealthCoeff,StaminaCoeff,DefenceCoeff,ShieldGaugeCoeff,MoveSpeedCoeff,AttackSpeedCoeff
-Proto,"1.000000","5.000000","0.000000","1.500000","0.000000","1.000000","0.005000"
+﻿---,AttackDamageCoeff,HealthCoeff,ManaCoeff,StaminaCoeff,DefenceCoeff,ShieldGaugeCoeff,MoveSpeedCoeff,AttackSpeedCoeff
+Proto,"1.000000","5.000000","0.000000","0.000000","1.500000","0.000000","1.000000","0.005000"

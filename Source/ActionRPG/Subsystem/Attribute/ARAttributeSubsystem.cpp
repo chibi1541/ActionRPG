@@ -47,6 +47,7 @@ void UARAttributeSubsystem::Initialize( FSubsystemCollectionBase& Collection )
 				FCharacterCoefficientData Coefficient;
 				Coefficient.AttackDamageCoeff = Data->AttackDamageCoeff;
 				Coefficient.HealthCoeff = Data->HealthCoeff;
+				Coefficient.ManaCoeff = Data->ManaCoeff;
 				Coefficient.StaminaCoeff = Data->StaminaCoeff;
 				Coefficient.DefenceCoeff = Data->DefenceCoeff;
 				Coefficient.ShieldGaugeCoeff = Data->ShieldGaugeCoeff;
@@ -74,6 +75,7 @@ void UARAttributeSubsystem::Initialize( FSubsystemCollectionBase& Collection )
 				FCharacterCoefficientData Coefficient;
 				Coefficient.AttackDamageCoeff = Data->AttackDamageCoeff;
 				Coefficient.HealthCoeff = Data->HealthCoeff;
+				Coefficient.ManaCoeff = Data->ManaCoeff;
 				Coefficient.StaminaCoeff = Data->StaminaCoeff;
 				Coefficient.DefenceCoeff = Data->DefenceCoeff;
 				Coefficient.ShieldGaugeCoeff = Data->ShieldGaugeCoeff;

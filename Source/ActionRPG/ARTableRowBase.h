@@ -35,6 +35,9 @@ public:
 	float HealthCoeff;
 
 	UPROPERTY( EditAnywhere, Category = "Coefficient" )
+	float ManaCoeff;
+
+	UPROPERTY( EditAnywhere, Category = "Coefficient" )
 	float StaminaCoeff;
 
 	UPROPERTY( EditAnywhere, Category = "Coefficient" )
