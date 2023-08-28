@@ -6,7 +6,7 @@
 #include "AttributeSet.h"
 #include "AbilitySystemComponent.h"
 
-#include "ARProtoMonsterAttributeSet.generated.h"
+#include "ARAgiRefAttribSet.generated.h"
 
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
 	GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
@@ -14,21 +14,21 @@
 	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+
 /**
- *
+ * 
  */
 UCLASS()
-class ACTIONRPG_API UARProtoMonsterAttributeSet : public UAttributeSet
+class ACTIONRPG_API UARAgiRefAttribSet : public UAttributeSet
 {
-	GENERATED_BODY()
-
+	GENERATED_UCLASS_BODY()
+	
 public:
-	UARProtoMonsterAttributeSet(const FObjectInitializer& ObjectInitializer);
+	UPROPERTY( BlueprintReadOnly, Category = "MoveSpeed" )
+	FGameplayAttributeData ModifiedMoveSpeed;
+	ATTRIBUTE_ACCESSORS( UARAgiRefAttribSet, ModifiedMoveSpeed )
 
-public:
-
-	UPROPERTY( BlueprintReadOnly, Category = "AttackDamage" )
-	FGameplayAttributeData AttackDamage;
-	ATTRIBUTE_ACCESSORS( UARProtoMonsterAttributeSet, AttackDamage )
-
+	UPROPERTY( BlueprintReadOnly, Category = "AttackSpeed" )
+	FGameplayAttributeData AttackSpeed;
+	ATTRIBUTE_ACCESSORS( UARAgiRefAttribSet, AttackSpeed )
 };

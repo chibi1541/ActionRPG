@@ -7,7 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "GameplayTagContainer.h"
 
-#include "ARPGVITAttributeSet.generated.h"
+#include "ARVitRefAttribSet.generated.h"
 
 
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
@@ -20,12 +20,12 @@
  *
  */
 UCLASS()
-class ACTIONRPG_API UARPGVITAttributeSet : public UAttributeSet
+class ACTIONRPG_API UARVitRefAttribSet : public UAttributeSet
 {
 	GENERATED_BODY()
 
 public:
-	UARPGVITAttributeSet( const FObjectInitializer& ObjectInitializer );
+	UARVitRefAttribSet( const FObjectInitializer& ObjectInitializer );
 
 
 	virtual void PreAttributeChange( const FGameplayAttribute& Attribute, float& NewValue ) override;
@@ -38,54 +38,42 @@ public:
 
 	UPROPERTY( BlueprintReadOnly, Category = "HP" )
 	FGameplayAttributeData MaxHealth;
-	ATTRIBUTE_ACCESSORS( UARPGVITAttributeSet, MaxHealth )
+	ATTRIBUTE_ACCESSORS( UARVitRefAttribSet, MaxHealth )
 
 	UPROPERTY( BlueprintReadOnly, Category = "HP" )
 	FGameplayAttributeData Health;
-	ATTRIBUTE_ACCESSORS( UARPGVITAttributeSet, Health )
+	ATTRIBUTE_ACCESSORS( UARVitRefAttribSet, Health )
 
 	UPROPERTY( BlueprintReadOnly, Category = "HP" )
 	FGameplayAttributeData HealthRegene;
-	ATTRIBUTE_ACCESSORS( UARPGVITAttributeSet, HealthRegene )
+	ATTRIBUTE_ACCESSORS( UARVitRefAttribSet, HealthRegene )
 
 	UPROPERTY( BlueprintReadOnly, Category = "Stamina" )
 	FGameplayAttributeData MaxStamina;
-	ATTRIBUTE_ACCESSORS( UARPGVITAttributeSet, MaxStamina )
+	ATTRIBUTE_ACCESSORS( UARVitRefAttribSet, MaxStamina )
 
 	UPROPERTY( BlueprintReadOnly, Category = "Stamina" )
 	FGameplayAttributeData Stamina;
-	ATTRIBUTE_ACCESSORS( UARPGVITAttributeSet, Stamina )
+	ATTRIBUTE_ACCESSORS( UARVitRefAttribSet, Stamina )
+
+	UPROPERTY( BlueprintReadOnly, Category = "Stamina" )
+	FGameplayAttributeData StaminaRegene;
+	ATTRIBUTE_ACCESSORS( UARVitRefAttribSet, StaminaRegene )
 
 	UPROPERTY( BlueprintReadOnly, Category = "Defence" )
 	FGameplayAttributeData Defence;
-	ATTRIBUTE_ACCESSORS( UARPGVITAttributeSet, Defence )
+	ATTRIBUTE_ACCESSORS( UARVitRefAttribSet, Defence )
 
 	UPROPERTY( BlueprintReadOnly, Category = "Defence" )
 	FGameplayAttributeData MaxShieldGauge;
-	ATTRIBUTE_ACCESSORS( UARPGVITAttributeSet, MaxShieldGauge )
+	ATTRIBUTE_ACCESSORS( UARVitRefAttribSet, MaxShieldGauge )
 
 	UPROPERTY( BlueprintReadOnly, Category = "Defence" )
 	FGameplayAttributeData ShieldGauge;
-	ATTRIBUTE_ACCESSORS( UARPGVITAttributeSet, ShieldGauge )
-
-	UPROPERTY( BlueprintReadOnly, Category = "Characteristic" )
-	FGameplayAttributeData HealthRate;
-	ATTRIBUTE_ACCESSORS( UARPGVITAttributeSet, HealthRate )
-
-	UPROPERTY( BlueprintReadOnly, Category = "Characteristic" )
-	FGameplayAttributeData StaminaRate;
-	ATTRIBUTE_ACCESSORS( UARPGVITAttributeSet, StaminaRate )
-
-	UPROPERTY( BlueprintReadOnly, Category = "Characteristic" )
-	FGameplayAttributeData DefenceRate;
-	ATTRIBUTE_ACCESSORS( UARPGVITAttributeSet, DefenceRate )
-
-	UPROPERTY( BlueprintReadOnly, Category = "Characteristic" )
-	FGameplayAttributeData ShieldGaugeRate;
-	ATTRIBUTE_ACCESSORS( UARPGVITAttributeSet, ShieldGaugeRate )
+	ATTRIBUTE_ACCESSORS( UARVitRefAttribSet, ShieldGauge )
 
 	UPROPERTY( BlueprintReadOnly, Category = "Meta_Attribute" )
 	FGameplayAttributeData ReceivedDamage;
-	ATTRIBUTE_ACCESSORS( UARPGVITAttributeSet, ReceivedDamage )
+	ATTRIBUTE_ACCESSORS( UARVitRefAttribSet, ReceivedDamage )
 
 };

@@ -23,4 +23,12 @@ return __VA_ARGS__;}}
 	return TypeEnum->GetNameStringByIndex(static_cast<int32>(Value)); \
 }
 
+#define DEFINE_ENUM_DISPLAY_NAME_TO_STRING(EnumType, EnumPackage) FString EnumDisplayNameToString(const EnumType Value) \
+{ \
+	static const UEnum* TypeEnum = FindObject<UEnum>(nullptr, TEXT(EnumPackage) TEXT(".") TEXT(#EnumType)); \
+	return TypeEnum->GetDisplayNameTextByIndex(static_cast<int32>(Value)).ToString(); \
+}
+
 #define DECLARE_ENUM_TO_STRING(EnumType) FString EnumToString(const EnumType Value)
+
+#define DECLARE_ENUM_DISPLAY_NAME_TO_STRING(EnumType) FString EnumDisplayNameToString(const EnumType Value)

@@ -15,7 +15,9 @@ class UInputMappingContext;
 class UHeroInputConfig;
 class UARPGAbilitySystemComponent;
 class UTagRelationship;
-class UARPGVITAttributeSet;
+class UARVitRefAttribSet;
+class UARAttackAttribSet;
+class UARAgiRefAttribSet;
 struct FInputActionValue;
 struct FGameplayTag;
 
@@ -32,10 +34,25 @@ class ACTIONRPG_API AHeroCharacter : public ABaseCharacter
 public:
 	AHeroCharacter( const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get() );
 
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|HealthAttributes" )
+		virtual float GetMaxHealth() const;
+
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|HealthAttributes" )
+		virtual float GetMaxStamina() const;
+
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|HealthAttributes" )
+		virtual float GetMaxShieldGauge() const;
+
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|AgilityAttributes" )
+		virtual float GetMoveSpeed() const;
+
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|AgilityAttributes" )
+		virtual float GetAttackSpeed() const;
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent ) override;
-	
+
 	virtual void BeginPlay() override;
 
 	virtual void InitAbilitySystem() override;
@@ -52,39 +69,51 @@ protected:
 	virtual void SetStamina( float Stamina );
 	virtual void SetShieldGauge( float ShieldGauge );
 
-	virtual float GetMaxHealth() const;
-	virtual float GetMaxStamina() const;
-	virtual float GetMaxShieldGauge() const;
+
 
 protected:
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = Camera )
-	TObjectPtr<USpringArmComponent> CameraBoom;
+		TObjectPtr<USpringArmComponent> CameraBoom;
 
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = Camera )
-	TObjectPtr<UCameraComponent> FollowCamera;
+		TObjectPtr<UCameraComponent> FollowCamera;
 
 	//Input
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Input )
-	TObjectPtr<UInputMappingContext> DefaultMappingContext;
+		TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Input )
-	TObjectPtr<UHeroInputConfig> InputConfig;
+		TObjectPtr<UHeroInputConfig> InputConfig;
 
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Ability )
-	TObjectPtr<UTagRelationship> TagRelationshipTable;
+		TObjectPtr<UTagRelationship> TagRelationshipTable;
 
-	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Vitality" )
-	TSubclassOf<UGameplayEffect> VITAttributeInitializer;
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Attribute|Health" )
+		TSubclassOf<UGameplayEffect> HealthAttribInitializer;
 
-	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Vitality" )
-	TSubclassOf<UGameplayEffect> VITRateAttributeInitializer;
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Attribute|Attack" )
+		TSubclassOf<UGameplayEffect> AttackAttribInitializer;
+
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Attribute|Agility" )
+		TSubclassOf<UGameplayEffect> AgilityRefAttribInitializer;
 
 	UPROPERTY()
-	TObjectPtr<UARPGVITAttributeSet> VITAttributeSet;
+		TObjectPtr<UARVitRefAttribSet> VitRefAttribSet;
+
+	UPROPERTY()
+		TObjectPtr<UARAttackAttribSet> AttackAttribSet;
+
+	UPROPERTY()
+		TObjectPtr<UARAgiRefAttribSet> AgiRefAttribSet;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "ClassType" )
+		EHeroClass HeroClass;
 
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	FORCEINLINE EHeroClass GetHeroClass() const { return HeroClass; }
 };

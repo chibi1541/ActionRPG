@@ -4,8 +4,8 @@
 #include "Character/Attribute/ExecCalc/ARExecCalc_Damage.h"
 
 #include "Ability/ARPGAbilitySystemComponent.h"
-#include "Character/Attribute/ARPGVITAttributeSet.h"
-#include "Character/Attribute/ARProtoMonsterAttributeSet.h"
+#include "Character/Attribute/ARAttackAttribSet.h"
+#include "Character/Attribute/ARVitRefAttribSet.h"
 #include "Ability/ActionRPGGlobalTags.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARExecCalc_Damage)
@@ -17,8 +17,8 @@ struct FARDamageStatics
 
 	FARDamageStatics()
 	{
-		DEFINE_ATTRIBUTE_CAPTUREDEF( UARProtoMonsterAttributeSet, AttackDamage, Source, true );
-		DEFINE_ATTRIBUTE_CAPTUREDEF( UARPGVITAttributeSet, Defence, Target, false );
+		DEFINE_ATTRIBUTE_CAPTUREDEF( UARAttackAttribSet, AttackDamage, Source, true );
+		DEFINE_ATTRIBUTE_CAPTUREDEF( UARVitRefAttribSet, Defence, Target, false );
 	}
 };
 
@@ -84,6 +84,6 @@ void UARExecCalc_Damage::Execute_Implementation( const FGameplayEffectCustomExec
 
 	if( MitigatedDamage > 0.f )
 	{
-		OutExecutionOutput.AddOutputModifier( FGameplayModifierEvaluatedData( UARPGVITAttributeSet::GetReceivedDamageAttribute(), EGameplayModOp::Additive, MitigatedDamage ) );
+		OutExecutionOutput.AddOutputModifier( FGameplayModifierEvaluatedData( UARVitRefAttribSet::GetReceivedDamageAttribute(), EGameplayModOp::Additive, MitigatedDamage ) );
 	}
 }

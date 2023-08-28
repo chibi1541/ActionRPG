@@ -4,12 +4,30 @@ using UnrealBuildTool;
 
 public class ActionRPG : ModuleRules
 {
-	public ActionRPG(ReadOnlyTargetRules Target) : base(Target)
-	{
-		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+    public ActionRPG(ReadOnlyTargetRules Target) : base(Target)
+    {
+        PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore",
-			"HeadMountedDisplay", "EnhancedInput", "GameplayTasks", "GameplayAbilities", "GameplayTags", "AIModule", "NavigationSystem", });
+        PublicDependencyModuleNames.AddRange(
+            new string[]
+            {
+                "Core",
+                "CoreUObject",
+                "Engine",
+                "InputCore",
+                "HeadMountedDisplay",
+                "EnhancedInput",
+                "GameplayTasks",
+                "GameplayAbilities",
+                "GameplayTags",
+                "AIModule",
+                "NavigationSystem",
+                "DeveloperSettings",
+                "SourceControl",
+                "Json",
+                "JsonUtilities",
+            }
+            );
 
         PublicIncludePaths.Add("ActionRPG");
     }

@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "GameplayCueInterface.h"
 #include "GameplayTagAssetInterface.h"
+#include "Character/ARCharacterEnumDef.h"
 
 #include "BaseCharacter.generated.h"
 
@@ -14,7 +15,7 @@ class UARPGAbilitySystemComponent;
 class UAbilitySystemComponent;
 class UGameplayAbility;
 class UAbilitySet;
-class UARPGBaseAttributeSet;
+class UARBaseAttribSet;
 class UGameplayEffect;
 
 UCLASS( config = Game )
@@ -32,20 +33,20 @@ public:
 
 	virtual void BeginPlay();
 
-	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseCharacter|Attributes" )
-	int32 GetCharacterLevel() const;
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseAttributes" )
+		int32 GetCharacterLevel() const;
 
-	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseCharacter|Attributes" )
-	int32 GetStrength() const;
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseAttributes" )
+		int32 GetStrength() const;
 
-	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseCharacter|Attributes" )
-	int32 GetAgility() const;
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseAttributes" )
+		int32 GetAgility() const;
 
-	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseCharacter|Attributes" )
-	int32 GetIntelligence() const;
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseAttributes" )
+		int32 GetIntelligence() const;
 
-	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseCharacter|Attributes" )
-	int32 GetVitality() const;
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseAttributes" )
+		int32 GetVitality() const;
 
 
 protected:
@@ -55,15 +56,20 @@ protected:
 
 protected:
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "Ability" )
-	TObjectPtr<UARPGAbilitySystemComponent> AbilitySystemComponent;
+		TObjectPtr<UARPGAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Ability" )
-	TArray<TObjectPtr<UAbilitySet>> AbilitySets;
+		TArray<TObjectPtr<UAbilitySet>> AbilitySets;
 
-	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Attribute" )
-	TSubclassOf<UGameplayEffect> AttributeInitializer;
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Attribute|Base" )
+		TSubclassOf<UGameplayEffect> BaseAttribInitializer;
 
 	UPROPERTY()
-	TObjectPtr<UARPGBaseAttributeSet> BaseAttributeSet;
+		TObjectPtr<UARBaseAttribSet> BaseAttribSet;
 
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "CharacterType" )
+		ECharacterType CharacterType;
+
+public:
+	FORCEINLINE ECharacterType GetCharacterType() const { return CharacterType; }
 };

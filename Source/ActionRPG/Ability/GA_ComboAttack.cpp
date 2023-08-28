@@ -47,13 +47,23 @@ void UGA_ComboAttack::ActivateAbility( const FGameplayAbilitySpecHandle Handle, 
 		return;
 	}
 
+	const auto Hero = Cast<AHeroCharacter>( GetAvatarActorFromActorInfo() );
+	float AttackSpeed = 1.f;
+	if(Hero)
+	{
+		if( Hero->GetAttackSpeed() > 0.f )
+		{
+			AttackSpeed = Hero->GetAttackSpeed();
+		}
+	}
+
 	UAT_PlayMontagesWithGameplayEvent* MontagesPlayTask =
 		UAT_PlayMontagesWithGameplayEvent::CreatePlayMontagesWithGameplayEventProxy( this,
 		NAME_None,
 		AttackMontages,
 		EventTag,
 		OnlyTriggerOnce,
-		Rate,
+		AttackSpeed,
 		StopWhenAbilityEnds,
 		AnimRootMotionTranslationScale );
 

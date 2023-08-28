@@ -3,24 +3,18 @@
 
 #include "Character/Attribute/MMC/ARMMC_MaxStaminaBase.h"
 
-#include "Character/Attribute/ARPGBaseAttributeSet.h"
-#include "Character/Attribute/ARPGVITAttributeSet.h"
+#include "Character/Attribute/ARBaseAttribSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARMMC_MaxStaminaBase)
 
 UARMMC_MaxStaminaBase::UARMMC_MaxStaminaBase( const FObjectInitializer& ObjectInitializer )
 	:Super( ObjectInitializer )
 {
-	VitDef.AttributeToCapture = UARPGBaseAttributeSet::GetVitalityAttribute();
-	VitDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Source;
-	VitDef.bSnapshot = false;
+	BaseAttribDef.AttributeToCapture = UARBaseAttribSet::GetVitalityAttribute();
+	BaseAttribDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Source;
+	BaseAttribDef.bSnapshot = false;
 
-	StaminaRateDef.AttributeToCapture = UARPGVITAttributeSet::GetStaminaRateAttribute();
-	StaminaRateDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Source;
-	StaminaRateDef.bSnapshot = false;
-
-	RelevantAttributesToCapture.Add( VitDef );
-	RelevantAttributesToCapture.Add( StaminaRateDef );
+	RelevantAttributesToCapture.Add( BaseAttribDef );
 }
 
 float UARMMC_MaxStaminaBase::CalculateBaseMagnitude_Implementation( const FGameplayEffectSpec& Spec ) const
@@ -33,12 +27,17 @@ float UARMMC_MaxStaminaBase::CalculateBaseMagnitude_Implementation( const FGamep
 	EvaluationParameters.TargetTags = TargetTags;
 
 	float Vitality = 0.f;
-	GetCapturedAttributeMagnitude( VitDef, Spec, EvaluationParameters, Vitality );
+	GetCapturedAttributeMagnitude( BaseAttribDef, Spec, EvaluationParameters, Vitality );
+	Vitality = FMath::Max( Vitality, 0.f );
 
-	float StaminaRate = 0.f;
-	GetCapturedAttributeMagnitude( StaminaRateDef, Spec, EvaluationParameters, StaminaRate );
+	float StaminaCoeff = 0.f;
+	const FCharacterCoefficientData* CoeffData = GetCoefficientData( Spec );
+	if( CoeffData )
+	{
+		StaminaCoeff = CoeffData->StaminaCoeff;
+	}
 
-	float MaxStaminaBase = Vitality * StaminaRate;
+	float MaxStaminaBase = Vitality * StaminaCoeff;
 
 	return MaxStaminaBase;
 }

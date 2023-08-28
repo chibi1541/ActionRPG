@@ -7,7 +7,7 @@
 #include "Ability/AbilitySet.h"
 #include "Ability/ARPGAbilitySystemComponent.h"
 #include "Character/ARPGMovementComponent.h"
-#include "Character/Attribute/ARPGBaseAttributeSet.h"
+#include "Character/Attribute/ARBaseAttribSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BaseCharacter)
 
@@ -18,7 +18,7 @@ ABaseCharacter::ABaseCharacter( const FObjectInitializer& ObjectInitializer /*= 
 
 	AbilitySystemComponent.Get()->ReplicationMode = EGameplayEffectReplicationMode::Full;
 
-	BaseAttributeSet = CreateDefaultSubobject<UARPGBaseAttributeSet>( TEXT( "ARPGBaseAttributeSet" ) );
+	BaseAttribSet = CreateDefaultSubobject<UARBaseAttribSet>( TEXT( "ARBaseAttribSet" ) );
 }
 
 class UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
@@ -57,27 +57,27 @@ void ABaseCharacter::InitAbilitySystem()
 
 void ABaseCharacter::InitializerAttributes()
 {
-	if( !AttributeInitializer )
+	if( !BaseAttribInitializer )
 	{
-		RLOG(Error, TEXT( "AttributeInitializer is Missing : %s" ), *GetName() );
+		RLOG(Error, TEXT( "BaseAttribInitializer is Missing : %s" ), *GetName() );
 		return;
 	}
 
-	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
-	EffectContext.AddSourceObject( this );
+	FGameplayEffectContextHandle BaseEffectContext = AbilitySystemComponent->MakeEffectContext();
+	BaseEffectContext.AddSourceObject( this );
 
-	FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec( AttributeInitializer, GetCharacterLevel(), EffectContext );
-	if( NewHandle.IsValid() )
+	FGameplayEffectSpecHandle BaseHandle = AbilitySystemComponent->MakeOutgoingSpec( BaseAttribInitializer, GetCharacterLevel(), BaseEffectContext );
+	if( BaseHandle.IsValid() )
 	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *NewHandle.Data.Get(), AbilitySystemComponent.Get() );
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *BaseHandle.Data.Get(), AbilitySystemComponent.Get() );
 	}
 }
 
 int32 ABaseCharacter::GetCharacterLevel() const
 {
-	if( BaseAttributeSet )
+	if( BaseAttribSet )
 	{
-		return static_cast< int32 >( BaseAttributeSet->GetCharacterLevel() );
+		return static_cast< int32 >( BaseAttribSet->GetCharacterLevel() );
 	}
 
 	return 0;
@@ -85,9 +85,9 @@ int32 ABaseCharacter::GetCharacterLevel() const
 
 int32 ABaseCharacter::GetStrength() const
 {
-	if( BaseAttributeSet )
+	if( BaseAttribSet )
 	{
-		return static_cast< int32 >( BaseAttributeSet->GetStrength() );
+		return static_cast< int32 >( BaseAttribSet->GetStrength() );
 	}
 
 	return 0;
@@ -95,9 +95,9 @@ int32 ABaseCharacter::GetStrength() const
 
 int32 ABaseCharacter::GetAgility() const
 {
-	if( BaseAttributeSet )
+	if( BaseAttribSet )
 	{
-		return static_cast< int32 >( BaseAttributeSet->GetAgility() );
+		return static_cast< int32 >( BaseAttribSet->GetAgility() );
 	}
 
 	return 0;
@@ -105,9 +105,9 @@ int32 ABaseCharacter::GetAgility() const
 
 int32 ABaseCharacter::GetIntelligence() const
 {
-	if( BaseAttributeSet )
+	if( BaseAttribSet )
 	{
-		return static_cast< int32 >( BaseAttributeSet->GetIntelligence() );
+		return static_cast< int32 >( BaseAttribSet->GetIntelligence() );
 	}
 
 	return 0;
@@ -115,9 +115,9 @@ int32 ABaseCharacter::GetIntelligence() const
 
 int32 ABaseCharacter::GetVitality() const
 {
-	if( BaseAttributeSet )
+	if( BaseAttribSet )
 	{
-		return static_cast< int32 >( BaseAttributeSet->GetVitality() );
+		return static_cast< int32 >( BaseAttribSet->GetVitality() );
 	}
 
 	return 0;

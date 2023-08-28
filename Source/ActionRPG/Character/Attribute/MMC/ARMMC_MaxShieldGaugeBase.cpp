@@ -3,8 +3,7 @@
 
 #include "Character/Attribute/MMC/ARMMC_MaxShieldGaugeBase.h"
 
-#include "Character/Attribute/ARPGBaseAttributeSet.h"
-#include "Character/Attribute/ARPGVITAttributeSet.h"
+#include "Character/Attribute/ARBaseAttribSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARMMC_MaxShieldGaugeBase)
 
@@ -12,16 +11,11 @@ UARMMC_MaxShieldGaugeBase::UARMMC_MaxShieldGaugeBase( const FObjectInitializer& 
 	:Super( ObjectInitializer )
 {
 	
-	VitDef.AttributeToCapture = UARPGBaseAttributeSet::GetVitalityAttribute();
-	VitDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Source;
-	VitDef.bSnapshot = false;
+	BaseAttribDef.AttributeToCapture = UARBaseAttribSet::GetVitalityAttribute();
+	BaseAttribDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Source;
+	BaseAttribDef.bSnapshot = false;
 
-	ShieldGaugeRateDef.AttributeToCapture = UARPGVITAttributeSet::GetShieldGaugeRateAttribute();
-	ShieldGaugeRateDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Source;
-	ShieldGaugeRateDef.bSnapshot = false;
-
-	RelevantAttributesToCapture.Add( VitDef );
-	RelevantAttributesToCapture.Add( ShieldGaugeRateDef );
+	RelevantAttributesToCapture.Add( BaseAttribDef );
 }
 
 float UARMMC_MaxShieldGaugeBase::CalculateBaseMagnitude_Implementation( const FGameplayEffectSpec& Spec ) const
@@ -34,12 +28,17 @@ float UARMMC_MaxShieldGaugeBase::CalculateBaseMagnitude_Implementation( const FG
 	EvaluationParameters.TargetTags = TargetTags;
 
 	float Vitality = 0.f;
-	GetCapturedAttributeMagnitude( VitDef, Spec, EvaluationParameters, Vitality );
+	GetCapturedAttributeMagnitude( BaseAttribDef, Spec, EvaluationParameters, Vitality );
+	Vitality = FMath::Max( Vitality, 0.f );
 
-	float ShieldGaugeRate = 0.f;
-	GetCapturedAttributeMagnitude( ShieldGaugeRateDef, Spec, EvaluationParameters, ShieldGaugeRate );
+	float ShieldGaugeCoeff = 0.f;
+	const FCharacterCoefficientData* CoeffData = GetCoefficientData( Spec );
+	if( CoeffData )
+	{
+		ShieldGaugeCoeff = CoeffData->ShieldGaugeCoeff;
+	}
 
-	float MaxShieldGaugeBase = Vitality * ShieldGaugeRate;
+	float MaxShieldGaugeBase = Vitality * ShieldGaugeCoeff;
 
 	return MaxShieldGaugeBase;
 }

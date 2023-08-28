@@ -8,9 +8,9 @@
 #include "BaseMonster.generated.h"
 
 class UARPGAbilitySystemComponent;
-class UARPGBaseAttributeSet;
-class UARProtoMonsterAttributeSet;
-class UARPGVITAttributeSet;
+class UARAttackAttribSet;
+class UARVitRefAttribSet;
+class UARAgiRefAttribSet;
 class UGameplayEffect;
 
 /**
@@ -25,20 +25,51 @@ class ACTIONRPG_API ABaseMonster : public ABaseCharacter
 public:
 	ABaseMonster( const FObjectInitializer& ObjectInitializer );
 
-protected:	
+protected:
 	virtual void InitializerAttributes() override;
+
+	virtual void BeginPlay() override;
+
+	virtual void SetHealth( float Health );
+	virtual void SetStamina( float Stamina );
+	virtual void SetShieldGauge( float ShieldGauge );
+
+	virtual float GetMaxHealth() const;
+	virtual float GetMaxStamina() const;
+	virtual float GetMaxShieldGauge() const;
+
+public:
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|AgilityAttributes" )
+	virtual float GetMoveSpeed() const;
+
 
 protected:
 
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HitReact|Montage" )
-	TObjectPtr<UAnimMontage> HitMontage;
+		TObjectPtr<UAnimMontage> HitMontage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attribute")
-	TSubclassOf<UGameplayEffect> MonsterAttributeInitializer;
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Attribute|Health" )
+		TSubclassOf<UGameplayEffect> HealthAttribInitializer;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Attribute|Attack" )
+		TSubclassOf<UGameplayEffect> AttackAttribInitializer;
+
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Attribute|Agility" )
+		TSubclassOf<UGameplayEffect> AgilityRefAttribInitializer;
 
 	UPROPERTY()
-	TObjectPtr<UARProtoMonsterAttributeSet> MonsterAttributeSet;
+		TObjectPtr<UARAttackAttribSet> AttackAttribSet;
 
 	UPROPERTY()
-	TObjectPtr<UARPGVITAttributeSet> VITBaseAttributeSet;
+		TObjectPtr<UARVitRefAttribSet> VitRefAttribSet;
+
+	UPROPERTY()
+		TObjectPtr<UARAgiRefAttribSet> AgiRefAttribSet;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "MonsterType" )
+		EMonsterType MonsterType;
+
+public:
+	FORCEINLINE EMonsterType GetMonsterType() const { return MonsterType; }
+
 };

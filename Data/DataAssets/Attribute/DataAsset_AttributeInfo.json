@@ -1,0 +1,9 @@
+﻿{
+	"heroCoefficientTables": [
+		"/Script/Engine.DataTable'/Game/DataAssets/Attribute/DataTable_HeroCoeff.DataTable_HeroCoeff'"
+	],
+	"monsCoefficientTables": [
+		"/Script/Engine.DataTable'/Game/DataAssets/Attribute/DataTable_MonsCoeff.DataTable_MonsCoeff'"
+	],
+	"nativeClass": "/Script/CoreUObject.Class'/Script/ActionRPG.ARDA_AttributeInfo'"
+}

@@ -2,8 +2,7 @@
 
 #pragma once
 
-#include "ActionRPG_Lib.h"
-#include "GameplayModMagnitudeCalculation.h"
+#include "Character/Attribute/MMC/ARMMC_ModifiedWithBaseAttrib.h"
 
 #include "ARMMC_MaxHealthBase.generated.h"
 
@@ -11,17 +10,11 @@
  *
  */
 UCLASS()
-class ACTIONRPG_API UARMMC_MaxHealthBase : public UGameplayModMagnitudeCalculation
+class ACTIONRPG_API UARMMC_MaxHealthBase : public UARMMC_ModifiedWithBaseAttrib
 {
 	GENERATED_UCLASS_BODY()
 
 protected:
 	virtual float CalculateBaseMagnitude_Implementation( const FGameplayEffectSpec& Spec ) const override;
-
-
-private:
-	FGameplayEffectAttributeCaptureDefinition VitDef;
-
-	FGameplayEffectAttributeCaptureDefinition HealthRateDef;
 
 };

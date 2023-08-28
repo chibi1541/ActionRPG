@@ -12,7 +12,9 @@
 #include "InputActionValue.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Character/Attribute/ARPGVITAttributeSet.h"
+#include "Character/Attribute/ARVitRefAttribSet.h"
+#include "Character/Attribute/ARAttackAttribSet.h"
+#include "Character/Attribute/ARAgiRefAttribSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(HeroCharacter)
 
@@ -52,7 +54,9 @@ AHeroCharacter::AHeroCharacter( const FObjectInitializer& ObjectInitializer /*= 
 	FollowCamera->SetupAttachment( CameraBoom, USpringArmComponent::SocketName ); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-	VITAttributeSet = CreateDefaultSubobject<UARPGVITAttributeSet>( TEXT( "ARPGVITAttributeSet" ) );
+	VitRefAttribSet = CreateDefaultSubobject<UARVitRefAttribSet>( TEXT( "ARVitRefAttribSet" ) );
+	AttackAttribSet = CreateDefaultSubobject<UARAttackAttribSet>( TEXT( "ARAttackAttribSet" ) );
+	AgiRefAttribSet = CreateDefaultSubobject<UARAgiRefAttribSet>( TEXT( "ARAgiRefAttribSet" ) );
 }
 
 void AHeroCharacter::SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent )
@@ -85,9 +89,11 @@ void AHeroCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetHealth(GetMaxHealth());
-	SetStamina(GetMaxStamina());
-	SetShieldGauge(GetMaxShieldGauge());
+	SetHealth( GetMaxHealth() );
+	SetStamina( GetMaxStamina() );
+	SetShieldGauge( GetMaxShieldGauge() );
+
+	GetCharacterMovement()->MaxWalkSpeed = GetMoveSpeed();
 }
 
 void AHeroCharacter::InitAbilitySystem()
@@ -158,66 +164,81 @@ void AHeroCharacter::InitializerAttributes()
 {
 	Super::InitializerAttributes();
 
-	if( !VITAttributeInitializer )
+	if( !HealthAttribInitializer )
 	{
-		RLOG( Error, TEXT( "VITAttributeInitializer is Missing : %s" ), *GetName() );
+		RLOG( Error, TEXT( "HealthAttribInitializer is Missing : %s" ), *GetName() );
 		return;
 	}
 
-	FGameplayEffectContextHandle VITEffectContext = AbilitySystemComponent->MakeEffectContext();
-	VITEffectContext.AddSourceObject( this );
+	FGameplayEffectContextHandle HealthEffectContext = AbilitySystemComponent->MakeEffectContext();
+	HealthEffectContext.AddSourceObject( this );
 
-	FGameplayEffectSpecHandle NewHandle_0 = AbilitySystemComponent->MakeOutgoingSpec( VITAttributeInitializer, GetCharacterLevel(), VITEffectContext );
-	if( NewHandle_0.IsValid() )
+	FGameplayEffectSpecHandle HealthHandle = AbilitySystemComponent->MakeOutgoingSpec( HealthAttribInitializer, GetCharacterLevel(), HealthEffectContext );
+	if( HealthHandle.IsValid() )
 	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *NewHandle_0.Data.Get(), AbilitySystemComponent.Get() );
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *HealthHandle.Data.Get(), AbilitySystemComponent.Get() );
 	}
 
-	if( !VITRateAttributeInitializer )
+	if( !AttackAttribInitializer )
 	{
-		RLOG( Error, TEXT( "VITRateAttributeInitializer is Missing : %s" ), *GetName() );
+		RLOG( Error, TEXT( "AttackAttribInitializer is Missing : %s" ), *GetName() );
 		return;
 	}
 
-	FGameplayEffectContextHandle VITRateEffectContext = AbilitySystemComponent->MakeEffectContext();
-	VITRateEffectContext.AddSourceObject( this );
+	FGameplayEffectContextHandle ATKEffectContext = AbilitySystemComponent->MakeEffectContext();
+	ATKEffectContext.AddSourceObject( this );
 
-	FGameplayEffectSpecHandle NewHandle_1 = AbilitySystemComponent->MakeOutgoingSpec( VITRateAttributeInitializer, GetCharacterLevel(), VITRateEffectContext );
-	if( NewHandle_1.IsValid() )
+	FGameplayEffectSpecHandle AttackHandle = AbilitySystemComponent->MakeOutgoingSpec( AttackAttribInitializer, GetCharacterLevel(), ATKEffectContext );
+	if( AttackHandle.IsValid() )
 	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *NewHandle_1.Data.Get(), AbilitySystemComponent.Get() );
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *AttackHandle.Data.Get(), AbilitySystemComponent.Get() );
+	}
+
+	if( !AgilityRefAttribInitializer )
+	{
+		RLOG( Error, TEXT( "AgilityRefAttribInitializer is Missing : %s" ), *GetName() );
+		return;
+	}
+
+	FGameplayEffectContextHandle AGIEffectContext = AbilitySystemComponent->MakeEffectContext();
+	AGIEffectContext.AddSourceObject( this );
+
+	FGameplayEffectSpecHandle AGIHandle = AbilitySystemComponent->MakeOutgoingSpec( AgilityRefAttribInitializer, GetCharacterLevel(), AGIEffectContext );
+	if( AGIHandle.IsValid() )
+	{
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *AGIHandle.Data.Get(), AbilitySystemComponent.Get() );
 	}
 }
 
 void AHeroCharacter::SetHealth( float Health )
 {
-	if( VITAttributeSet )
+	if( VitRefAttribSet )
 	{
-		VITAttributeSet->SetHealth(Health);
+		VitRefAttribSet->SetHealth( Health );
 	}
 }
 
 void AHeroCharacter::SetStamina( float Stamina )
 {
-	if( VITAttributeSet )
+	if( VitRefAttribSet )
 	{
-		VITAttributeSet->SetStamina( Stamina );
+		VitRefAttribSet->SetStamina( Stamina );
 	}
 }
 
 void AHeroCharacter::SetShieldGauge( float ShieldGauge )
 {
-	if( VITAttributeSet )
+	if( VitRefAttribSet )
 	{
-		VITAttributeSet->SetShieldGauge( ShieldGauge );
+		VitRefAttribSet->SetShieldGauge( ShieldGauge );
 	}
 }
 
 float AHeroCharacter::GetMaxHealth() const
 {
-	if( VITAttributeSet )
+	if( VitRefAttribSet )
 	{
-		return VITAttributeSet->GetMaxHealth();
+		return VitRefAttribSet->GetMaxHealth();
 	}
 
 	return 0.f;
@@ -225,9 +246,9 @@ float AHeroCharacter::GetMaxHealth() const
 
 float AHeroCharacter::GetMaxStamina() const
 {
-	if( VITAttributeSet )
+	if( VitRefAttribSet )
 	{
-		return VITAttributeSet->GetMaxStamina();
+		return VitRefAttribSet->GetMaxStamina();
 	}
 
 	return 0.f;
@@ -235,9 +256,29 @@ float AHeroCharacter::GetMaxStamina() const
 
 float AHeroCharacter::GetMaxShieldGauge() const
 {
-	if( VITAttributeSet )
+	if( VitRefAttribSet )
 	{
-		return VITAttributeSet->GetMaxShieldGauge();
+		return VitRefAttribSet->GetMaxShieldGauge();
+	}
+
+	return 0.f;
+}
+
+float AHeroCharacter::GetMoveSpeed() const
+{
+	if(AgiRefAttribSet)
+	{
+		return AgiRefAttribSet->GetModifiedMoveSpeed();
+	}
+
+	return 0.f;
+}
+
+float AHeroCharacter::GetAttackSpeed() const
+{
+	if( AgiRefAttribSet )
+	{
+		return AgiRefAttribSet->GetAttackSpeed();
 	}
 
 	return 0.f;

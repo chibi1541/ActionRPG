@@ -3,24 +3,18 @@
 
 #include "Character/Attribute/MMC/ARMMC_MaxHealthBase.h"
 
-#include "Character/Attribute/ARPGBaseAttributeSet.h"
-#include "Character/Attribute/ARPGVITAttributeSet.h"
+#include "Character/Attribute/ARBaseAttribSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARMMC_MaxHealthBase)
 
 UARMMC_MaxHealthBase::UARMMC_MaxHealthBase( const FObjectInitializer& ObjectInitializer )
 	:Super( ObjectInitializer )
 {
-	VitDef.AttributeToCapture = UARPGBaseAttributeSet::GetVitalityAttribute();
-	VitDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Source;
-	VitDef.bSnapshot = false;
+	BaseAttribDef.AttributeToCapture = UARBaseAttribSet::GetVitalityAttribute();
+	BaseAttribDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Source;
+	BaseAttribDef.bSnapshot = false;
 
-	HealthRateDef.AttributeToCapture = UARPGVITAttributeSet::GetHealthRateAttribute();
-	HealthRateDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Source;
-	HealthRateDef.bSnapshot = false;
-
-	RelevantAttributesToCapture.Add( VitDef );
-	RelevantAttributesToCapture.Add( HealthRateDef );
+	RelevantAttributesToCapture.Add( BaseAttribDef );
 }
 
 float UARMMC_MaxHealthBase::CalculateBaseMagnitude_Implementation( const FGameplayEffectSpec& Spec ) const
@@ -33,12 +27,17 @@ float UARMMC_MaxHealthBase::CalculateBaseMagnitude_Implementation( const FGamepl
 	EvaluationParameters.TargetTags = TargetTags;
 
 	float Vitality = 0.f;
-	GetCapturedAttributeMagnitude( VitDef, Spec, EvaluationParameters, Vitality );
+	GetCapturedAttributeMagnitude( BaseAttribDef, Spec, EvaluationParameters, Vitality );
+	Vitality = FMath::Max( Vitality, 0.f );
 
-	float HealthRate = 0.f;
-	GetCapturedAttributeMagnitude( HealthRateDef, Spec, EvaluationParameters, HealthRate );
+	float HealthCoeff = 0.f;
+	const FCharacterCoefficientData* CoeffData = GetCoefficientData( Spec );
+	if( CoeffData )
+	{
+		HealthCoeff = CoeffData->HealthCoeff;
+	}
 
-	float MaxHealthBase = Vitality * HealthRate;
+	float MaxHealthBase = Vitality * HealthCoeff;
 
 	return MaxHealthBase;
 }

@@ -3,24 +3,18 @@
 
 #include "Character/Attribute/MMC/ARMMC_DefenceBase.h"
 
-#include "Character/Attribute/ARPGBaseAttributeSet.h"
-#include "Character/Attribute/ARPGVITAttributeSet.h"
+#include "Character/Attribute/ARBaseAttribSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARMMC_DefenceBase)
 
 UARMMC_DefenceBase::UARMMC_DefenceBase( const FObjectInitializer& ObjectInitializer )
 	:Super( ObjectInitializer )
 {
-	VitDef.AttributeToCapture = UARPGBaseAttributeSet::GetVitalityAttribute();
-	VitDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Source;
-	VitDef.bSnapshot = false;
+	BaseAttribDef.AttributeToCapture = UARBaseAttribSet::GetVitalityAttribute();
+	BaseAttribDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Source;
+	BaseAttribDef.bSnapshot = false;
 
-	DefenceRateDef.AttributeToCapture = UARPGVITAttributeSet::GetDefenceRateAttribute();
-	DefenceRateDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Source;
-	DefenceRateDef.bSnapshot = false;
-
-	RelevantAttributesToCapture.Add( VitDef );
-	RelevantAttributesToCapture.Add( DefenceRateDef );
+	RelevantAttributesToCapture.Add( BaseAttribDef );
 }
 
 float UARMMC_DefenceBase::CalculateBaseMagnitude_Implementation( const FGameplayEffectSpec& Spec ) const
@@ -33,12 +27,17 @@ float UARMMC_DefenceBase::CalculateBaseMagnitude_Implementation( const FGameplay
 	EvaluationParameters.TargetTags = TargetTags;
 
 	float Vitality = 0.f;
-	GetCapturedAttributeMagnitude( VitDef, Spec, EvaluationParameters, Vitality );
+	GetCapturedAttributeMagnitude( BaseAttribDef, Spec, EvaluationParameters, Vitality );
+	Vitality = FMath::Max( Vitality, 0.f );
 
-	float DefenceRate = 0.f;
-	GetCapturedAttributeMagnitude( DefenceRateDef, Spec, EvaluationParameters, DefenceRate );
+	float DefenceCoeff = 0.f;
+	const FCharacterCoefficientData* CoeffData = GetCoefficientData( Spec );
+	if( CoeffData )
+	{
+		DefenceCoeff = CoeffData->DefenceCoeff;
+	}
 
-	float DefenceBase = Vitality * DefenceRate;
+	float DefenceBase = Vitality * DefenceCoeff;
 
 	return DefenceBase;
 }
