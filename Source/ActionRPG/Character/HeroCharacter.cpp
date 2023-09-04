@@ -4,7 +4,7 @@
 #include "Character/HeroCharacter.h"
 
 #include "Ability/ActionRPGGlobalTags.h"
-#include "Ability/ARPGAbilitySystemComponent.h"
+#include "Ability/ARAbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Character/HeroInputComponent.h"
@@ -108,13 +108,13 @@ void AHeroCharacter::InitAbilitySystem()
 
 	if( TagRelationshipTable != nullptr )
 	{
-		AbilitySystemComponent->SetTagRelationshipTable( TagRelationshipTable );
+		AbilitySystemComp->SetTagRelationshipTable( TagRelationshipTable );
 	}
 }
 
 void AHeroCharacter::Move( const FInputActionValue& Value )
 {
-	if( AbilitySystemComponent->HasMatchingGameplayTag( TAG_MovingLocked ) == true )
+	if( AbilitySystemComp->HasMatchingGameplayTag( TAG_MovingLocked ) == true )
 		return;
 
 	FVector2D MovementVector = Value.Get<FVector2D>();
@@ -152,17 +152,17 @@ void AHeroCharacter::Look( const FInputActionValue& Value )
 
 void AHeroCharacter::Input_AbilityInputTagPressed( FGameplayTag InputTag )
 {
-	if( UARPGAbilitySystemComponent* ArpgASC = GetARPGAbilitySystemComponent() )
+	if( UARAbilitySystemComponent* ArASC = GetARAbilitySystemComponent() )
 	{
-		ArpgASC->AbilityInputTagPressed( InputTag );
+		ArASC->AbilityInputTagPressed( InputTag );
 	}
 }
 
 void AHeroCharacter::Input_AbilityInputTagReleased( FGameplayTag InputTag )
 {
-	if( UARPGAbilitySystemComponent* ArpgASC = GetARPGAbilitySystemComponent() )
+	if( UARAbilitySystemComponent* ArASC = GetARAbilitySystemComponent() )
 	{
-		ArpgASC->AbilityInputTagReleased( InputTag );
+		ArASC->AbilityInputTagReleased( InputTag );
 	}
 }
 
@@ -176,13 +176,13 @@ void AHeroCharacter::InitializerAttributes()
 		return;
 	}
 
-	FGameplayEffectContextHandle HealthEffectContext = AbilitySystemComponent->MakeEffectContext();
-	HealthEffectContext.AddSourceObject( this );
+	FGameplayEffectContextHandle EffectContext = AbilitySystemComp->MakeEffectContext();
+	EffectContext.AddSourceObject( this );
 
-	FGameplayEffectSpecHandle HealthHandle = AbilitySystemComponent->MakeOutgoingSpec( HealthAttribInitializer, GetCharacterLevel(), HealthEffectContext );
+	FGameplayEffectSpecHandle HealthHandle = AbilitySystemComp->MakeOutgoingSpec( HealthAttribInitializer, GetCharacterLevel(), EffectContext );
 	if( HealthHandle.IsValid() )
 	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *HealthHandle.Data.Get(), AbilitySystemComponent.Get() );
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComp->ApplyGameplayEffectSpecToTarget( *HealthHandle.Data.Get(), AbilitySystemComp.Get() );
 	}
 
 	if( !AttackAttribInitializer )
@@ -191,13 +191,10 @@ void AHeroCharacter::InitializerAttributes()
 		return;
 	}
 
-	FGameplayEffectContextHandle ATKEffectContext = AbilitySystemComponent->MakeEffectContext();
-	ATKEffectContext.AddSourceObject( this );
-
-	FGameplayEffectSpecHandle AttackHandle = AbilitySystemComponent->MakeOutgoingSpec( AttackAttribInitializer, GetCharacterLevel(), ATKEffectContext );
+	FGameplayEffectSpecHandle AttackHandle = AbilitySystemComp->MakeOutgoingSpec( AttackAttribInitializer, GetCharacterLevel(), EffectContext );
 	if( AttackHandle.IsValid() )
 	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *AttackHandle.Data.Get(), AbilitySystemComponent.Get() );
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComp->ApplyGameplayEffectSpecToTarget( *AttackHandle.Data.Get(), AbilitySystemComp.Get() );
 	}
 
 	if( !AgilityRefAttribInitializer )
@@ -206,13 +203,10 @@ void AHeroCharacter::InitializerAttributes()
 		return;
 	}
 
-	FGameplayEffectContextHandle AGIEffectContext = AbilitySystemComponent->MakeEffectContext();
-	AGIEffectContext.AddSourceObject( this );
-
-	FGameplayEffectSpecHandle AGIHandle = AbilitySystemComponent->MakeOutgoingSpec( AgilityRefAttribInitializer, GetCharacterLevel(), AGIEffectContext );
+	FGameplayEffectSpecHandle AGIHandle = AbilitySystemComp->MakeOutgoingSpec( AgilityRefAttribInitializer, GetCharacterLevel(), EffectContext );
 	if( AGIHandle.IsValid() )
 	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *AGIHandle.Data.Get(), AbilitySystemComponent.Get() );
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComp->ApplyGameplayEffectSpecToTarget( *AGIHandle.Data.Get(), AbilitySystemComp.Get() );
 	}
 
 	if( !IntelligenceRefAttribInitializer )
@@ -221,13 +215,10 @@ void AHeroCharacter::InitializerAttributes()
 		return;
 	}
 
-	FGameplayEffectContextHandle INTEffectContext = AbilitySystemComponent->MakeEffectContext();
-	INTEffectContext.AddSourceObject( this );
-
-	FGameplayEffectSpecHandle INTHandle = AbilitySystemComponent->MakeOutgoingSpec( IntelligenceRefAttribInitializer, GetCharacterLevel(), INTEffectContext );
+	FGameplayEffectSpecHandle INTHandle = AbilitySystemComp->MakeOutgoingSpec( IntelligenceRefAttribInitializer, GetCharacterLevel(), EffectContext );
 	if( INTHandle.IsValid() )
 	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *INTHandle.Data.Get(), AbilitySystemComponent.Get() );
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComp->ApplyGameplayEffectSpecToTarget( *INTHandle.Data.Get(), AbilitySystemComp.Get() );
 	}
 }
 

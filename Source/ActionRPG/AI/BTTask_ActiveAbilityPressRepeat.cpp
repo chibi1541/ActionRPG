@@ -5,8 +5,8 @@
 
 #include "Character/BaseAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Ability/ARPGAbilitySystemComponent.h"
-#include "Ability/ARPGGameplayAbility.h"
+#include "Ability/ARAbilitySystemComponent.h"
+#include "Ability/ARGameplayAbility.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BTTask_ActiveAbilityPressRepeat)
 
@@ -34,10 +34,10 @@ EBTNodeResult::Type UBTTask_ActiveAbilityPressRepeat::ExecuteTask( UBehaviorTree
 void UBTTask_ActiveAbilityPressRepeat::TickTask( UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds )
 {
 	auto ASCObject = OwnerComp.GetBlackboardComponent()->GetValueAsObject( ABaseAIController::ASCKey );
-	UARPGAbilitySystemComponent* ASC = Cast<UARPGAbilitySystemComponent>( ASCObject );
+	UARAbilitySystemComponent* ASC = Cast<UARAbilitySystemComponent>( ASCObject );
 	if( ASC == nullptr )
 	{
-		RLOG( Error, TEXT( "UBTTask_ActiveAbilityByTag::TickTask failed since UARPGAbilitySystemComponent is missing : %s" ), *OwnerComp.GetAIOwner()->GetPawn()->GetName() );
+		RLOG( Error, TEXT( "UBTTask_ActiveAbilityByTag::TickTask failed since UARAbilitySystemComponent is missing : %s" ), *OwnerComp.GetAIOwner()->GetPawn()->GetName() );
 		return;
 	}
 

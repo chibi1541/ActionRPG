@@ -3,7 +3,7 @@
 #pragma once
 
 #include "ActionRPG_Lib.h"
-#include "Ability/ARPGGameplayAbility.h"
+#include "Ability/ARGameplayAbility.h"
 
 #include "GA_Guard.generated.h"
 
@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class ACTIONRPG_API UGA_Guard : public UARPGGameplayAbility
+class ACTIONRPG_API UGA_Guard : public UARGameplayAbility
 {
 	GENERATED_BODY()
 	

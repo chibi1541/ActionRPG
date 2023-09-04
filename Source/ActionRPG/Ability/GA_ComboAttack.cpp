@@ -6,6 +6,8 @@
 #include "Character/Components/HitTraceComponent.h"
 #include "Character/Components/AttackComponent.h"
 #include "Character/HeroCharacter.h"
+#include "AbilitySystemComponent.h"
+#include "Character/Components/ARCharacterStateComponent.h"
 
 #include "AbilityTask/AT_PlayMontagesWithGameplayEvent.h"
 
@@ -15,7 +17,6 @@
 UGA_ComboAttack::UGA_ComboAttack( const FObjectInitializer& ObjectInitializer )
 	:Super( ObjectInitializer )
 {
-	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	Rate = 1.f;
 	OnlyTriggerOnce = false;
 	StopWhenAbilityEnds = true;
@@ -24,6 +25,8 @@ UGA_ComboAttack::UGA_ComboAttack( const FObjectInitializer& ObjectInitializer )
 
 void UGA_ComboAttack::OnAvatarSet( const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec )
 {
+	Super::OnAvatarSet( ActorInfo, Spec );
+
 	UAttackComponent* AttackComp = Cast<UAttackComponent>( ActorInfo->AvatarActor->GetComponentByClass( UAttackComponent::StaticClass() ) );
 	if( AttackComp != nullptr )
 	{
@@ -37,8 +40,6 @@ void UGA_ComboAttack::OnAvatarSet( const FGameplayAbilityActorInfo* ActorInfo, c
 	}
 }
 
-
-
 void UGA_ComboAttack::ActivateAbility( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData )
 {
 	if( CommitAbility( Handle, ActorInfo, ActivationInfo ) == false )
@@ -49,7 +50,7 @@ void UGA_ComboAttack::ActivateAbility( const FGameplayAbilitySpecHandle Handle, 
 
 	const auto Hero = Cast<AHeroCharacter>( GetAvatarActorFromActorInfo() );
 	float AttackSpeed = 1.f;
-	if(Hero)
+	if( Hero )
 	{
 		if( Hero->GetAttackSpeed() > 0.f )
 		{
@@ -80,14 +81,7 @@ void UGA_ComboAttack::ActivateAbility( const FGameplayAbilitySpecHandle Handle, 
 
 	MontagesPlayTask->ReadyForActivation();
 
-	const auto Character = Cast<ACharacter>( GetAvatarActorFromActorInfo() );
-
-	HitTraceComp = Cast<UHitTraceComponent>( Character->GetComponentByClass( UHitTraceComponent::StaticClass() ) );
-	if( HitTraceComp == nullptr )
-	{
-		RLOG( Error, TEXT( "HitTraceComp is null" ) );
-		return;
-	}
+	InitDelegateOnHit();
 }
 
 void UGA_ComboAttack::InputPressed( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo )
@@ -106,20 +100,14 @@ void UGA_ComboAttack::InputPressed( const FGameplayAbilitySpecHandle Handle, con
 
 void UGA_ComboAttack::OnCancelled()
 {
-	if( HitTraceComp != nullptr )
-	{
-		HitTraceComp->ToggleTraceCheck( false );
-	}
+	ResetHitTraceComp();
 
 	EndAbility( CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true );
 }
 
 void UGA_ComboAttack::OnCompleted()
 {
-	if( HitTraceComp != nullptr )
-	{
-		HitTraceComp->ToggleTraceCheck( false );
-	}
+	ResetHitTraceComp();
 
 	EndAbility( CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false );
 }
@@ -139,4 +127,58 @@ void UGA_ComboAttack::SetCurComboIndex( int CurrentIndex )
 	}
 
 	bNextAttack = false;
+}
+
+void UGA_ComboAttack::OnHit_Implementation( FHitResult HitResult )
+{
+	const auto Character = Cast<ABaseCharacter>( GetAvatarActorFromActorInfo() );
+	if( !Character )
+	{
+		RLOG( Error, TEXT( "Character is null" ) );
+		return;
+	}
+
+	auto AbilitySystemComponent = Character->GetAbilitySystemComponent();
+	if( !AbilitySystemComponent )
+	{
+		RLOG( Error, TEXT( "AbilitySystemComponent is null" ) );
+		return;
+	}
+
+	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+	EffectContext.AddSourceObject( this );
+	EffectContext.AddHitResult( HitResult, true );
+
+	if( DamageCalcEffect )
+	{
+		FGameplayEffectSpecHandle DamageHandle = AbilitySystemComponent->MakeOutgoingSpec( DamageCalcEffect, Character->GetCharacterLevel(), EffectContext );
+		if( DamageHandle.IsValid() )
+		{
+			auto TargetASC = Cast<ABaseCharacter>( HitResult.GetActor() )->GetAbilitySystemComponent();
+			if( !TargetASC )
+			{
+				RLOG( Error, TEXT( "Target ASC is null" ) );
+				return;
+			}
+
+			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *DamageHandle.Data.Get(), TargetASC );
+		}
+	}
+
+	if( StiffEffect )
+	{
+		FGameplayEffectSpecHandle StiffHandle = AbilitySystemComponent->MakeOutgoingSpec( StiffEffect, Character->GetCharacterLevel(), EffectContext );
+		if( StiffHandle.IsValid() )
+		{
+			auto CharacterStateComp = Cast<ABaseCharacter>( HitResult.GetActor() )->GetCharacterStateComponenet();
+			if( !CharacterStateComp )
+			{
+				RLOG( Error, TEXT( "Target's CharacterStateComp is null" ) );
+				return;
+			}
+
+			CharacterStateComp->SetStiffEffectSpec( StiffHandle );
+		}
+	}
+
 }

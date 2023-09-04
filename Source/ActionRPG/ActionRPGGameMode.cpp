@@ -3,7 +3,7 @@
 #include "ActionRPGGameMode.h"
 
 #include "Character/HeroCharacter.h"
-#include "Character/ARPGPlayerController.h"
+#include "Character/ARPlayerController.h"
 #include "UObject/ConstructorHelpers.h"
 
 AActionRPGGameMode::AActionRPGGameMode()
@@ -15,5 +15,5 @@ AActionRPGGameMode::AActionRPGGameMode()
 		DefaultPawnClass = HeroBPClass.Class;
 	}
 
-	PlayerControllerClass = AARPGPlayerController::StaticClass();
+	PlayerControllerClass = AARPlayerController::StaticClass();
 }

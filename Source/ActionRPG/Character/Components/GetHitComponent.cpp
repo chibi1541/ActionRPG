@@ -2,9 +2,10 @@
 
 
 #include "Character/Components/GetHitComponent.h"
-#include "Ability/ARPGAbilitySystemComponent.h"
+#include "Ability/ARAbilitySystemComponent.h"
 #include "Character/BaseCharacter.h"
 #include "GameplayTagContainer.h"
+#include "Ability/ActionRPGGlobalTags.h"
 
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(GetHitComponent)
@@ -22,10 +23,10 @@ void UGetHitComponent::BeginPlay()
 	Super::BeginPlay();
 
 	const auto Character = CastChecked<ABaseCharacter>( GetOwner() );
-	ASC = Character->GetARPGAbilitySystemComponent();
+	ASC = Character->GetARAbilitySystemComponent();
 	if( !ASC )
 	{
-		RLOG( Error, TEXT( "GetHitComponent Initialize Failed : UARPGAbilitySystemComponent is Missing !! : &s" ), *GetOwner()->GetName() );
+		RLOG( Error, TEXT( "GetHitComponent Initialize Failed : UARAbilitySystemComponent is Missing !! : &s" ), *GetOwner()->GetName() );
 		return;
 	}
 
@@ -36,31 +37,9 @@ void UGetHitComponent::BeginPlay()
 		return;
 	}
 
-}
-
-bool UGetHitComponent::IsBeatenNow()
-{
-	if( AnimInstance )
-	{
-		if( HitMontage_Front && AnimInstance->Montage_IsPlaying( HitMontage_Front ) )
-		{
-			return true;
-		}
-		else if( HitMontage_Rear && AnimInstance->Montage_IsPlaying( HitMontage_Rear ) )
-		{
-			return true;
-		}
-		else if( HitMontage_Right && AnimInstance->Montage_IsPlaying( HitMontage_Right ) )
-		{
-			return true;
-		}
-		else if( HitMontage_Left && AnimInstance->Montage_IsPlaying( HitMontage_Left ) )
-		{
-			return true;
-		}
-	}
-
-	return false;
+	auto Tags = FActionRPGGlobalTags::Get();
+	ASC->ActiveGameplayEffectCallBacks.FindOrAdd( Tags.CharacterStateTag_Stiff ).AddDynamic( this, &UGetHitComponent::OnHit );
+	ASC->GameplayEffectDurationChangeCallBacks.FindOrAdd( Tags.CharacterStateTag_Stiff ).AddDynamic( this, &UGetHitComponent::OnEffectDurationChange );
 }
 
 UAnimMontage* UGetHitComponent::GetMontagetoPlay( const FVector AttackVec ) const
@@ -104,33 +83,67 @@ UAnimMontage* UGetHitComponent::GetMontagetoPlay( const FVector AttackVec ) cons
 	return Return;
 }
 
-void UGetHitComponent::HitReaction( const FVector AttackVec )
+float UGetHitComponent::HitReaction( const FVector AttackVec )
 {
 	UAnimMontage* PlayMontage = GetMontagetoPlay( AttackVec );
 	if( PlayMontage == nullptr )
 	{
 		RLOG( Error, TEXT( "Hit AnimMontage is NULL : %s" ), *GetOwner()->GetName() );
+		return 0.f;
+	}
+
+	return AnimInstance->Montage_Play( PlayMontage );
+}
+
+void UGetHitComponent::OnHit( const FGameplayEffectSpec& EffectSpec )
+{
+	const FHitResult* HitResult = EffectSpec.GetEffectContext().GetHitResult();
+
+	if( HitResult )
+	{
+		FVector HitNormal = HitResult->Normal;
+		if( HitReaction( HitNormal ) != 0.f )
+		{
+			ASC->CancelAbilities( &CancelAbilityTaskTag );
+		}
+	}
+}
+
+void UGetHitComponent::OnEffectDurationChange( FActiveGameplayEffect& ActiveEffect )
+{
+	const FHitResult* HitResult = ActiveEffect.Spec.GetEffectContext().GetHitResult();
+	if( HitResult == nullptr )
+	{
+		RLOG( Error, TEXT( "HitResult is NULL : %s" ), *GetOwner()->GetName() );
 		return;
 	}
 
-	bool SameGetHitMontage = AnimInstance->Montage_IsPlaying( PlayMontage );
+	FVector HitNormal = HitResult->Normal;
+	HitReaction( HitNormal );
+}
 
-	AnimInstance->Montage_Play( PlayMontage );
+bool UGetHitComponent::IsBackAttack( const FVector AttackVec ) const
+{
+	float DotProduct_Front = FVector::DotProduct( GetOwner()->GetActorRightVector(), AttackVec );
 
-	if( SameGetHitMontage == false )
+	if( DotProduct_Front > 0.f )
 	{
-		MontageEndedDelegate.BindUObject( this, &UGetHitComponent::OnMontageEnded );
-		AnimInstance->Montage_SetEndDelegate( MontageEndedDelegate, PlayMontage );
+		return true;
 	}
 
-	ASC->AddLooseGameplayTags( GrantingTags );
-	ASC->CancelAbilities( &CancelAbilityTaskTag );
+	return false;
 }
 
-void UGetHitComponent::OnMontageEnded( UAnimMontage* Montage, bool bInterrupted )
+const float UGetHitComponent::GetReactionMontagePlayTime( const FVector AttackVec ) const
 {
-	ASC->RemoveLooseGameplayTags( GrantingTags );
-}
+	UAnimMontage* PlayMontage = GetMontagetoPlay( AttackVec );
+	if( PlayMontage == nullptr )
+	{
+		RLOG( Error, TEXT( "Hit AnimMontage is NULL : %s" ), *GetOwner()->GetName() );
+		return 0.f;
+	}
 
+	return ( PlayMontage->GetPlayLength() / PlayMontage->RateScale );
+}
 
 

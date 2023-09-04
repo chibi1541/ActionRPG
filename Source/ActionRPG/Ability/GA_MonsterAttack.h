@@ -2,20 +2,19 @@
 
 #pragma once
 
-#include "ActionRPG_Lib.h"
-#include "Ability/ARPGGameplayAbility.h"
+#include "Ability/GA_UsedTraceHit.h"
 
 #include "GA_MonsterAttack.generated.h"
 
 class UAmimMontage;
-class UHitTraceComponent;
+class UGameplayEffect;
 struct FGameplayTag;
 
 /**
  *
  */
 UCLASS()
-class ACTIONRPG_API UGA_MonsterAttack : public UARPGGameplayAbility
+class ACTIONRPG_API UGA_MonsterAttack : public UGA_UsedTraceHit
 {
 	GENERATED_UCLASS_BODY()
 
@@ -30,11 +29,9 @@ private:
 	UFUNCTION()
 		void OnCompleted();
 
+	virtual void OnHit_Implementation( FHitResult HitResult ) override;
+
 private:
-
-	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "Attack|AttackTrace", meta = ( AllowPrivateAccess = "true" ) )
-		TObjectPtr<UHitTraceComponent> HitTraceComp;
-
 	UPROPERTY( VisibleAnywhere, Category = "AnimMontage|Montages", meta = ( AllowPrivateAccess = "true" ) )
 		TArray<TObjectPtr<UAnimMontage>> AttackMontages;
 
@@ -49,4 +46,10 @@ private:
 
 	UPROPERTY( EditDefaultsOnly, Category = "AnimMontage|StartTime", meta = ( AllowPrivateAccess = "true" ) )
 		float StartTimeSec;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Effect", meta = ( AllowPrivateAccess = "true" ) )
+		TSubclassOf<UGameplayEffect> DamageCalcEffect;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Effect", meta = ( AllowPrivateAccess = "true" ) )
+		TSubclassOf<UGameplayEffect> StiffEffect;
 };

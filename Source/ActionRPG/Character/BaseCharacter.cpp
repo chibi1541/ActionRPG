@@ -3,45 +3,52 @@
 
 #include "BaseCharacter.h"
 
-#include "AbilitySystemComponent.h"
+#include "Character/Components/ARCharacterStateComponent.h"
 #include "Ability/AbilitySet.h"
-#include "Ability/ARPGAbilitySystemComponent.h"
-#include "Character/ARPGMovementComponent.h"
+#include "Ability/ARAbilitySystemComponent.h"
+#include "Character/ARMovementComponent.h"
 #include "Character/Attribute/ARBaseAttribSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BaseCharacter)
 
 ABaseCharacter::ABaseCharacter( const FObjectInitializer& ObjectInitializer /*= FObjectInitializer::Get() */ )
-	:Super( ObjectInitializer.SetDefaultSubobjectClass<UARPGMovementComponent>( ACharacter::CharacterMovementComponentName ) )
+	:Super( ObjectInitializer.SetDefaultSubobjectClass<UARMovementComponent>( ACharacter::CharacterMovementComponentName ) )
 {
-	AbilitySystemComponent = CreateDefaultSubobject<UARPGAbilitySystemComponent>( TEXT( "ARPGASC" ) );
+	CharacterStateComponent = CreateDefaultSubobject<UARCharacterStateComponent>( TEXT( "STATECOMP" ) );
 
-	AbilitySystemComponent.Get()->ReplicationMode = EGameplayEffectReplicationMode::Full;
+	AbilitySystemComp = CharacterStateComponent->GetARAbilitySystemComponent();
+
+	AbilitySystemComp.Get()->ReplicationMode = EGameplayEffectReplicationMode::Full;
 
 	BaseAttribSet = CreateDefaultSubobject<UARBaseAttribSet>( TEXT( "ARBaseAttribSet" ) );
 }
 
 class UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
 {
-	return GetARPGAbilitySystemComponent();
+	return GetARAbilitySystemComponent();
 }
 
 void ABaseCharacter::GetOwnedGameplayTags( FGameplayTagContainer& TagContainer ) const
 {
-	AbilitySystemComponent->GetOwnedGameplayTags( TagContainer );
+	AbilitySystemComp->GetOwnedGameplayTags( TagContainer );
 }
 
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if( AbilitySystemComponent )
+	if( AbilitySystemComp )
 	{
-		AbilitySystemComponent->InitAbilityActorInfo( this, this );
+		AbilitySystemComp->InitAbilityActorInfo( this, this );
 		InitAbilitySystem();
 
 		InitializerAttributes();
 	}
+}
+
+UARCharacterStateComponent* ABaseCharacter::GetCharacterStateComponenet() const
+{
+	return CharacterStateComponent;
 }
 
 void ABaseCharacter::InitAbilitySystem()
@@ -50,7 +57,7 @@ void ABaseCharacter::InitAbilitySystem()
 	{
 		if( AbilitySet != nullptr )
 		{
-			AbilitySet->GiveToAbilitySystem( AbilitySystemComponent );
+			AbilitySet->GiveToAbilitySystem( AbilitySystemComp );
 		}
 	}
 }
@@ -59,17 +66,17 @@ void ABaseCharacter::InitializerAttributes()
 {
 	if( !BaseAttribInitializer )
 	{
-		RLOG(Error, TEXT( "BaseAttribInitializer is Missing : %s" ), *GetName() );
+		RLOG( Error, TEXT( "BaseAttribInitializer is Missing : %s" ), *GetName() );
 		return;
 	}
 
-	FGameplayEffectContextHandle BaseEffectContext = AbilitySystemComponent->MakeEffectContext();
+	FGameplayEffectContextHandle BaseEffectContext = AbilitySystemComp->MakeEffectContext();
 	BaseEffectContext.AddSourceObject( this );
 
-	FGameplayEffectSpecHandle BaseHandle = AbilitySystemComponent->MakeOutgoingSpec( BaseAttribInitializer, GetCharacterLevel(), BaseEffectContext );
+	FGameplayEffectSpecHandle BaseHandle = AbilitySystemComp->MakeOutgoingSpec( BaseAttribInitializer, GetCharacterLevel(), BaseEffectContext );
 	if( BaseHandle.IsValid() )
 	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *BaseHandle.Data.Get(), AbilitySystemComponent.Get() );
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComp->ApplyGameplayEffectSpecToTarget( *BaseHandle.Data.Get(), AbilitySystemComp.Get() );
 	}
 }
 

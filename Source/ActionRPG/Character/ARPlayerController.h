@@ -5,14 +5,14 @@
 #include "ActionRPG_Lib.h"
 #include "GameFramework/PlayerController.h"
 
-#include "ARPGPlayerController.generated.h"
+#include "ARPlayerController.generated.h"
 
-class UARPGAbilitySystemComponent;
+class UARAbilitySystemComponent;
 /**
  * 
  */
 UCLASS()
-class ACTIONRPG_API AARPGPlayerController : public APlayerController
+class ACTIONRPG_API AARPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
@@ -21,5 +21,5 @@ protected:
 	virtual void PostProcessInput(const float DeltaTime, const bool bGamePaused) override;
 
 private:
-	UARPGAbilitySystemComponent* GetARPGAbilitySystemComponent() const;
+	UARAbilitySystemComponent* GetARAbilitySystemComponent() const;
 };

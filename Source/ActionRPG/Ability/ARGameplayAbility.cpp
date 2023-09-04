@@ -1,14 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Ability/ARPGGameplayAbility.h"
+#include "Ability/ARGameplayAbility.h"
 
 #include "AbilitySystemGlobals.h"
-#include "Ability/ARPGAbilitySystemComponent.h"
+#include "Ability/ARAbilitySystemComponent.h"
 
-#include UE_INLINE_GENERATED_CPP_BY_NAME(ARPGGameplayAbility)
+#include UE_INLINE_GENERATED_CPP_BY_NAME(ARGameplayAbility)
 
-UARPGGameplayAbility::UARPGGameplayAbility( const FObjectInitializer& ObjectInitializer )
+UARGameplayAbility::UARGameplayAbility( const FObjectInitializer& ObjectInitializer )
 	:Super( ObjectInitializer )
 {
 	{
@@ -25,7 +25,7 @@ UARPGGameplayAbility::UARPGGameplayAbility( const FObjectInitializer& ObjectInit
 	}
 }
 
-bool UARPGGameplayAbility::DoesAbilitySatisfyTagRequirements( const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags ) const
+bool UARGameplayAbility::DoesAbilitySatisfyTagRequirements( const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags ) const
 {
 	bool bBlocked = false;
 	bool bMissing = false;
@@ -40,13 +40,13 @@ bool UARPGGameplayAbility::DoesAbilitySatisfyTagRequirements( const UAbilitySyst
 		bBlocked = true;
 	}
 
-	const UARPGAbilitySystemComponent* ArpgASC = Cast<UARPGAbilitySystemComponent>( &AbilitySystemComponent );
+	const UARAbilitySystemComponent* ArASC = Cast<UARAbilitySystemComponent>( &AbilitySystemComponent );
 	FGameplayTagContainer ModiActivationBlockedTags = ActivationBlockedTags;
 	FGameplayTagContainer ModiActivationRequiredTags = ActivationRequiredTags;
 
-	if( ArpgASC != nullptr )
+	if( ArASC != nullptr )
 	{
-		ArpgASC->GetAdditionalActivationTagRequirements( AbilityTags, ModiActivationRequiredTags, ModiActivationBlockedTags );
+		ArASC->GetAdditionalActivationTagRequirements( AbilityTags, ModiActivationRequiredTags, ModiActivationBlockedTags );
 	}
 
 	// Check to see the required/blocked tags for this ability
@@ -120,9 +120,9 @@ bool UARPGGameplayAbility::DoesAbilitySatisfyTagRequirements( const UAbilitySyst
 	return true;
 }
 
-void UARPGGameplayAbility::InputReleased( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo )
+void UARGameplayAbility::InputReleased( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo )
 {
-	if( ActionPolicyType != EARPGAbilityActivationPolicy::WhileInputHeld )
+	if( ActionPolicyType != EARAbilityActivationPolicy::WhileInputHeld )
 		return;
 
 	if( OnReleased.IsBound() )
@@ -146,7 +146,7 @@ void UARPGGameplayAbility::InputReleased( const FGameplayAbilitySpecHandle Handl
 
 }
 
-void UARPGGameplayAbility::InputPressed( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo )
+void UARGameplayAbility::InputPressed( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo )
 {
 	RLOG( Warning, TEXT( "Call Input Press" ) );
 

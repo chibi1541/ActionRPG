@@ -11,12 +11,13 @@
 
 #include "BaseCharacter.generated.h"
 
-class UARPGAbilitySystemComponent;
+class UARAbilitySystemComponent;
 class UAbilitySystemComponent;
 class UGameplayAbility;
 class UAbilitySet;
 class UARBaseAttribSet;
 class UGameplayEffect;
+class UARCharacterStateComponent;
 
 UCLASS( config = Game )
 class ACTIONRPG_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayCueInterface, public IGameplayTagAssetInterface
@@ -26,12 +27,15 @@ class ACTIONRPG_API ABaseCharacter : public ACharacter, public IAbilitySystemInt
 public:
 	ABaseCharacter( const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get() );
 
-	UARPGAbilitySystemComponent* GetARPGAbilitySystemComponent() const { return AbilitySystemComponent; }
+	UARAbilitySystemComponent* GetARAbilitySystemComponent() const { return AbilitySystemComp; }
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	virtual void GetOwnedGameplayTags( FGameplayTagContainer& TagContainer ) const override;
 
 	virtual void BeginPlay();
+
+	UFUNCTION( BlueprintCallable, Category = "ARCharacter|StateComponent" )
+		UARCharacterStateComponent* GetCharacterStateComponenet() const;
 
 	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseAttributes" )
 		int32 GetCharacterLevel() const;
@@ -48,15 +52,17 @@ public:
 	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseAttributes" )
 		int32 GetVitality() const;
 
-
 protected:
 	virtual void InitAbilitySystem();
 
 	virtual void InitializerAttributes();
 
 protected:
-	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "Ability" )
-		TObjectPtr<UARPGAbilitySystemComponent> AbilitySystemComponent;
+	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "Components|State" )
+		TObjectPtr<UARCharacterStateComponent> CharacterStateComponent;
+
+	UPROPERTY()
+		TObjectPtr<UARAbilitySystemComponent> AbilitySystemComp;
 
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Ability" )
 		TArray<TObjectPtr<UAbilitySet>> AbilitySets;

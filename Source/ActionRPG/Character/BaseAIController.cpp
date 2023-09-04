@@ -5,7 +5,7 @@
 
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Ability/ARPGAbilitySystemComponent.h"
+#include "Ability/ARAbilitySystemComponent.h"
 #include "Character/BaseCharacter.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BaseAIController)
@@ -46,9 +46,9 @@ void ABaseAIController::OnPossess( APawn* InPawn )
 		Blackboard->SetValueAsVector( HomePosKey, InPawn->GetActorLocation() );
 
 		const auto AICharacter = CastChecked<ABaseCharacter>( InPawn );
-		if( UARPGAbilitySystemComponent* ARPGASC = AICharacter->GetARPGAbilitySystemComponent() )
+		if( UARAbilitySystemComponent* ArASC = AICharacter->GetARAbilitySystemComponent() )
 		{
-			Blackboard->SetValueAsObject( ASCKey, ARPGASC );
+			Blackboard->SetValueAsObject( ASCKey, ArASC );
 		}
 
 		if( RunBehaviorTree( BehaviorTree ) == false )
@@ -67,9 +67,9 @@ void ABaseAIController::OnUnPossess()
 	}
 }
 
-UARPGAbilitySystemComponent* ABaseAIController::GetARPGAbilitySystemComponent() const
+UARAbilitySystemComponent* ABaseAIController::GetARAbilitySystemComponent() const
 {
 	const ABaseCharacter* AICharacter = CastChecked<ABaseCharacter>( GetCharacter() );
-	return ( AICharacter ? AICharacter->GetARPGAbilitySystemComponent() : nullptr );
+	return ( AICharacter ? AICharacter->GetARAbilitySystemComponent() : nullptr );
 }
 

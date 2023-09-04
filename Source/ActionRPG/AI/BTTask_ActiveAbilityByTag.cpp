@@ -3,10 +3,10 @@
 
 #include "AI/BTTask_ActiveAbilityByTag.h"
 
-#include "Ability/ARPGAbilitySystemComponent.h"
+#include "Ability/ARAbilitySystemComponent.h"
 #include "Character/BaseCharacter.h"
 #include "Character/BaseAIController.h"
-#include "Ability/ARPGGameplayAbility.h"
+#include "Ability/ARGameplayAbility.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
@@ -26,10 +26,10 @@ EBTNodeResult::Type UBTTask_ActiveAbilityByTag::ExecuteTask( UBehaviorTreeCompon
 	EBTNodeResult::Type NodeResult = EBTNodeResult::InProgress;
 
 	auto ASCObject = OwnerComp.GetBlackboardComponent()->GetValueAsObject( ABaseAIController::ASCKey );
-	UARPGAbilitySystemComponent* ASC = Cast<UARPGAbilitySystemComponent>( ASCObject );
+	UARAbilitySystemComponent* ASC = Cast<UARAbilitySystemComponent>( ASCObject );
 	if( ASC == nullptr )
 	{
-		RLOG( Error, TEXT( "UBTTask_ActiveAbilityByTag::ExecuteTask failed since UARPGAbilitySystemComponent is missing : %s" ), *OwnerComp.GetAIOwner()->GetPawn()->GetName() );
+		RLOG( Error, TEXT( "UBTTask_ActiveAbilityByTag::ExecuteTask failed since UARAbilitySystemComponent is missing : %s" ), *OwnerComp.GetAIOwner()->GetPawn()->GetName() );
 		return EBTNodeResult::Failed;
 	}
 

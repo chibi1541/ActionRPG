@@ -9,7 +9,6 @@
 
 #include "BTTask_ActiveAbilityByTag.generated.h"
 
-class UARPGAbilitySystemComponent;
 class UGameplayAbility;
 struct FGameplayTag;
 struct FGameplayAbilitySpec;

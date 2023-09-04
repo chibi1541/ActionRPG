@@ -1,19 +1,19 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Character/ARPGMovementComponent.h"
+#include "Character/ARMovementComponent.h"
 
 
-#include UE_INLINE_GENERATED_CPP_BY_NAME(ARPGMovementComponent)
+#include UE_INLINE_GENERATED_CPP_BY_NAME(ARMovementComponent)
 
-UARPGMovementComponent::UARPGMovementComponent( const FObjectInitializer& ObjectInitializer )
+UARMovementComponent::UARMovementComponent( const FObjectInitializer& ObjectInitializer )
 	:Super( ObjectInitializer )
 {
 	SprintingSpeedRate = 2.f;
 	bIsSprinting = false;
 }
 
-float UARPGMovementComponent::GetMaxSpeed() const
+float UARMovementComponent::GetMaxSpeed() const
 {
 	float MaxSpeed = Super::GetMaxSpeed();
 
@@ -25,12 +25,12 @@ float UARPGMovementComponent::GetMaxSpeed() const
 	return MaxSpeed;
 }
 
-void UARPGMovementComponent::StartSprint()
+void UARMovementComponent::StartSprint()
 {
 	bIsSprinting = true;
 }
 
-void UARPGMovementComponent::EndSprint()
+void UARMovementComponent::EndSprint()
 {
 	bIsSprinting = false;
 }

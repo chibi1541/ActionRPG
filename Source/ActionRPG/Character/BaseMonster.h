@@ -7,7 +7,6 @@
 
 #include "BaseMonster.generated.h"
 
-class UARPGAbilitySystemComponent;
 class UARAttackAttribSet;
 class UARVitRefAttribSet;
 class UARAgiRefAttribSet;

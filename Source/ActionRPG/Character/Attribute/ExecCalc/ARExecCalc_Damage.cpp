@@ -3,7 +3,7 @@
 
 #include "Character/Attribute/ExecCalc/ARExecCalc_Damage.h"
 
-#include "Ability/ARPGAbilitySystemComponent.h"
+#include "AbilitySystemComponent.h"
 #include "Character/Attribute/ARAttackAttribSet.h"
 #include "Character/Attribute/ARVitRefAttribSet.h"
 #include "Ability/ActionRPGGlobalTags.h"
@@ -52,26 +52,6 @@ void UARExecCalc_Damage::Execute_Implementation( const FGameplayEffectCustomExec
 	FAggregatorEvaluateParameters EvaluationParameters;
 	EvaluationParameters.SourceTags = SourceTags;
 	EvaluationParameters.TargetTags = TargetTags;
-
-	const FActionRPGGlobalTags& GameplayTags = FActionRPGGlobalTags::Get();
-
-	if( TargetAbilitySystemComponent &&
-		TargetAbilitySystemComponent->HasMatchingGameplayTag( GameplayTags.AbilityStateTag_Guard ) )
-	{
-		if( SourceActor && TargetActor )
-		{
-			FVector AttackerLocation = SourceActor->GetActorForwardVector();
-			FVector TargetLocation = TargetActor->GetActorForwardVector();
-			float DotProduct = FVector::DotProduct( TargetLocation, AttackerLocation );
-
-			// Apply BackAttack, Cancel GuardAbility
-			if( DotProduct >= 0.5f )
-			{
-				FGameplayTagContainer TagContainer = FGameplayTagContainer( GameplayTags.AbilityActionTag_Guard );
-				TargetAbilitySystemComponent->CancelAbilities( &TagContainer );
-			}
-		}
-	}
 
 	float AttackDamage = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude( DamageStatics().AttackDamageDef, EvaluationParameters, AttackDamage );

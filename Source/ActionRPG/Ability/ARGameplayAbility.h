@@ -6,10 +6,10 @@
 #include "Abilities/GameplayAbility.h"
 #include "UObject/ObjectMacros.h"
 
-#include "ARPGGameplayAbility.generated.h"
+#include "ARGameplayAbility.generated.h"
 
 UENUM( BlueprintType )
-enum class EARPGAbilityActivationPolicy : uint8
+enum class EARAbilityActivationPolicy : uint8
 {
 	OnInputTriggered,
 
@@ -23,12 +23,12 @@ struct FGameplayTagContainer;
 DECLARE_MULTICAST_DELEGATE( FInputProcessDelegate );
 
 UCLASS()
-class ACTIONRPG_API UARPGGameplayAbility : public UGameplayAbility
+class ACTIONRPG_API UARGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 
 public:
-	UARPGGameplayAbility(const FObjectInitializer& ObjectInitializer);
+	UARGameplayAbility(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual bool DoesAbilitySatisfyTagRequirements( const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags ) const override;
@@ -44,7 +44,7 @@ protected:
 	bool bInputReleaseBlueprintCanUse;
 
 public:
-	EARPGAbilityActivationPolicy GetActivationPolicyType() const { return ActionPolicyType; }
+	EARAbilityActivationPolicy GetActivationPolicyType() const { return ActionPolicyType; }
 
 	virtual void InputReleased( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo ) override;
 
@@ -52,7 +52,7 @@ public:
 
 protected:
 	UPROPERTY( EditAnywhere, Category = "Ability|Activation", meta = ( AllowPrivateAccess = "true" ) )
-	EARPGAbilityActivationPolicy ActionPolicyType;
+	EARAbilityActivationPolicy ActionPolicyType;
 
 public:
 	FInputProcessDelegate OnReleased;

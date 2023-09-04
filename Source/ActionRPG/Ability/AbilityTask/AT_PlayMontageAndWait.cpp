@@ -4,7 +4,7 @@
 #include "Ability/AbilityTask/AT_PlayMontageAndWait.h"
 
 #include "AbilitySystemGlobals.h"
-#include "Ability/ARPGAbilitySystemComponent.h"
+#include "AbilitySystemComponent.h"
 #include "AbilitySystemLog.h"
 #include "GameFramework/Character.h"
 

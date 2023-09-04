@@ -5,18 +5,18 @@
 #include "ActionRPG_Lib.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-#include "ARPGMovementComponent.generated.h"
+#include "ARMovementComponent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ACTIONRPG_API UARPGMovementComponent : public UCharacterMovementComponent
+class ACTIONRPG_API UARMovementComponent : public UCharacterMovementComponent
 {
 	GENERATED_BODY()
 	
 public:
-	UARPGMovementComponent(const FObjectInitializer& ObjectInitializer);
+	UARMovementComponent(const FObjectInitializer& ObjectInitializer);
 
 	virtual float GetMaxSpeed() const override;
 

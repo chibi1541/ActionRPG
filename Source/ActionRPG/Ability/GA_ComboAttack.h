@@ -2,20 +2,19 @@
 
 #pragma once
 
-#include "ActionRPG_Lib.h"
-#include "Ability/ARPGGameplayAbility.h"
+#include "Ability/GA_UsedTraceHit.h"
 
 #include "GA_ComboAttack.generated.h"
 
 class UAmimMontage;
-class UHitTraceComponent;
+class UGameplayEffect;
 struct FGameplayTag;
 
 /**
  *
  */
 UCLASS()
-class ACTIONRPG_API UGA_ComboAttack : public UARPGGameplayAbility
+class ACTIONRPG_API UGA_ComboAttack : public UGA_UsedTraceHit
 {
 	GENERATED_BODY()
 
@@ -42,10 +41,9 @@ private:
 	UFUNCTION()
 	void SetCurComboIndex( int CurrentIndex );
 
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack|AttackTrace" )
-	TObjectPtr<UHitTraceComponent> HitTraceComp;
+	virtual void OnHit_Implementation( FHitResult HitResult ) override;
 
+protected:
 	UPROPERTY( EditDefaultsOnly, Category = "AnimMontage|Montages" )
 	TArray<TObjectPtr<UAnimMontage>> AttackMontages;
 
@@ -70,6 +68,10 @@ protected:
 	bool bNextAttack;
 
 	int CurComboIndex;
+	
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Effect" )
+		TSubclassOf<UGameplayEffect> DamageCalcEffect;
 
-
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Effect" )
+		TSubclassOf<UGameplayEffect> StiffEffect;
 };

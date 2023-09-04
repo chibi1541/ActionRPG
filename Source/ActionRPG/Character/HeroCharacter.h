@@ -13,7 +13,6 @@ class UCameraComponent;
 class UHeroMovementComponent;
 class UInputMappingContext;
 class UHeroInputConfig;
-class UARPGAbilitySystemComponent;
 class UTagRelationship;
 class UARVitRefAttribSet;
 class UARAttackAttribSet;

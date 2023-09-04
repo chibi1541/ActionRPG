@@ -4,7 +4,7 @@
 #include "Character/BaseMonster.h"
 
 #include "Character/BaseAIController.h"
-#include "Ability/ARPGAbilitySystemComponent.h"
+#include "Ability/ARAbilitySystemComponent.h"
 #include "Character/Attribute/ARVitRefAttribSet.h"
 #include "Character/Attribute/ARAttackAttribSet.h"
 #include "Character/Attribute/ARAgiRefAttribSet.h"
@@ -34,13 +34,13 @@ void ABaseMonster::InitializerAttributes()
 		return;
 	}
 
-	FGameplayEffectContextHandle HealthEffectContext = AbilitySystemComponent->MakeEffectContext();
-	HealthEffectContext.AddSourceObject( this );
+	FGameplayEffectContextHandle EffectContext = AbilitySystemComp->MakeEffectContext();
+	EffectContext.AddSourceObject( this );
 
-	FGameplayEffectSpecHandle HealthHandle = AbilitySystemComponent->MakeOutgoingSpec( HealthAttribInitializer, GetCharacterLevel(), HealthEffectContext );
+	FGameplayEffectSpecHandle HealthHandle = AbilitySystemComp->MakeOutgoingSpec( HealthAttribInitializer, GetCharacterLevel(), EffectContext );
 	if( HealthHandle.IsValid() )
 	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *HealthHandle.Data.Get(), AbilitySystemComponent.Get() );
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComp->ApplyGameplayEffectSpecToTarget( *HealthHandle.Data.Get(), AbilitySystemComp.Get() );
 	}
 
 	if( !AttackAttribInitializer )
@@ -49,13 +49,10 @@ void ABaseMonster::InitializerAttributes()
 		return;
 	}
 
-	FGameplayEffectContextHandle AttackEffectContext = AbilitySystemComponent->MakeEffectContext();
-	AttackEffectContext.AddSourceObject( this );
-
-	FGameplayEffectSpecHandle AttackHandle = AbilitySystemComponent->MakeOutgoingSpec( AttackAttribInitializer, GetCharacterLevel(), AttackEffectContext );
+	FGameplayEffectSpecHandle AttackHandle = AbilitySystemComp->MakeOutgoingSpec( AttackAttribInitializer, GetCharacterLevel(), EffectContext );
 	if( AttackHandle.IsValid() )
 	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *AttackHandle.Data.Get(), AbilitySystemComponent.Get() );
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComp->ApplyGameplayEffectSpecToTarget( *AttackHandle.Data.Get(), AbilitySystemComp.Get() );
 	}
 
 	if( !AgilityRefAttribInitializer )
@@ -64,13 +61,10 @@ void ABaseMonster::InitializerAttributes()
 		return;
 	}
 
-	FGameplayEffectContextHandle AGIEffectContext = AbilitySystemComponent->MakeEffectContext();
-	AGIEffectContext.AddSourceObject( this );
-
-	FGameplayEffectSpecHandle AGIHandle = AbilitySystemComponent->MakeOutgoingSpec( AgilityRefAttribInitializer, GetCharacterLevel(), AGIEffectContext );
+	FGameplayEffectSpecHandle AGIHandle = AbilitySystemComp->MakeOutgoingSpec( AgilityRefAttribInitializer, GetCharacterLevel(), EffectContext );
 	if( AGIHandle.IsValid() )
 	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *AGIHandle.Data.Get(), AbilitySystemComponent.Get() );
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComp->ApplyGameplayEffectSpecToTarget( *AGIHandle.Data.Get(), AbilitySystemComp.Get() );
 	}
 }
 
