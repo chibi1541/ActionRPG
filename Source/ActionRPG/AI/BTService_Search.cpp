@@ -28,6 +28,19 @@ void UBTService_Search::TickNode( UBehaviorTreeComponent& OwnerComp, uint8* Node
 		return;
 	}
 
+	auto TargetObject = OwnerComp.GetBlackboardComponent()->GetValueAsObject( ABaseAIController::TargetKey );
+	auto Target = Cast<ABaseCharacter>( TargetObject );
+
+	// Cast 후에 Dead 상태인지를 판단하는 하도록 추후에 변경
+	if( Target )
+	{
+		double Distance = FVector::Dist( ControllingPawn->GetActorLocation(), Target->GetActorLocation() );
+		if( Distance <= SearchRadius )
+		{
+			return;
+		}
+	}
+
 	const UWorld* World = ControllingPawn->GetWorld();
 	FVector Center = ControllingPawn->GetActorLocation();
 	if( World == nullptr )
