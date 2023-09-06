@@ -23,6 +23,8 @@ UARGameplayAbility::UARGameplayAbility( const FObjectInitializer& ObjectInitiali
 		UFunction* InputReleaseFunction = GetClass()->FindFunctionByName( ReleaseFuncName );
 		bInputReleaseBlueprintCanUse = InputReleaseFunction && ensure( InputReleaseFunction->GetOuter() ) && InputReleaseFunction->GetOuter()->IsA( UBlueprintGeneratedClass::StaticClass() );
 	}
+
+	bActivateAbilityOnGranted = false;
 }
 
 bool UARGameplayAbility::DoesAbilitySatisfyTagRequirements( const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags ) const
@@ -118,6 +120,16 @@ bool UARGameplayAbility::DoesAbilitySatisfyTagRequirements( const UAbilitySystem
 	}
 
 	return true;
+}
+
+void UARGameplayAbility::OnAvatarSet( const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec )
+{
+	Super::OnAvatarSet( ActorInfo, Spec );
+
+	if( bActivateAbilityOnGranted )
+	{
+		ActorInfo->AbilitySystemComponent->TryActivateAbility( Spec.Handle, false );
+	}
 }
 
 void UARGameplayAbility::InputReleased( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo )

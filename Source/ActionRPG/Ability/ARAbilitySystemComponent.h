@@ -5,6 +5,7 @@
 #include "ActionRPG_Lib.h"
 #include "AbilitySystemComponent.h"
 #include "NativeGameplayTags.h"
+#include "ARGASEnumDef.h"
 
 #include "ARAbilitySystemComponent.generated.h"
 
@@ -65,11 +66,11 @@ public:
 
 	TMap<FGameplayTag, FOnGameplayTagCallbackDelegate> GameplayTagsCallBacks;
 
-	TMap<FGameplayTag, FOnGameplayEffectCallbackDelegate> ActiveGameplayEffectCallBacks;
+	TMap<EGameplayEffectDelegateType, FOnGameplayEffectCallbackDelegate> ActiveGameplayEffectCallBacks;
 
-	TMap<FGameplayTag, FOnEffectDurationChangeCallbackDelegate> GameplayEffectDurationChangeCallBacks;
+	TMap<EGameplayEffectDelegateType, FOnEffectDurationChangeCallbackDelegate> GameplayEffectDurationChangeCallBacks;
 
-	TMap<FGameplayTag, FOnGameplayEffectRemovedCallbackDelegate> GameplayEffectRemoveCallBacks;
+	TMap<EGameplayEffectDelegateType, FOnGameplayEffectRemovedCallbackDelegate> GameplayEffectRemoveCallBacks;
 
 protected:
 

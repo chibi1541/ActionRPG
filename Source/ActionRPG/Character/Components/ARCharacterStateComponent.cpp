@@ -6,6 +6,10 @@
 #include "Ability/ARAbilitySystemComponent.h"
 #include "Character/Components/GetHitComponent.h"
 #include "Ability/ActionRPGGlobalTags.h"
+#include "ARGASEnumDef.h"
+#include "Character/BaseCharacter.h"
+#include "Character/BaseAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARCharacterStateComponent)
 
@@ -42,8 +46,11 @@ void UARCharacterStateComponent::BeginPlay()
 	GetHitComp = CastChecked<UGetHitComponent>( Owner->GetComponentByClass( UGetHitComponent::StaticClass() ) );
 
 	auto Tags = FActionRPGGlobalTags::Get();
-	AbilitySystemComponent->ActiveGameplayEffectCallBacks.FindOrAdd( Tags.CharacterStateTag_Stun ).AddDynamic( this, &UARCharacterStateComponent::OnGetStuned );
-	AbilitySystemComponent->GameplayEffectRemoveCallBacks.FindOrAdd( Tags.CharacterStateTag_Stun ).AddDynamic( this, &UARCharacterStateComponent::OnStunStateRemoved );
+	AbilitySystemComponent->ActiveGameplayEffectCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Stun ).AddDynamic( this, &UARCharacterStateComponent::OnGetStuned );
+	AbilitySystemComponent->GameplayEffectRemoveCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Stun ).AddDynamic( this, &UARCharacterStateComponent::OnStunStateRemoved );
+
+	AbilitySystemComponent->ActiveGameplayEffectCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Provoke ).AddDynamic( this, &UARCharacterStateComponent::OnProvoked );
+
 }
 
 void UARCharacterStateComponent::EndPlay( const EEndPlayReason::Type EndPlayReason )
@@ -62,6 +69,29 @@ void UARCharacterStateComponent::OnGetStuned( const FGameplayEffectSpec& EffectS
 void UARCharacterStateComponent::OnStunStateRemoved( const FActiveGameplayEffect& ActiveEffect )
 {
 	IsStunned = false;
+}
+
+void UARCharacterStateComponent::OnProvoked( const FGameplayEffectSpec& EffectSpec )
+{
+	auto Owner = Cast<ABaseCharacter>( GetOwner() );
+	auto AIController = Cast<ABaseAIController>( Owner->GetController() );
+	if( !AIController )
+	{
+		RLOG( Error, TEXT( "Can't Find AIController : " ), *Owner->GetName() );
+	}
+
+	UBlackboardComponent* Blackboard = AIController->GetBlackboardComponent();
+	if( !Blackboard )
+	{
+		RLOG( Error, TEXT( "Can't Find BlackboardComponent" ), *Owner->GetName() );
+	}
+
+	Blackboard->SetValueAsObject( ABaseAIController::TargetKey, EffectSpec.GetEffectContext().GetInstigator() );
+}
+
+void UARCharacterStateComponent::OnRefreshProvoked( FActiveGameplayEffect& EffectSpec )
+{
+
 }
 
 void UARCharacterStateComponent::SetStiffEffectSpec( FGameplayEffectSpecHandle& SpecHandle )

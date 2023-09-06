@@ -6,6 +6,7 @@
 #include "Character/BaseCharacter.h"
 #include "GameplayTagContainer.h"
 #include "Ability/ActionRPGGlobalTags.h"
+#include "ARGASEnumDef.h"
 
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(GetHitComponent)
@@ -38,8 +39,8 @@ void UGetHitComponent::BeginPlay()
 	}
 
 	auto Tags = FActionRPGGlobalTags::Get();
-	ASC->ActiveGameplayEffectCallBacks.FindOrAdd( Tags.CharacterStateTag_Stiff ).AddDynamic( this, &UGetHitComponent::OnHit );
-	ASC->GameplayEffectDurationChangeCallBacks.FindOrAdd( Tags.CharacterStateTag_Stiff ).AddDynamic( this, &UGetHitComponent::OnEffectDurationChange );
+	ASC->ActiveGameplayEffectCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Stiff ).AddDynamic( this, &UGetHitComponent::OnHit );
+	ASC->GameplayEffectDurationChangeCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Stiff ).AddDynamic( this, &UGetHitComponent::OnEffectDurationChange );
 }
 
 UAnimMontage* UGetHitComponent::GetMontagetoPlay( const FVector AttackVec ) const

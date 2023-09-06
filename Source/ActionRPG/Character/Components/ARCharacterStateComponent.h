@@ -30,10 +30,16 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason);
 
 	UFUNCTION()
-	void OnGetStuned( const FGameplayEffectSpec& EffectSpec );
+		void OnGetStuned( const FGameplayEffectSpec& EffectSpec );
 
 	UFUNCTION()
-	void OnStunStateRemoved( const FActiveGameplayEffect& ActiveEffect );
+		void OnStunStateRemoved( const FActiveGameplayEffect& ActiveEffect );
+
+	UFUNCTION()
+		void OnProvoked( const FGameplayEffectSpec& EffectSpec );
+
+	UFUNCTION()
+		void OnRefreshProvoked( FActiveGameplayEffect& EffectSpec );
 
 public:
 	void SetStiffEffectSpec( FGameplayEffectSpecHandle& SpecHandle );

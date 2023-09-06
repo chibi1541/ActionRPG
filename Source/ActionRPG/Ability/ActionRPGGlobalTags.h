@@ -22,6 +22,7 @@ struct ACTIONRPG_API FActionRPGGlobalTags : public FGameplayTagNativeAdder
 	// Condition Tags
 	FGameplayTag CharacterStateTag_Stiff;
 	FGameplayTag CharacterStateTag_Stun;
+	FGameplayTag CharacterStateTag_Provoked;
 
 	FORCEINLINE static const FActionRPGGlobalTags& Get() { return ActionRPGTags; }
 
@@ -36,6 +37,7 @@ protected:
 		AbilityStateTag_Guard = Manager.AddNativeGameplayTag( TEXT( "Ability.State.Guard" ) );
 		CharacterStateTag_Stiff = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Stiff" ) );
 		CharacterStateTag_Stun = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Stun" ) );
+		CharacterStateTag_Stun = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Provoked" ) );
 	}
 
 private:

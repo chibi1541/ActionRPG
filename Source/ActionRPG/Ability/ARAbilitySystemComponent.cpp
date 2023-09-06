@@ -3,6 +3,7 @@
 
 #include "Ability/ARAbilitySystemComponent.h"
 #include "Ability/ARGameplayAbility.h"
+#include "Ability/GameplayEffect/ARGameplayEffect.h"
 
 #include "Ability/TagRelationship.h"
 
@@ -164,70 +165,46 @@ void UARAbilitySystemComponent::OnTagUpdated( const FGameplayTag& Tag, bool TagE
 
 void UARAbilitySystemComponent::OnActiveGameEffect( UAbilitySystemComponent* Owner, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle EffectHandle )
 {
-	FGameplayTagContainer Container;
-	EffectSpec.GetAllGrantedTags( Container );
-	if( Container.IsEmpty() )
+	const UARGameplayEffect* GameplayEffect = Cast<UARGameplayEffect>( EffectSpec.Def );
+	if( !GameplayEffect || GameplayEffect->GetDelegateType() == EGameplayEffectDelegateType::EDT_None )
 	{
 		return;
 	}
 
-	int iIndex = 0;
-	while( Container.IsValidIndex( iIndex ) )
+	if( FOnGameplayEffectCallbackDelegate* Delegate = ActiveGameplayEffectCallBacks.Find( GameplayEffect->GetDelegateType() ) )
 	{
-		const FGameplayTag Tag = Container.GetByIndex( iIndex );
-		if( FOnGameplayEffectCallbackDelegate* Delegate = ActiveGameplayEffectCallBacks.Find( Tag ) )
-		{
-			RLOG( Warning, TEXT( "GameEffect Active, GrantTag : %s" ), *Tag.GetTagName().ToString() );
-			Delegate->Broadcast( EffectSpec );
-		}
-
-		iIndex++;
+		RLOG( Warning, TEXT( "GameEffect Active, Name : %s" ), *GameplayEffect->GetFName().ToString() );
+		Delegate->Broadcast( EffectSpec );
 	}
 }
 
 void UARAbilitySystemComponent::OnGameplayEffectDurationChange( struct FActiveGameplayEffect& ActiveEffect )
 {
-	FGameplayTagContainer Container;
-	ActiveEffect.Spec.GetAllGrantedTags( Container );
-	if( Container.IsEmpty() )
+	const UARGameplayEffect* GameplayEffect = Cast<UARGameplayEffect>( ActiveEffect.Spec.Def );
+	if( !GameplayEffect || GameplayEffect->GetDelegateType() == EGameplayEffectDelegateType::EDT_None )
 	{
 		return;
 	}
 
-	int iIndex = 0;
-	while( Container.IsValidIndex( iIndex ) )
+	if( FOnEffectDurationChangeCallbackDelegate* Delegate = GameplayEffectDurationChangeCallBacks.Find( GameplayEffect->GetDelegateType() ) )
 	{
-		const FGameplayTag Tag = Container.GetByIndex( iIndex );
-		if( FOnEffectDurationChangeCallbackDelegate* Delegate = GameplayEffectDurationChangeCallBacks.Find( Tag ) )
-		{
-			RLOG( Warning, TEXT( "GameEffect Duration Change, GrantTag : %s" ), *Tag.GetTagName().ToString() );
-			Delegate->Broadcast( ActiveEffect );
-		}
-
-		iIndex++;
+		RLOG( Warning, TEXT( "GameEffect Active, Name : %s" ), *GameplayEffect->GetFName().ToString() );
+		Delegate->Broadcast( ActiveEffect );
 	}
 }
 
 void UARAbilitySystemComponent::OnGameplayEffectRemoved( const FActiveGameplayEffect& ActiveEffect )
 {
-	FGameplayTagContainer Container;
-	ActiveEffect.Spec.GetAllGrantedTags( Container );
-	if( Container.IsEmpty() )
+	const UARGameplayEffect* GameplayEffect = Cast<UARGameplayEffect>( ActiveEffect.Spec.Def );
+	if( !GameplayEffect || GameplayEffect->GetDelegateType() == EGameplayEffectDelegateType::EDT_None )
 	{
 		return;
 	}
 
-	int iIndex = 0;
-	while( Container.IsValidIndex( iIndex ) )
+	if( FOnGameplayEffectRemovedCallbackDelegate* Delegate = GameplayEffectRemoveCallBacks.Find( GameplayEffect->GetDelegateType() ) )
 	{
-		const FGameplayTag Tag = Container.GetByIndex( iIndex );
-		if( FOnGameplayEffectRemovedCallbackDelegate* Delegate = GameplayEffectRemoveCallBacks.Find( Tag ) )
-		{
-			RLOG( Warning, TEXT( "GameEffect Removed, GrantTag : %s" ), *Tag.GetTagName().ToString() );
-			Delegate->Broadcast( ActiveEffect );
-		}
-
-		iIndex++;
+		RLOG( Warning, TEXT( "GameEffect Active, Name : %s" ), *GameplayEffect->GetFName().ToString() );
+		Delegate->Broadcast( ActiveEffect );
 	}
 }
 

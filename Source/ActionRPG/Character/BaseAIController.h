@@ -19,7 +19,7 @@ class ACTIONRPG_API ABaseAIController : public AAIController
 {
 	GENERATED_BODY()
 
-	ABaseAIController( const FObjectInitializer& ObjectInitializer );
+		ABaseAIController( const FObjectInitializer& ObjectInitializer );
 
 public:
 	virtual void OnPossess( APawn* InPawn ) override;
@@ -30,16 +30,17 @@ public:
 	static const FName PatrolPosKey;
 	static const FName TargetKey;
 	static const FName ASCKey;
-	
+
 private:
 	UARAbilitySystemComponent* GetARAbilitySystemComponent() const;
 
 protected:
 	UPROPERTY( VisibleAnywhere, Category = "AILogic", meta = ( AllowPrivateAccess = "true" ) )
-	TObjectPtr<UBehaviorTree> BehaviorTree;
+		TObjectPtr<UBehaviorTree> BehaviorTree;
 
 	UPROPERTY( VisibleAnywhere, Category = "AILogic", meta = ( AllowPrivateAccess = "true" ) )
-	TObjectPtr<UBlackboardData> BlackboardData;
+		TObjectPtr<UBlackboardData> BlackboardData;
 
-
+public:
+	FORCEINLINE UBlackboardData* GetBlackboardData() const { return BlackboardData; }
 };

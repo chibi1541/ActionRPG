@@ -41,7 +41,7 @@ protected:
 	UFUNCTION( BlueprintImplementableEvent, Category = Ability, DisplayName = "InputReleased", meta = ( ScriptName = "InputReleased" ) )
 	bool K2_InputReleased( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo );
 
-	bool bInputReleaseBlueprintCanUse;
+	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 
 public:
 	EARAbilityActivationPolicy GetActivationPolicyType() const { return ActionPolicyType; }
@@ -51,8 +51,13 @@ public:
 	virtual void InputPressed( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo ) override;
 
 protected:
-	UPROPERTY( EditAnywhere, Category = "Ability|Activation", meta = ( AllowPrivateAccess = "true" ) )
+	UPROPERTY( EditAnywhere, Category = "Ability|Activation" )
 	EARAbilityActivationPolicy ActionPolicyType;
+
+	bool bInputReleaseBlueprintCanUse;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability|Activation" )
+	bool bActivateAbilityOnGranted;
 
 public:
 	FInputProcessDelegate OnReleased;
