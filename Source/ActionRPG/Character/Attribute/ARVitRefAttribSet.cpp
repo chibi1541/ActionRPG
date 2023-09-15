@@ -20,7 +20,10 @@ UARVitRefAttribSet::UARVitRefAttribSet( const FObjectInitializer& ObjectInitiali
 
 void UARVitRefAttribSet::PreAttributeChange( const FGameplayAttribute& Attribute, float& NewValue )
 {
-
+	if( Attribute == GetStaminaAttribute() )
+	{
+		NewValue = FMath::Clamp( NewValue, 0.f, MaxStamina.GetCurrentValue() );
+	}
 }
 
 void UARVitRefAttribSet::PostGameplayEffectExecute( const FGameplayEffectModCallbackData& Data )
@@ -46,7 +49,7 @@ void UARVitRefAttribSet::PostGameplayEffectExecute( const FGameplayEffectModCall
 		if( TempDamage > 0.f )
 		{
 			const FActionRPGGlobalTags& GameplayTags = FActionRPGGlobalTags::Get();
-			
+
 			// Check Guard GameplayTag
 			if( Data.Target.HasMatchingGameplayTag( GameplayTags.AbilityStateTag_Guard ) )
 			{

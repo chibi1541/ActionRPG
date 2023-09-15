@@ -17,8 +17,6 @@ class ACTIONRPG_API UGA_UsedTraceHit : public UARGameplayAbility
 {
 	GENERATED_UCLASS_BODY()
 
-
-
 protected:
 	virtual void OnAvatarSet( const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec ) override;
 

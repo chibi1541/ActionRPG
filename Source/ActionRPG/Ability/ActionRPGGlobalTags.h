@@ -23,6 +23,13 @@ struct ACTIONRPG_API FActionRPGGlobalTags : public FGameplayTagNativeAdder
 	FGameplayTag CharacterStateTag_Stiff;
 	FGameplayTag CharacterStateTag_Stun;
 	FGameplayTag CharacterStateTag_Provoked;
+	FGameplayTag CharacterStateTag_Exhausted;
+
+	// Cost Tags
+	FGameplayTag AbilityCostTag_Stamina;
+
+	// Extra Damage Tag
+	FGameplayTag ExtraDamageTag;
 
 	FORCEINLINE static const FActionRPGGlobalTags& Get() { return ActionRPGTags; }
 
@@ -37,7 +44,10 @@ protected:
 		AbilityStateTag_Guard = Manager.AddNativeGameplayTag( TEXT( "Ability.State.Guard" ) );
 		CharacterStateTag_Stiff = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Stiff" ) );
 		CharacterStateTag_Stun = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Stun" ) );
-		CharacterStateTag_Stun = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Provoked" ) );
+		CharacterStateTag_Provoked = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Provoked" ) );
+		CharacterStateTag_Exhausted = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Exhausted" ) );
+		AbilityCostTag_Stamina = Manager.AddNativeGameplayTag( TEXT( "Ability.Cost.Stamina" ) );
+		ExtraDamageTag = Manager.AddNativeGameplayTag( TEXT( "Ability.Value.ExtraDamage" ) );
 	}
 
 private:

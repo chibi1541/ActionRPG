@@ -56,6 +56,11 @@ void UARExecCalc_Damage::Execute_Implementation( const FGameplayEffectCustomExec
 	float AttackDamage = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude( DamageStatics().AttackDamageDef, EvaluationParameters, AttackDamage );
 
+	FActionRPGGlobalTags Tags = FActionRPGGlobalTags::Get();
+	float ExtraDamage = 0.f;
+	ExtraDamage = Spec.GetSetByCallerMagnitude( Tags.ExtraDamageTag, false, 0.f );
+	AttackDamage += ExtraDamage;
+
 	float Defence = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude( DamageStatics().DefenceDef, EvaluationParameters, Defence );
 	Defence = FMath::Max<float>( Defence, 0.0f );

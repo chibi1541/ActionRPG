@@ -43,7 +43,7 @@ void UARCharacterStateComponent::BeginPlay()
 		return;
 	}
 
-	GetHitComp = CastChecked<UGetHitComponent>( Owner->GetComponentByClass( UGetHitComponent::StaticClass() ) );
+	GetHitComp = Cast<UGetHitComponent>( Owner->GetComponentByClass( UGetHitComponent::StaticClass() ) );
 
 	auto Tags = FActionRPGGlobalTags::Get();
 	AbilitySystemComponent->ActiveGameplayEffectCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Stun ).AddDynamic( this, &UARCharacterStateComponent::OnGetStuned );
