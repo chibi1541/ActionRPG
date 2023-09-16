@@ -8,6 +8,8 @@
 #include "Character/HeroCharacter.h"
 #include "Ability/ActionRPGGlobalTags.h"
 #include "Ability/ARAbilitySystemComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Character/ARProjectile.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARGA_ComboAttackWithProjectile)
 
@@ -92,6 +94,14 @@ void UARGA_ComboAttackWithProjectile::ActivateAbility( const FGameplayAbilitySpe
 	bNextAttack = false;
 
 	MontagesPlayTask->ReadyForActivation();
+
+	UAbilityTask_WaitGameplayEvent* EventTask =
+		UAbilityTask_WaitGameplayEvent::WaitGameplayEvent( this,
+		ProjectileFireTag );
+
+	EventTask->EventReceived.AddDynamic( this, &UARGA_ComboAttackWithProjectile::ProjectileFire );
+
+	EventTask->ReadyForActivation();
 }
 
 void UARGA_ComboAttackWithProjectile::OnCompleted()
@@ -159,6 +169,49 @@ bool UARGA_ComboAttackWithProjectile::SpendStamina()
 	}
 
 	return false;
+}
+
+void UARGA_ComboAttackWithProjectile::ProjectileFire( FGameplayEventData Payload )
+{
+	if( CurComboIndex >= ComboAttackDatas.Num() )
+	{
+		EndAbility( CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true );
+	}
+
+	AHeroCharacter* Hero = Cast<AHeroCharacter>( GetAvatarActorFromActorInfo() );
+	if( !Hero )
+	{
+		EndAbility( CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true );
+	}
+
+	const FVector Forward = Hero->GetActorForwardVector();
+	const FVector HeroLocation = Hero->GetActorLocation();
+
+	FVector Start = Hero->FindComponentByClass<USkeletalMeshComponent>()->GetSocketLocation( ComboAttackDatas[CurComboIndex].StartSocketName );
+	FVector End = FVector( HeroLocation.X, HeroLocation.Y, Start.Z ) + Forward * ComboAttackDatas[CurComboIndex].Range;
+	FRotator Rotation = UKismetMathLibrary::FindLookAtRotation( Start, End );
+
+	FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec( DamageCalcEffect, GetAbilityLevel() );
+	FActionRPGGlobalTags Tags = FActionRPGGlobalTags::Get();
+	DamageEffectSpecHandle.Data->SetSetByCallerMagnitude( Tags.ExtraDamageTag, ComboAttackDatas[CurComboIndex].ExtraDamage );
+
+	FGameplayEffectSpecHandle StiffSpecHandle = MakeOutgoingGameplayEffectSpec( StiffEffect, GetAbilityLevel() );
+
+	FTransform MuzzleTransform = Hero->FindComponentByClass<USkeletalMeshComponent>()->GetSocketTransform( ComboAttackDatas[CurComboIndex].StartSocketName );
+	MuzzleTransform.SetRotation( Rotation.Quaternion() );
+	MuzzleTransform.SetScale3D( FVector( 1.0f ) );
+
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	AARProjectile* Projectile = GetWorld()->SpawnActorDeferred<AARProjectile>( ProjectileClass, MuzzleTransform, GetOwningActorFromActorInfo(),
+		Hero, ESpawnActorCollisionHandlingMethod::AlwaysSpawn );
+	Projectile->DamageCalcEffectSpecHandle = DamageEffectSpecHandle;
+	Projectile->StiffEffectSpecHandle = StiffSpecHandle;
+	Projectile->Range = ComboAttackDatas[CurComboIndex].Range;
+	Projectile->Speed = Speed;
+
+	Projectile->FinishSpawning( MuzzleTransform );
 }
 
 void UARGA_ComboAttackWithProjectile::OnPlayMontage( int CurrentIndex )

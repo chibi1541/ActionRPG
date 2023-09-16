@@ -42,7 +42,8 @@ protected:
 		void OnRefreshProvoked( FActiveGameplayEffect& EffectSpec );
 
 public:
-	void SetStiffEffectSpec( FGameplayEffectSpecHandle& SpecHandle );
+	UFUNCTION( BlueprintCallable, Category = "CharacterState|Stiff" )
+	void SetStiffEffectSpec( const FGameplayEffectSpecHandle& SpecHandle );
 
 	UFUNCTION(BlueprintCallable, Category = "CharacterState|Stun")
 	const bool GetStunState() const;

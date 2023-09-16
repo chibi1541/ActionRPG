@@ -94,7 +94,7 @@ void UARCharacterStateComponent::OnRefreshProvoked( FActiveGameplayEffect& Effec
 
 }
 
-void UARCharacterStateComponent::SetStiffEffectSpec( FGameplayEffectSpecHandle& SpecHandle )
+void UARCharacterStateComponent::SetStiffEffectSpec( const FGameplayEffectSpecHandle& SpecHandle )
 {
 	if( !SpecHandle.IsValid() )
 	{

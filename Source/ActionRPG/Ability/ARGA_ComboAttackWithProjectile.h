@@ -6,6 +6,8 @@
 
 #include "ARGA_ComboAttackWithProjectile.generated.h"
 
+class AARProjectile;
+
 USTRUCT( BlueprintType )
 struct FAttackComboData_Projectile
 {
@@ -55,6 +57,9 @@ protected:
 
 	virtual bool SpendStamina() override;
 
+	UFUNCTION()
+	virtual void ProjectileFire( FGameplayEventData Payload );
+
 private:
 	UFUNCTION()
 		void OnPlayMontage( int CurrentIndex );
@@ -70,10 +75,10 @@ protected:
 		FGameplayTag NextAttackTag;
 
 	UPROPERTY( EditAnywhere, BlueprintReadWrite )
-		FGameplayTag ProjectileFireTag;
+		TSubclassOf<UGameplayEffect> DamageCalcEffect;
 
 	UPROPERTY( EditAnywhere, BlueprintReadWrite )
-		TSubclassOf<UGameplayEffect> DamageCalcEffect;
+		TSubclassOf<UGameplayEffect> StiffEffect;
 
 	UPROPERTY( EditDefaultsOnly, Category = "AnimMontage|Trigger" )
 		bool OnlyTriggerOnce;
@@ -87,4 +92,14 @@ protected:
 	bool bNextAttack;
 
 	int CurComboIndex;
+
+	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category = "Projectile" )
+		TSubclassOf<AARProjectile> ProjectileClass;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Projectile" )
+		FGameplayTag ProjectileFireTag;
+
+	UPROPERTY( EditDefaultsOnly, Category = "Projectile" )
+		float Speed;
+
 };
