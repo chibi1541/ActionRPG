@@ -119,6 +119,12 @@ protected:
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "ClassType" )
 		EHeroClass HeroClass;
 
+		// Passive
+		// do apart way
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Passive Effect" )
+		TArray<TSubclassOf<UGameplayEffect>> PassiveEffects;
+
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

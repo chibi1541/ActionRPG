@@ -11,6 +11,8 @@
 #include "Character/BaseAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
+#include "Character/Attribute/ARVitRefAttribSet.h"
+
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARCharacterStateComponent)
 
 // Sets default values for this component's properties
@@ -45,12 +47,13 @@ void UARCharacterStateComponent::BeginPlay()
 
 	GetHitComp = Cast<UGetHitComponent>( Owner->GetComponentByClass( UGetHitComponent::StaticClass() ) );
 
-	auto Tags = FActionRPGGlobalTags::Get();
+	HealthAttrib = AbilitySystemComponent->GetSet<UARVitRefAttribSet>();
+
+	const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
 	AbilitySystemComponent->ActiveGameplayEffectCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Stun ).AddDynamic( this, &UARCharacterStateComponent::OnGetStuned );
 	AbilitySystemComponent->GameplayEffectRemoveCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Stun ).AddDynamic( this, &UARCharacterStateComponent::OnStunStateRemoved );
-
 	AbilitySystemComponent->ActiveGameplayEffectCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Provoke ).AddDynamic( this, &UARCharacterStateComponent::OnProvoked );
-
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetStaminaAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnStaminaChange );
 }
 
 void UARCharacterStateComponent::EndPlay( const EEndPlayReason::Type EndPlayReason )
@@ -92,6 +95,31 @@ void UARCharacterStateComponent::OnProvoked( const FGameplayEffectSpec& EffectSp
 void UARCharacterStateComponent::OnRefreshProvoked( FActiveGameplayEffect& EffectSpec )
 {
 
+}
+
+void UARCharacterStateComponent::OnStaminaChange( const FOnAttributeChangeData& Data )
+{
+	const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
+
+	if( Data.NewValue == 0.f )
+	{
+		AbilitySystemComponent->AddLooseGameplayTag( Tags.CharacterStateTag_Exhausted );
+		return;
+	}
+	else if( Data.OldValue == 0.f )
+	{
+		AbilitySystemComponent->RemoveLooseGameplayTag( Tags.CharacterStateTag_Exhausted );
+		return;
+	}
+
+	if( Data.NewValue > Data.OldValue && Data.NewValue >= HealthAttrib->GetMaxStamina() )
+	{
+		AbilitySystemComponent->AddLooseGameplayTag( Tags.CharacterStateTag_FullStamina );
+	}
+	else if( Data.NewValue < HealthAttrib->GetMaxStamina() && AbilitySystemComponent->HasMatchingGameplayTag( Tags.CharacterStateTag_FullStamina ) )
+	{
+		AbilitySystemComponent->RemoveLooseGameplayTag( Tags.CharacterStateTag_FullStamina );
+	}
 }
 
 void UARCharacterStateComponent::SetStiffEffectSpec( const FGameplayEffectSpecHandle& SpecHandle )

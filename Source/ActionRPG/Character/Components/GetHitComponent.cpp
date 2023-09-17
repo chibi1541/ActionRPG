@@ -38,7 +38,7 @@ void UGetHitComponent::BeginPlay()
 		return;
 	}
 
-	auto Tags = FActionRPGGlobalTags::Get();
+	const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
 	ASC->ActiveGameplayEffectCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Stiff ).AddDynamic( this, &UGetHitComponent::OnHit );
 	ASC->GameplayEffectDurationChangeCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Stiff ).AddDynamic( this, &UGetHitComponent::OnEffectDurationChange );
 }

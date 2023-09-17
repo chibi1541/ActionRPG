@@ -15,7 +15,10 @@ UARGA_SpendStamina::UARGA_SpendStamina( const FObjectInitializer& ObjectInitiali
 	StaminaCost = 0.f;
 
 	ExhaustedTag = FGameplayTag::RequestGameplayTag( FName( "Gameplay.Character.State.Exhausted" ) );
+	StaminaSpendTag = FGameplayTag::RequestGameplayTag( FName( "Gameplay.Character.State.SpendStamina" ) );
+
 	ActivationBlockedTags.AddTag( ExhaustedTag );
+	ActivationOwnedTags.AddTag( StaminaSpendTag );
 }
 
 void UARGA_SpendStamina::ActivateAbility( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData )
@@ -55,7 +58,7 @@ bool UARGA_SpendStamina::SpendStamina()
 				FGameplayEffectSpecHandle StaminaCostHandle = AbilitySystemComponent->MakeOutgoingSpec( StaminaSpandEffect, Character->GetCharacterLevel(), EffectContext );
 				if( StaminaCostHandle.IsValid() )
 				{
-					FActionRPGGlobalTags Tags = FActionRPGGlobalTags::Get();
+					const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
 					StaminaCostHandle.Data->SetSetByCallerMagnitude( Tags.AbilityCostTag_Stamina, StaminaCost );
 					FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *StaminaCostHandle.Data.Get(), AbilitySystemComponent.Get() );
 
@@ -77,4 +80,27 @@ const bool UARGA_SpendStamina::IsExhausted() const
 	}
 
 	return AbilitySystemComponent->HasMatchingGameplayTag( ExhaustedTag );
+}
+
+void UARGA_SpendStamina::EndAbility( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled )
+{
+	const auto Character = Cast<ABaseCharacter>( GetAvatarActorFromActorInfo() );
+	if( Character )
+	{
+		AbilitySystemComponent = Character->GetAbilitySystemComponent();
+		if( AbilitySystemComponent.IsValid() )
+		{
+			FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+			if( StaminaRegenDelayEffect )
+			{
+				FGameplayEffectSpecHandle StaminaDelayHandle = AbilitySystemComponent->MakeOutgoingSpec( StaminaRegenDelayEffect, Character->GetCharacterLevel(), EffectContext );
+				if( StaminaDelayHandle.IsValid() )
+				{
+					FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *StaminaDelayHandle.Data.Get(), AbilitySystemComponent.Get() );
+				}
+			}
+		}
+	}
+
+	Super::EndAbility( Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled );
 }

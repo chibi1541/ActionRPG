@@ -148,7 +148,7 @@ bool UARGA_ComboAttack_Melee::SpendStamina()
 		FGameplayEffectSpecHandle StaminaCostHandle = AbilitySystemComponent->MakeOutgoingSpec( StaminaSpandEffect, 1, EffectContext );
 		if( StaminaCostHandle.IsValid() )
 		{
-			FActionRPGGlobalTags Tags = FActionRPGGlobalTags::Get();
+			const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
 
 			int ModifiedCost = StaminaCost + ComboAttackDatas[CurComboIndex].ExtraStaminaCost;
 
@@ -238,7 +238,7 @@ void UARGA_ComboAttack_Melee::OnHit_Implementation( FHitResult HitResult )
 				return;
 			}
 
-			FActionRPGGlobalTags Tags = FActionRPGGlobalTags::Get();
+			const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
 			DamageHandle.Data->SetSetByCallerMagnitude( Tags.ExtraDamageTag, ComboAttackDatas[CurComboIndex].ExtraDamage );
 
 			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *DamageHandle.Data.Get(), TargetASC );

@@ -20,14 +20,11 @@ public:
 	UPROPERTY( EditDefaultsOnly )
 		TObjectPtr<UAnimMontage> AttackMontage;
 
-	UPROPERTY( EditDefaultsOnly )
+	UPROPERTY( EditDefaultsOnly, meta = ( ClampMax = "0" ) )
 		int ExtraStaminaCost;
 
 	UPROPERTY( EditDefaultsOnly )
 		int ExtraDamage;
-
-	UPROPERTY( EditDefaultsOnly )
-		int Range;
 
 	UPROPERTY( EditDefaultsOnly )
 		FName StartSocketName;
@@ -100,6 +97,8 @@ protected:
 		FGameplayTag ProjectileFireTag;
 
 	UPROPERTY( EditDefaultsOnly, Category = "Projectile" )
-		float Speed;
+		float Range;
 
+	UPROPERTY( EditDefaultsOnly, Category = "Projectile" )
+		float Speed;
 };

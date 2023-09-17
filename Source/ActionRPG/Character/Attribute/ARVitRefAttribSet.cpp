@@ -20,10 +20,7 @@ UARVitRefAttribSet::UARVitRefAttribSet( const FObjectInitializer& ObjectInitiali
 
 void UARVitRefAttribSet::PreAttributeChange( const FGameplayAttribute& Attribute, float& NewValue )
 {
-	if( Attribute == GetStaminaAttribute() )
-	{
-		NewValue = FMath::Clamp( NewValue, 0.f, MaxStamina.GetCurrentValue() );
-	}
+
 }
 
 void UARVitRefAttribSet::PostGameplayEffectExecute( const FGameplayEffectModCallbackData& Data )
@@ -39,6 +36,11 @@ void UARVitRefAttribSet::PostGameplayEffectExecute( const FGameplayEffectModCall
 	{
 		SourceActor = Source->AbilityActorInfo->AvatarActor.Get();
 		SourceCharacter = Cast<ABaseCharacter>( SourceActor );
+	}
+
+	if( Data.EvaluatedData.Attribute == GetStaminaAttribute() )
+	{
+		SetStamina( FMath::Clamp( GetStamina(), 0.0f, GetMaxStamina() ) );
 	}
 
 	if( Data.EvaluatedData.Attribute == GetReceivedDamageAttribute() )

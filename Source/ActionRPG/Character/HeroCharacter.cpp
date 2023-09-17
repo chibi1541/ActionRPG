@@ -100,6 +100,21 @@ void AHeroCharacter::BeginPlay()
 	SetMana( GetMaxMana() );
 
 	GetCharacterMovement()->MaxWalkSpeed = GetMoveSpeed();
+
+	if( !PassiveEffects.IsEmpty() )
+	{
+		FGameplayEffectContextHandle EffectContext = AbilitySystemComp->MakeEffectContext();
+
+		for( auto Effect : PassiveEffects )
+		{
+			FGameplayEffectSpecHandle NewHandle = AbilitySystemComp->MakeOutgoingSpec( Effect, GetCharacterLevel(), EffectContext );
+			if( NewHandle.IsValid() )
+			{
+				FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComp->ApplyGameplayEffectSpecToTarget( *NewHandle.Data.Get(), AbilitySystemComp.Get() );
+			}
+		}
+	}
+
 }
 
 void AHeroCharacter::InitAbilitySystem()

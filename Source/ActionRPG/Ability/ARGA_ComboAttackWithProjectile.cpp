@@ -156,7 +156,7 @@ bool UARGA_ComboAttackWithProjectile::SpendStamina()
 		FGameplayEffectSpecHandle StaminaCostHandle = AbilitySystemComponent->MakeOutgoingSpec( StaminaSpandEffect, 1, EffectContext );
 		if( StaminaCostHandle.IsValid() )
 		{
-			FActionRPGGlobalTags Tags = FActionRPGGlobalTags::Get();
+			const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
 
 			int ModifiedCost = StaminaCost + ComboAttackDatas[CurComboIndex].ExtraStaminaCost;
 
@@ -188,11 +188,11 @@ void UARGA_ComboAttackWithProjectile::ProjectileFire( FGameplayEventData Payload
 	const FVector HeroLocation = Hero->GetActorLocation();
 
 	FVector Start = Hero->FindComponentByClass<USkeletalMeshComponent>()->GetSocketLocation( ComboAttackDatas[CurComboIndex].StartSocketName );
-	FVector End = FVector( HeroLocation.X, HeroLocation.Y, Start.Z ) + Forward * ComboAttackDatas[CurComboIndex].Range;
+	FVector End = FVector( HeroLocation.X, HeroLocation.Y, Start.Z ) + Forward * Range;
 	FRotator Rotation = UKismetMathLibrary::FindLookAtRotation( Start, End );
 
 	FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec( DamageCalcEffect, GetAbilityLevel() );
-	FActionRPGGlobalTags Tags = FActionRPGGlobalTags::Get();
+	const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
 	DamageEffectSpecHandle.Data->SetSetByCallerMagnitude( Tags.ExtraDamageTag, ComboAttackDatas[CurComboIndex].ExtraDamage );
 
 	FGameplayEffectSpecHandle StiffSpecHandle = MakeOutgoingGameplayEffectSpec( StiffEffect, GetAbilityLevel() );
@@ -208,7 +208,7 @@ void UARGA_ComboAttackWithProjectile::ProjectileFire( FGameplayEventData Payload
 		Hero, ESpawnActorCollisionHandlingMethod::AlwaysSpawn );
 	Projectile->DamageCalcEffectSpecHandle = DamageEffectSpecHandle;
 	Projectile->StiffEffectSpecHandle = StiffSpecHandle;
-	Projectile->Range = ComboAttackDatas[CurComboIndex].Range;
+	Projectile->Range = Range;
 	Projectile->Speed = Speed;
 
 	Projectile->FinishSpawning( MuzzleTransform );

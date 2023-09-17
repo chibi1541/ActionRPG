@@ -6,10 +6,12 @@
 #include "Components/ActorComponent.h"
 #include "Ability/ARAbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayEffectTypes.h"
 
 #include "ARCharacterStateComponent.generated.h"
 
 class UGetHitComponent;
+class UARVitRefAttribSet;
 
 UCLASS( ClassGroup = ( Custom ), meta = ( BlueprintSpawnableComponent ) )
 class ACTIONRPG_API UARCharacterStateComponent : public UActorComponent, public IAbilitySystemInterface
@@ -27,7 +29,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason);
+	virtual void EndPlay( const EEndPlayReason::Type EndPlayReason );
 
 	UFUNCTION()
 		void OnGetStuned( const FGameplayEffectSpec& EffectSpec );
@@ -41,24 +43,28 @@ protected:
 	UFUNCTION()
 		void OnRefreshProvoked( FActiveGameplayEffect& EffectSpec );
 
+	virtual void OnStaminaChange( const FOnAttributeChangeData& data );
+
 public:
 	UFUNCTION( BlueprintCallable, Category = "CharacterState|Stiff" )
-	void SetStiffEffectSpec( const FGameplayEffectSpecHandle& SpecHandle );
+		void SetStiffEffectSpec( const FGameplayEffectSpecHandle& SpecHandle );
 
-	UFUNCTION(BlueprintCallable, Category = "CharacterState|Stun")
-	const bool GetStunState() const;
+	UFUNCTION( BlueprintCallable, Category = "CharacterState|Stun" )
+		const bool GetStunState() const;
 
 private:
 	TWeakObjectPtr<UGetHitComponent> GetHitComp;
 
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "ASC", meta = ( AllowPrivateAccess = "true" ) )
-	TObjectPtr<UARAbilitySystemComponent> AbilitySystemComponent;
+		TObjectPtr<UARAbilitySystemComponent> AbilitySystemComponent;
 
 	// State Variable
 	bool IsStunned;
 
+	TWeakObjectPtr<const UARVitRefAttribSet> HealthAttrib;
+
 public:
 
 	UPROPERTY( BlueprintReadWrite, Category = "Stiff" )
-	FGameplayEffectSpecHandle StiffEffectSpecHandle;
+		FGameplayEffectSpecHandle StiffEffectSpecHandle;
 };

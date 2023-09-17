@@ -22,14 +22,20 @@ protected:
 
 	virtual const bool IsExhausted() const;
 
+	virtual void EndAbility( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled ) override;
+
 protected:
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "CostStamina|Effect" )
 		TSubclassOf<UGameplayEffect> StaminaSpandEffect;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "CostStamina|Effect" )
+		TSubclassOf<UGameplayEffect> StaminaRegenDelayEffect;
 
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "CostStamina|Value", meta = ( ClampMax = "0" ) )
 		int StaminaCost;
 
 	FGameplayTag ExhaustedTag;
+	FGameplayTag StaminaSpendTag;
 
 	UPROPERTY()
 		TWeakObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
