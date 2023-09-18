@@ -7,6 +7,11 @@
 #include "Character/HeroCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Ability/ARAbilitySystemComponent.h"
+#include "NavigationSystem.h"
+
+#if WITH_EDITOR
+#include "DrawDebugHelpers.h"
+#endif
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARGA_Blink)
 
@@ -39,19 +44,8 @@ void UARGA_Blink::ActivateAbility( const FGameplayAbilitySpecHandle Handle, cons
 		}
 	}
 
-	FGameplayEffectSpecHandle MovingLockSpecHandle = MakeOutgoingGameplayEffectSpec( MovingLockEffect, GetAbilityLevel() );
-	if( MovingLockSpecHandle.IsValid() )
-	{
-		auto ASC = Cast<ABaseCharacter>( GetAvatarActorFromActorInfo() )->GetAbilitySystemComponent();
-		if( !ASC )
-		{
-			RLOG( Error, TEXT( "ASC is null" ) );
-			EndAbility( Handle, ActorInfo, ActivationInfo, true, false );
-			return;
-		}
-
-		MovingLockEffectHandle = ASC->ApplyGameplayEffectSpecToTarget( *MovingLockSpecHandle.Data.Get(), ASC );
-	}
+	ForwardVector = FVector( 0 );
+	ForwardVector = Hero->GetLastMovementInputVector();
 
 	UAT_PlayMontagesSequentially* MontagesPlayTask =
 		UAT_PlayMontagesSequentially::CreatePlayMontagesSequentiallyProxy( this,
@@ -81,21 +75,55 @@ void UARGA_Blink::OnPlayMontage( int CurrentIndex )
 	const auto Character = Cast<ACharacter>( GetAvatarActorFromActorInfo() );
 	if( Character )
 	{
-		FVector ForwardVector = Character->GetLastMovementInputVector();
-		RLOG( Warning, TEXT( " % f, % f, % f" ), ForwardVector.X, ForwardVector.X, ForwardVector.Z );
-
 		if( ForwardVector.Length() == 0.f )
 		{
 			ForwardVector = Character->GetActorForwardVector();
 		}
 
-		FVector TargetLocation = Character->GetActorLocation() + ForwardVector * Range;
+		auto World = GetWorld();
+		if( !World )
+		{
+			return;
+		}
 
-		FRotator Rotation = UKismetMathLibrary::FindLookAtRotation( Character->GetActorLocation(), TargetLocation );
+		UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem( World );
+		if( !NavSystem )
+		{
+			RLOG( Error, TEXT( "NavSystem is nullptr" ) );
+			return;
+		}
 
-		Character->TeleportTo( TargetLocation, Rotation );
+		float JumpingDistance = Range;
+		FVector CurLocation = Character->GetActorLocation();
+		FVector MovingVector = ForwardVector * JumpingDistance;
+		FVector TargetLocation = CurLocation + MovingVector;
+		FNavLocation NavLocation;
+		FRotator Rotation = UKismetMathLibrary::FindLookAtRotation( CurLocation, TargetLocation );
+
+		while( JumpingDistance > 0.f )
+		{
+			MovingVector = ForwardVector * JumpingDistance;
+			TargetLocation = CurLocation + MovingVector;
+
+			if( NavSystem->ProjectPointToNavigation( TargetLocation, NavLocation ) )
+			{
+				if( World->FindTeleportSpot( Character, NavLocation.Location, Rotation ) )
+				{
+#if WITH_EDITOR
+					DrawDebugSphere( GetWorld(), NavLocation.Location, 50.f, 16, FColor::Green, false, 0.3f );
+#endif
+					Character->TeleportTo( NavLocation.Location, Rotation );
+					return;
+				}
+			}
+
+			JumpingDistance -= ( Range / 5.f );
+			if( JumpingDistance <= 0.f )
+			{
+				JumpingDistance = 0.f;
+			}
+		}
 	}
-
 }
 
 void UARGA_Blink::OnCompleted()

@@ -9,6 +9,8 @@
 /**
  *
  */
+ class UNavigationSystemV1;
+
 UCLASS()
 class ACTIONRPG_API UARGA_Blink : public UARGA_SpendStamina
 {
@@ -35,9 +37,6 @@ protected:
 		TArray<TObjectPtr<UAnimMontage>> MontageList;
 
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Effect" )
-		TSubclassOf<UGameplayEffect> MovingLockEffect;
-
-	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Effect" )
 		TSubclassOf<UGameplayEffect> ImmuneEffect;
 
 	UPROPERTY( EditDefaultsOnly, Category = "AnimMontage|StopSetting" )
@@ -48,7 +47,8 @@ protected:
 
 	UPROPERTY( EditDefaultsOnly, meta = ( ClampMin = 0 ) )
 		float Range;
-
-
+	
 	FActiveGameplayEffectHandle MovingLockEffectHandle;
+
+	FVector ForwardVector;
 };
