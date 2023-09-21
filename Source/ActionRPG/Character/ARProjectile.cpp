@@ -17,15 +17,14 @@ AARProjectile::AARProjectile()
 	ProjectileMovementComp = CreateDefaultSubobject<UProjectileMovementComponent>( TEXT( "PROJECTILEMOVEMENT" ) );
 }
 
-// Called when the game starts or when spawned
-void AARProjectile::BeginPlay()
+void AARProjectile::PreInitializeComponents()
 {
-	Super::BeginPlay();
+	Super::PreInitializeComponents();
 
 	ProjectileMovementComp->InitialSpeed = Speed;
+	ProjectileMovementComp->MaxSpeed = Speed;
 
 	float LifeSpan = Range / Speed;
 
 	SetLifeSpan( LifeSpan );
-
 }

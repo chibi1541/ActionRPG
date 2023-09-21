@@ -18,9 +18,7 @@ public:
 	AARProjectile();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
+	virtual void PreInitializeComponents() override;
 
 public:
 	UPROPERTY( BlueprintReadWrite, EditAnywhere, Meta = ( ExposeOnSpawn = true ) )
@@ -29,10 +27,10 @@ public:
 	UPROPERTY( BlueprintReadWrite, EditAnywhere, Meta = ( ExposeOnSpawn = true ) )
 		float Speed;
 
-	UPROPERTY( BlueprintReadOnly, Meta = ( ExposeOnSpawn = true ) )
+	UPROPERTY( BlueprintReadWrite, Meta = ( ExposeOnSpawn = true ) )
 		FGameplayEffectSpecHandle DamageCalcEffectSpecHandle;
 
-	UPROPERTY( BlueprintReadOnly, Meta = ( ExposeOnSpawn = true ) )
+	UPROPERTY( BlueprintReadWrite, Meta = ( ExposeOnSpawn = true ) )
 		FGameplayEffectSpecHandle StiffEffectSpecHandle;
 
 protected:
