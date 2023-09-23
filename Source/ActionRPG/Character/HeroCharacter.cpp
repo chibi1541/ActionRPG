@@ -127,6 +127,21 @@ void AHeroCharacter::InitAbilitySystem()
 	}
 }
 
+void AHeroCharacter::Tick( float DeltaSeconds )
+{
+	Super::Tick( DeltaSeconds );
+
+	if( GetWorld()->IsPaused() )
+	{
+		APlayerController* PlayerController = Cast<APlayerController>( GetController() );
+		if( PlayerController )
+		{
+			GetWorld()->bIsCameraMoveableWhenPaused = true;
+			PlayerController->UpdateCameraManager( DeltaSeconds );
+		}
+	}
+}
+
 void AHeroCharacter::Move( const FInputActionValue& Value )
 {
 	if( AbilitySystemComp->HasMatchingGameplayTag( TAG_MovingLocked ) == true )
@@ -327,4 +342,14 @@ float AHeroCharacter::GetAttackSpeed() const
 	}
 
 	return 0.f;
+}
+
+const UInputAction* AHeroCharacter::GetInputAction( const FGameplayTag InputTag ) const
+{
+	if( !InputConfig )
+	{
+		return nullptr;
+	}
+
+	return InputConfig->FindAbilityInputActionForTag( InputTag, true );
 }

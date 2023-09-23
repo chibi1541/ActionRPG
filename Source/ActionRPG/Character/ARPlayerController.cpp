@@ -9,17 +9,19 @@
 
 void AARPlayerController::PostProcessInput( const float DeltaTime, const bool bGamePaused )
 {
-	if( UARAbilitySystemComponent* ARASC = GetARAbilitySystemComponent())
+	if( UARAbilitySystemComponent* ARASC = GetARAbilitySystemComponent() )
 	{
-		ARASC->ProcessAbilityInput(DeltaTime, bGamePaused);
+		ARASC->ProcessAbilityInput( DeltaTime, bGamePaused );
 	}
 
-	Super::PostProcessInput(DeltaTime, bGamePaused);
+	Super::PostProcessInput( DeltaTime, bGamePaused );
+
+	bShouldPerformFullTickWhenPaused = true;
 }
 
 UARAbilitySystemComponent* AARPlayerController::GetARAbilitySystemComponent() const
 {
 	const AHeroCharacter* HeroCharacter = CastChecked<AHeroCharacter>( GetCharacter() );
-	return (HeroCharacter ? HeroCharacter->GetARAbilitySystemComponent() : nullptr );
+	return ( HeroCharacter ? HeroCharacter->GetARAbilitySystemComponent() : nullptr );
 }
 

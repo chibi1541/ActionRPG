@@ -52,6 +52,9 @@ public:
 	UFUNCTION( BlueprintCallable, Category = "ActionRPG|AgilityAttributes" )
 		virtual float GetAttackSpeed() const;
 
+	UFUNCTION( BlueprintCallable, Category = "Input|InputAction" )
+		virtual const UInputAction* GetInputAction( const FGameplayTag InputTag ) const;
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent ) override;
@@ -59,6 +62,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void InitAbilitySystem() override;
+
+	virtual void Tick( float DeltaSeconds ) override;
 
 	virtual void Move( const FInputActionValue& Value );
 	virtual void Look( const FInputActionValue& Value );
@@ -119,8 +124,8 @@ protected:
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "ClassType" )
 		EHeroClass HeroClass;
 
-		// Passive
-		// do apart way
+	// Passive
+	// do apart way
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Passive Effect" )
 		TArray<TSubclassOf<UGameplayEffect>> PassiveEffects;
 

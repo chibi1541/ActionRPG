@@ -15,8 +15,6 @@ UCLASS()
 class ACTIONRPG_API AARPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
-
 protected:
 	virtual void PostProcessInput(const float DeltaTime, const bool bGamePaused) override;
 
