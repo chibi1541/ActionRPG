@@ -67,6 +67,7 @@ protected:
 
 	virtual void Move( const FInputActionValue& Value );
 	virtual void Look( const FInputActionValue& Value );
+	virtual void Confirm();
 
 	void Input_AbilityInputTagPressed( FGameplayTag InputTag );
 	void Input_AbilityInputTagReleased( FGameplayTag InputTag );

@@ -39,6 +39,11 @@ void UARGA_SpendStamina::ActivateAbility( const FGameplayAbilitySpecHandle Handl
 		EndAbility( Handle, ActorInfo, ActivationInfo, true, false );
 		return;
 	}
+
+	if( TriggerEventData )
+	{
+		CurrentEventData = *TriggerEventData;
+	}
 }
 
 bool UARGA_SpendStamina::SpendStamina()

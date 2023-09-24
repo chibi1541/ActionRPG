@@ -88,6 +88,7 @@ void AHeroCharacter::SetupPlayerInputComponent( class UInputComponent* PlayerInp
 
 	HeroIC->BindNativeAction( InputConfig, GameplayTags.InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::Move, true );
 	HeroIC->BindNativeAction( InputConfig, GameplayTags.InputTag_Look, ETriggerEvent::Triggered, this, &ThisClass::Look, true );
+	HeroIC->BindNativeAction( InputConfig, GameplayTags.InputTag_Confirm, ETriggerEvent::Triggered, this, &ThisClass::Confirm, true );
 }
 
 void AHeroCharacter::BeginPlay()
@@ -147,6 +148,11 @@ void AHeroCharacter::Move( const FInputActionValue& Value )
 	if( AbilitySystemComp->HasMatchingGameplayTag( TAG_MovingLocked ) == true )
 		return;
 
+	if( GetWorld()->IsPaused() )
+	{
+		return;
+	}
+
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	if( Controller != nullptr )
@@ -180,8 +186,23 @@ void AHeroCharacter::Look( const FInputActionValue& Value )
 	}
 }
 
+void AHeroCharacter::Confirm()
+{
+	if( AbilitySystemComp )
+	{
+		AbilitySystemComp->InputConfirm();
+	}
+}
+
 void AHeroCharacter::Input_AbilityInputTagPressed( FGameplayTag InputTag )
 {
+	const UInputAction* IA = InputConfig->FindAbilityInputActionForTag( InputTag, false );
+
+	if( GetWorld()->IsPaused() && !IA->bTriggerWhenPaused )
+	{
+		return;
+	}
+
 	if( UARAbilitySystemComponent* ArASC = GetARAbilitySystemComponent() )
 	{
 		ArASC->AbilityInputTagPressed( InputTag );

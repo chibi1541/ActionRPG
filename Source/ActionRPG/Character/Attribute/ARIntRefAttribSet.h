@@ -24,6 +24,11 @@ class ACTIONRPG_API UARIntRefAttribSet : public UAttributeSet
 
 public:
 
+	virtual void PreAttributeChange( const FGameplayAttribute& Attribute, float& NewValue ) override;
+	virtual void PostGameplayEffectExecute( const FGameplayEffectModCallbackData& Data ) override;
+
+public:
+
 	UPROPERTY( BlueprintReadOnly, Category = "Mana" )
 	FGameplayAttributeData MaxMana;
 	ATTRIBUTE_ACCESSORS( UARIntRefAttribSet, MaxMana )
