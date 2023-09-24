@@ -12,6 +12,7 @@
 
 class UGetHitComponent;
 class UARVitRefAttribSet;
+class UARIntRefAttribSet;
 
 UCLASS( ClassGroup = ( Custom ), meta = ( BlueprintSpawnableComponent ) )
 class ACTIONRPG_API UARCharacterStateComponent : public UActorComponent, public IAbilitySystemInterface
@@ -43,7 +44,11 @@ protected:
 	UFUNCTION()
 		void OnRefreshProvoked( FActiveGameplayEffect& EffectSpec );
 
-	virtual void OnStaminaChange( const FOnAttributeChangeData& data );
+	virtual void OnStaminaChange( const FOnAttributeChangeData& Data );
+
+	virtual void OnHealthChange( const FOnAttributeChangeData& Data );
+
+	virtual void OnManaChange( const FOnAttributeChangeData& Data );
 
 public:
 	UFUNCTION( BlueprintCallable, Category = "CharacterState|Stiff" )
@@ -62,6 +67,8 @@ private:
 	bool IsStunned;
 
 	TWeakObjectPtr<const UARVitRefAttribSet> HealthAttrib;
+
+	TWeakObjectPtr<const UARIntRefAttribSet> ManaAttrib;
 
 public:
 

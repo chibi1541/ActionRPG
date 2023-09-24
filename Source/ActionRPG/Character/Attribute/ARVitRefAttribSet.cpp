@@ -38,12 +38,15 @@ void UARVitRefAttribSet::PostGameplayEffectExecute( const FGameplayEffectModCall
 		SourceCharacter = Cast<ABaseCharacter>( SourceActor );
 	}
 
-	if( Data.EvaluatedData.Attribute == GetStaminaAttribute() )
+	if( Data.EvaluatedData.Attribute == GetHealthAttribute() )
+	{
+		SetHealth( FMath::Clamp( GetHealth(), 0.0f, GetMaxHealth() ) );
+	}
+	else if( Data.EvaluatedData.Attribute == GetStaminaAttribute() )
 	{
 		SetStamina( FMath::Clamp( GetStamina(), 0.0f, GetMaxStamina() ) );
 	}
-
-	if( Data.EvaluatedData.Attribute == GetReceivedDamageAttribute() )
+	else if( Data.EvaluatedData.Attribute == GetReceivedDamageAttribute() )
 	{
 		const float TempDamage = GetReceivedDamage();
 		SetReceivedDamage( 0.f );

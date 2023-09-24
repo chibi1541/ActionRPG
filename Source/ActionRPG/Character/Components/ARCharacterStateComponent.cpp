@@ -12,6 +12,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 
 #include "Character/Attribute/ARVitRefAttribSet.h"
+#include "Character/Attribute/ARIntRefAttribSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARCharacterStateComponent)
 
@@ -48,12 +49,23 @@ void UARCharacterStateComponent::BeginPlay()
 	GetHitComp = Cast<UGetHitComponent>( Owner->GetComponentByClass( UGetHitComponent::StaticClass() ) );
 
 	HealthAttrib = AbilitySystemComponent->GetSet<UARVitRefAttribSet>();
+	ManaAttrib = AbilitySystemComponent->GetSet<UARIntRefAttribSet>();
 
 	const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
 	AbilitySystemComponent->ActiveGameplayEffectCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Stun ).AddDynamic( this, &UARCharacterStateComponent::OnGetStuned );
 	AbilitySystemComponent->GameplayEffectRemoveCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Stun ).AddDynamic( this, &UARCharacterStateComponent::OnStunStateRemoved );
 	AbilitySystemComponent->ActiveGameplayEffectCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Provoke ).AddDynamic( this, &UARCharacterStateComponent::OnProvoked );
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetStaminaAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnStaminaChange );
+
+	if( HealthAttrib.IsValid() )
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetStaminaAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnStaminaChange );
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetHealthAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnHealthChange );
+	}
+
+	if( ManaAttrib.IsValid() )
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( ManaAttrib->GetManaAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnManaChange );
+	}
 }
 
 void UARCharacterStateComponent::EndPlay( const EEndPlayReason::Type EndPlayReason )
@@ -119,6 +131,36 @@ void UARCharacterStateComponent::OnStaminaChange( const FOnAttributeChangeData& 
 	else if( Data.NewValue < HealthAttrib->GetMaxStamina() && AbilitySystemComponent->HasMatchingGameplayTag( Tags.CharacterStateTag_FullStamina ) )
 	{
 		AbilitySystemComponent->RemoveLooseGameplayTag( Tags.CharacterStateTag_FullStamina );
+	}
+}
+
+void UARCharacterStateComponent::OnHealthChange( const FOnAttributeChangeData& Data )
+{
+	const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
+
+	if( Data.NewValue > Data.OldValue && Data.NewValue >= HealthAttrib->GetMaxHealth() )
+	{
+		AbilitySystemComponent->AddLooseGameplayTag( Tags.CharacterStateTag_FullHealth );
+	}
+	else if( Data.NewValue < HealthAttrib->GetMaxHealth() && AbilitySystemComponent->HasMatchingGameplayTag( Tags.CharacterStateTag_FullHealth ) )
+	{
+		AbilitySystemComponent->RemoveLooseGameplayTag( Tags.CharacterStateTag_FullHealth );
+	}
+
+	// Change Dead State
+}
+
+void UARCharacterStateComponent::OnManaChange( const FOnAttributeChangeData& Data )
+{
+	const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
+
+	if( Data.NewValue > Data.OldValue && Data.NewValue >= ManaAttrib->GetMaxMana() )
+	{
+		AbilitySystemComponent->AddLooseGameplayTag( Tags.CharacterStateTag_FullMana );
+	}
+	else if( Data.NewValue < ManaAttrib->GetMaxMana() && AbilitySystemComponent->HasMatchingGameplayTag( Tags.CharacterStateTag_FullMana ) )
+	{
+		AbilitySystemComponent->RemoveLooseGameplayTag( Tags.CharacterStateTag_FullMana );
 	}
 }
 

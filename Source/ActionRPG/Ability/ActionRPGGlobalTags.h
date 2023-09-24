@@ -27,6 +27,8 @@ struct ACTIONRPG_API FActionRPGGlobalTags : public FGameplayTagNativeAdder
 	FGameplayTag CharacterStateTag_Exhausted;
 	FGameplayTag CharacterStateTag_SpendStamina;
 	FGameplayTag CharacterStateTag_FullStamina;
+	FGameplayTag CharacterStateTag_FullHealth;
+	FGameplayTag CharacterStateTag_FullMana;
 
 	// Cost Tags
 	FGameplayTag AbilityCostTag_Stamina;
@@ -56,6 +58,8 @@ protected:
 		CharacterStateTag_Exhausted = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Exhausted" ) );
 		CharacterStateTag_SpendStamina = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.SpendStamina" ) );
 		CharacterStateTag_FullStamina = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.FullStamina" ) );
+		CharacterStateTag_FullHealth = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.FullHealth" ) );
+		CharacterStateTag_FullMana = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.FullMana" ) );
 		
 		AbilityCostTag_Stamina = Manager.AddNativeGameplayTag( TEXT( "Ability.Cost.Stamina" ) );
 
