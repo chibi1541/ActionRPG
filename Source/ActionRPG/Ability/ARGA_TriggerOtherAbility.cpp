@@ -14,7 +14,7 @@ void UARGA_TriggerOtherAbility::MakePayloadData_Implementation( FGameplayEventDa
 void UARGA_TriggerOtherAbility::TriggerAbility()
 {
 	FGameplayEventData Payload;
-	MakePayloadData_Implementation( Payload );
+	MakePayloadData( Payload );
 
 	SendGameplayEvent( TriggerAbilityTag, Payload );
 }

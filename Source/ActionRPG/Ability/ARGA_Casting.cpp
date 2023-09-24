@@ -9,9 +9,20 @@
 
 void UARGA_Casting::ActivateAbility( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData )
 {
+	if( CheckCost( Handle, ActorInfo ) == false )
+	{
+		EndAbility( Handle, ActorInfo, ActivationInfo, true, true );
+		return;
+	}
+
 	float StartTimeSeconds = CastingMontage->GetPlayLength() - CastingTime;
 
-	UAbilityTask_PlayMontageAndWait* PlayMontageTask = 
+	if( TriggerEventData )
+	{
+		CurrentEventData = *TriggerEventData;
+	}
+
+	UAbilityTask_PlayMontageAndWait* PlayMontageTask =
 		UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this, NAME_None, CastingMontage, 1.0f, NAME_None,
 		true, 1.0f, StartTimeSeconds );
@@ -25,7 +36,7 @@ void UARGA_Casting::ActivateAbility( const FGameplayAbilitySpecHandle Handle, co
 
 void UARGA_Casting::OnCompleted()
 {
-	RLOG(Warning, TEXT( "Casting Over" ));
+	RLOG( Warning, TEXT( "Casting Over" ) );
 
 	TriggerAbility();
 

@@ -12,6 +12,7 @@ struct ACTIONRPG_API FActionRPGGlobalTags : public FGameplayTagNativeAdder
 	// Input Tags
 	FGameplayTag InputTag_Move;
 	FGameplayTag InputTag_Look;
+	FGameplayTag InputTag_Confirm;
 
 	// Ability Tags (Ability.Action)
 	FGameplayTag AbilityActionTag_Guard;
@@ -32,6 +33,8 @@ struct ACTIONRPG_API FActionRPGGlobalTags : public FGameplayTagNativeAdder
 
 	// Extra Damage Tag
 	FGameplayTag ExtraDamageTag;
+	FGameplayTag ExtraDamageCoeffTag;
+
 
 	FORCEINLINE static const FActionRPGGlobalTags& Get() { return ActionRPGTags; }
 
@@ -42,6 +45,7 @@ protected:
 
 		InputTag_Move = Manager.AddNativeGameplayTag(TEXT("InputTag.Move"));
 		InputTag_Look = Manager.AddNativeGameplayTag(TEXT("InputTag.Look"));
+		InputTag_Confirm = Manager.AddNativeGameplayTag(TEXT("InputTag.Confirm"));
 		
 		AbilityActionTag_Guard = Manager.AddNativeGameplayTag( TEXT( "Ability.Action.Guard" ) );
 		AbilityStateTag_Guard = Manager.AddNativeGameplayTag( TEXT( "Ability.State.Guard" ) );
@@ -54,7 +58,9 @@ protected:
 		CharacterStateTag_FullStamina = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.FullStamina" ) );
 		
 		AbilityCostTag_Stamina = Manager.AddNativeGameplayTag( TEXT( "Ability.Cost.Stamina" ) );
+
 		ExtraDamageTag = Manager.AddNativeGameplayTag( TEXT( "Ability.Value.ExtraDamage" ) );
+		ExtraDamageTag = Manager.AddNativeGameplayTag( TEXT( "Ability.Value.ExtraDamageCoeff" ) );
 	}
 
 private:
