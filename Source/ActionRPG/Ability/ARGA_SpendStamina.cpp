@@ -23,12 +23,9 @@ UARGA_SpendStamina::UARGA_SpendStamina( const FObjectInitializer& ObjectInitiali
 
 void UARGA_SpendStamina::ActivateAbility( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData )
 {
-	Super::ActivateAbility( Handle, ActorInfo, ActivationInfo, TriggerEventData );
-
 	if( CommitAbility( Handle, ActorInfo, ActivationInfo ) == false )
 	{
-		EndAbility( Handle, ActorInfo, ActivationInfo, true, false );
-		return;
+		EndAbility( Handle, ActorInfo, ActivationInfo, true, true );
 	}
 
 	bool bComplete = SpendStamina();
@@ -36,13 +33,31 @@ void UARGA_SpendStamina::ActivateAbility( const FGameplayAbilitySpecHandle Handl
 	if( bComplete == false )
 	{
 		RLOG( Error, TEXT( "GameplayEffect Implement is Failed" ) );
-		EndAbility( Handle, ActorInfo, ActivationInfo, true, false );
+		EndAbility( Handle, ActorInfo, ActivationInfo, true, true );
 		return;
 	}
 
 	if( TriggerEventData )
 	{
 		CurrentEventData = *TriggerEventData;
+	}
+
+	if( bHasBlueprintActivate )
+	{
+		K2_ActivateAbility();
+	}
+	else if( bHasBlueprintActivateFromEvent )
+	{
+		if( TriggerEventData )
+		{
+			K2_ActivateAbilityFromEvent( *TriggerEventData );
+		}
+		else
+		{
+			bool bReplicateEndAbility = false;
+			bool bWasCancelled = true;
+			EndAbility( Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled );
+		}
 	}
 }
 

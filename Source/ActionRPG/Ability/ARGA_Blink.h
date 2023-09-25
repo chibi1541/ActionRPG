@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Ability/ARGA_SpendStamina.h"
+#include "Ability/ARGA_UsingCooldown.h"
 
 #include "ARGA_Blink.generated.h"
 
@@ -12,7 +12,7 @@
  class UNavigationSystemV1;
 
 UCLASS()
-class ACTIONRPG_API UARGA_Blink : public UARGA_SpendStamina
+class ACTIONRPG_API UARGA_Blink : public UARGA_UsingCooldown
 {
 	GENERATED_UCLASS_BODY()
 

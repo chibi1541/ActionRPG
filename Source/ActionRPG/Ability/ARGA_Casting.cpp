@@ -28,6 +28,7 @@ void UARGA_Casting::ActivateAbility( const FGameplayAbilitySpecHandle Handle, co
 		true, 1.0f, StartTimeSeconds );
 
 	PlayMontageTask->OnCompleted.AddDynamic( this, &UARGA_Casting::OnCompleted );
+	PlayMontageTask->OnBlendOut.AddDynamic( this, &UARGA_Casting::OnCompleted );
 	PlayMontageTask->OnCancelled.AddDynamic( this, &UARGA_Casting::OnCancelled );
 	PlayMontageTask->OnInterrupted.AddDynamic( this, &UARGA_Casting::OnCancelled );
 

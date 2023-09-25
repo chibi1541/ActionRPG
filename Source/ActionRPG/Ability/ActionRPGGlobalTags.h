@@ -37,6 +37,8 @@ struct ACTIONRPG_API FActionRPGGlobalTags : public FGameplayTagNativeAdder
 	FGameplayTag ExtraDamageTag;
 	FGameplayTag ExtraDamageCoeffTag;
 
+	// Cooldown Duration Tag
+	FGameplayTag CooldownDurationTag;
 
 	FORCEINLINE static const FActionRPGGlobalTags& Get() { return ActionRPGTags; }
 
@@ -45,13 +47,13 @@ protected:
 	{
 		UGameplayTagsManager& Manager = UGameplayTagsManager::Get();
 
-		InputTag_Move = Manager.AddNativeGameplayTag(TEXT("InputTag.Move"));
-		InputTag_Look = Manager.AddNativeGameplayTag(TEXT("InputTag.Look"));
-		InputTag_Confirm = Manager.AddNativeGameplayTag(TEXT("InputTag.Confirm"));
-		
+		InputTag_Move = Manager.AddNativeGameplayTag( TEXT( "InputTag.Move" ) );
+		InputTag_Look = Manager.AddNativeGameplayTag( TEXT( "InputTag.Look" ) );
+		InputTag_Confirm = Manager.AddNativeGameplayTag( TEXT( "InputTag.Confirm" ) );
+
 		AbilityActionTag_Guard = Manager.AddNativeGameplayTag( TEXT( "Ability.Action.Guard" ) );
 		AbilityStateTag_Guard = Manager.AddNativeGameplayTag( TEXT( "Ability.State.Guard" ) );
-		
+
 		CharacterStateTag_Stiff = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Stiff" ) );
 		CharacterStateTag_Stun = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Stun" ) );
 		CharacterStateTag_Provoked = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Provoked" ) );
@@ -60,11 +62,13 @@ protected:
 		CharacterStateTag_FullStamina = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.FullStamina" ) );
 		CharacterStateTag_FullHealth = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.FullHealth" ) );
 		CharacterStateTag_FullMana = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.FullMana" ) );
-		
+
 		AbilityCostTag_Stamina = Manager.AddNativeGameplayTag( TEXT( "Ability.Cost.Stamina" ) );
 
 		ExtraDamageTag = Manager.AddNativeGameplayTag( TEXT( "Ability.Value.ExtraDamage" ) );
 		ExtraDamageTag = Manager.AddNativeGameplayTag( TEXT( "Ability.Value.ExtraDamageCoeff" ) );
+
+		CooldownDurationTag = Manager.AddNativeGameplayTag( TEXT( "Ability.Value.CooldownDuration" ) );
 	}
 
 private:
