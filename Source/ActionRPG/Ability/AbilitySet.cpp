@@ -16,9 +16,9 @@ void UAbilitySet::GiveToAbilitySystem( UAbilitySystemComponent* AbilitySystemCom
 {
 	RCHECK( AbilitySystemComponent != nullptr );
 
-	for( int32 AbilityIndex = 0; AbilityIndex < Abilities.Num(); AbilityIndex++ )
+	for( int32 AbilityIndex = 0; AbilityIndex < KeyBindingAbilities.Num(); AbilityIndex++ )
 	{
-		const FAbilitySet_GameplayAbility& AbilityToGrant = Abilities[AbilityIndex];
+		const FAbilitySet_GameplayAbility& AbilityToGrant = KeyBindingAbilities[AbilityIndex];
 
 		if( IsValid( AbilityToGrant.Ability ) == false )
 		{
@@ -31,5 +31,21 @@ void UAbilitySet::GiveToAbilitySystem( UAbilitySystemComponent* AbilitySystemCom
 		AbilitySpec.DynamicAbilityTags.AddTag(AbilityToGrant.InputTag);
 
 		AbilitySystemComponent->GiveAbility(AbilitySpec);
+	}
+
+	for( int32 AbilityIndex = 0; AbilityIndex < Abilities.Num(); AbilityIndex++ )
+	{
+		auto Ability = Abilities[AbilityIndex];
+
+		if( IsValid( Ability ) == false )
+		{
+			RLOG( Error, TEXT( "GrantedGameplayAbilities[%d] on ability set [%s] is not valid." ), AbilityIndex, *GetNameSafe( this ) )
+				continue;
+		}
+
+		UGameplayAbility* AbilityCDO = Ability->GetDefaultObject<UGameplayAbility>();
+		FGameplayAbilitySpec AbilitySpec( AbilityCDO, 1 );
+
+		AbilitySystemComponent->GiveAbility( AbilitySpec );
 	}
 }

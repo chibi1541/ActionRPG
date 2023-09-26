@@ -13,6 +13,7 @@
 class UGetHitComponent;
 class UARVitRefAttribSet;
 class UARIntRefAttribSet;
+class ABaseCharacter;
 
 UCLASS( ClassGroup = ( Custom ), meta = ( BlueprintSpawnableComponent ) )
 class ACTIONRPG_API UARCharacterStateComponent : public UActorComponent, public IAbilitySystemInterface
@@ -29,6 +30,8 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+	virtual void TickComponent( float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
 
 	virtual void EndPlay( const EEndPlayReason::Type EndPlayReason );
 
@@ -55,7 +58,13 @@ public:
 		void SetStiffEffectSpec( const FGameplayEffectSpecHandle& SpecHandle );
 
 	UFUNCTION( BlueprintCallable, Category = "CharacterState|Stun" )
-		const bool GetStunState() const;
+		bool GetStunState() const;
+
+	UFUNCTION( BlueprintCallable, Category = "CharacterState|Targeting" )
+		bool SetTargeting( bool bTargeting );
+
+private:
+	void UpdateTargeting( float DeltaTime );
 
 private:
 	TWeakObjectPtr<UGetHitComponent> GetHitComp;
@@ -66,6 +75,10 @@ private:
 	// State Variable
 	bool IsStunned;
 
+	bool bNowTargeting;
+
+	TWeakObjectPtr<const ABaseCharacter> TargetCharacter;
+
 	TWeakObjectPtr<const UARVitRefAttribSet> HealthAttrib;
 
 	TWeakObjectPtr<const UARIntRefAttribSet> ManaAttrib;
@@ -74,4 +87,5 @@ public:
 
 	UPROPERTY( BlueprintReadWrite, Category = "Stiff" )
 		FGameplayEffectSpecHandle StiffEffectSpecHandle;
+
 };

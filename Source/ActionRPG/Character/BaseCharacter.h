@@ -18,6 +18,7 @@ class UAbilitySet;
 class UARBaseAttribSet;
 class UGameplayEffect;
 class UARCharacterStateComponent;
+class UARTargetComponent;
 
 UCLASS( config = Game )
 class ACTIONRPG_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayCueInterface, public IGameplayTagAssetInterface
@@ -36,6 +37,9 @@ public:
 
 	UFUNCTION( BlueprintCallable, Category = "ARCharacter|StateComponent" )
 		UARCharacterStateComponent* GetCharacterStateComponenet() const;
+
+	UFUNCTION( BlueprintCallable, Category = "ARCharacter|TargetComponent" )
+		UARTargetComponent* GetTargetComponent() const;
 
 	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseAttributes" )
 		int32 GetCharacterLevel() const;
@@ -63,6 +67,9 @@ protected:
 
 	UPROPERTY()
 		TObjectPtr<UARAbilitySystemComponent> AbilitySystemComp;
+
+	UPROPERTY( EditAnywhere, BlueprintReadOnly )
+		TObjectPtr<UARTargetComponent> TargetComponent;
 
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Ability" )
 		TArray<TObjectPtr<UAbilitySet>> AbilitySets;

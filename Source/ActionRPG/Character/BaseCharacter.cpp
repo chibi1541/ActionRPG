@@ -8,6 +8,7 @@
 #include "Ability/ARAbilitySystemComponent.h"
 #include "Character/ARMovementComponent.h"
 #include "Character/Attribute/ARBaseAttribSet.h"
+#include "Character/Components/ARTargetComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BaseCharacter)
 
@@ -21,6 +22,9 @@ ABaseCharacter::ABaseCharacter( const FObjectInitializer& ObjectInitializer /*= 
 	AbilitySystemComp.Get()->ReplicationMode = EGameplayEffectReplicationMode::Full;
 
 	BaseAttribSet = CreateDefaultSubobject<UARBaseAttribSet>( TEXT( "ARBaseAttribSet" ) );
+
+	TargetComponent = CreateDefaultSubobject<UARTargetComponent>( TEXT( "TARGETCOMP" ) );
+	TargetComponent->SetupAttachment( RootComponent );
 }
 
 class UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
@@ -49,6 +53,17 @@ void ABaseCharacter::BeginPlay()
 UARCharacterStateComponent* ABaseCharacter::GetCharacterStateComponenet() const
 {
 	return CharacterStateComponent;
+}
+
+UARTargetComponent* ABaseCharacter::GetTargetComponent() const
+{
+	if( CharacterType == ECharacterType::CT_Hero 
+	|| CharacterType == ECharacterType::CT_Monster)
+	{
+		return TargetComponent;
+	}
+
+	return nullptr;
 }
 
 void ABaseCharacter::InitAbilitySystem()

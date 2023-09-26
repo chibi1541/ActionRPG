@@ -34,6 +34,8 @@ public:
 
 protected:
 	UPROPERTY( EditDefaultsOnly, meta = ( Category = "AbilitySet" ) )
-	TArray<FAbilitySet_GameplayAbility> Abilities;
+	TArray<FAbilitySet_GameplayAbility> KeyBindingAbilities;
 
+	UPROPERTY( EditDefaultsOnly, meta = ( Category = "AbilitySet" ) )
+	TArray<TSubclassOf<UGameplayAbility>> Abilities;
 };

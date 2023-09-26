@@ -10,6 +10,9 @@
 #include "Character/BaseCharacter.h"
 #include "Character/BaseAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Character/Components/ARTargetComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "Character/Attribute/ARVitRefAttribSet.h"
 #include "Character/Attribute/ARIntRefAttribSet.h"
@@ -19,7 +22,7 @@
 // Sets default values for this component's properties
 UARCharacterStateComponent::UARCharacterStateComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 
 	StiffEffectSpecHandle = FGameplayEffectSpecHandle( nullptr );
 
@@ -27,6 +30,7 @@ UARCharacterStateComponent::UARCharacterStateComponent()
 	AbilitySystemComponent.Get()->ReplicationMode = EGameplayEffectReplicationMode::Full;
 
 	IsStunned = false;
+	bNowTargeting = false;
 }
 
 UAbilitySystemComponent* UARCharacterStateComponent::GetAbilitySystemComponent() const
@@ -39,7 +43,7 @@ void UARCharacterStateComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	const AActor* Owner = GetOwner();
+	const ABaseCharacter* Owner = Cast<ABaseCharacter>( GetOwner() );
 	if( !Owner )
 	{
 		RLOG( Error, TEXT( "Owner is not Valid" ) );
@@ -65,6 +69,16 @@ void UARCharacterStateComponent::BeginPlay()
 	if( ManaAttrib.IsValid() )
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( ManaAttrib->GetManaAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnManaChange );
+	}
+}
+
+void UARCharacterStateComponent::TickComponent( float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
+{
+	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
+
+	if( bNowTargeting )
+	{
+		UpdateTargeting( DeltaTime );
 	}
 }
 
@@ -185,7 +199,84 @@ void UARCharacterStateComponent::SetStiffEffectSpec( const FGameplayEffectSpecHa
 	FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *StiffEffectSpecHandle.Data.Get(), AbilitySystemComponent );
 }
 
-const bool UARCharacterStateComponent::GetStunState() const
+bool UARCharacterStateComponent::GetStunState() const
 {
 	return IsStunned;
+}
+
+bool UARCharacterStateComponent::SetTargeting( bool bTargeting )
+{
+	if( bTargeting )
+	{
+		auto Owner = Cast<ABaseCharacter>( GetOwner() );
+		if( ( !TargetCharacter.IsValid() ) && Owner )
+		{
+			if( GetWorld()->IsValidLowLevel() )
+			{
+				TArray<AActor*> arrCharacters;
+				UGameplayStatics::GetAllActorsOfClass( GetWorld(), ABaseCharacter::StaticClass(), arrCharacters );
+				for( AActor* FindOne : arrCharacters )
+				{
+					const ABaseCharacter* Target = Cast<ABaseCharacter>( FindOne );
+					if( Target )
+					{
+						if( !Target->GetTargetComponent() )
+						{
+							continue;
+						}
+
+						if( Target->GetCharacterType() != Owner->GetCharacterType() )
+						{
+							TargetCharacter = Target;
+							break;
+						}
+					}
+				}
+			}
+
+			if( TargetCharacter.IsValid() )
+			{
+				bNowTargeting = true;
+				Owner->GetCharacterMovement()->bOrientRotationToMovement = false;
+
+				return true;
+			}
+		}
+	}
+	else
+	{
+		TargetCharacter.Reset();
+		bNowTargeting = false;
+
+		auto Owner = Cast<ABaseCharacter>( GetOwner() );
+		if( Owner )
+		{
+			Owner->GetCharacterMovement()->bOrientRotationToMovement = true;
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+void UARCharacterStateComponent::UpdateTargeting( float DeltaTime )
+{
+	if( !TargetCharacter.IsValid() )
+	{
+		RLOG( Warning, TEXT( "Target is not Valid" ) );
+		return;
+	}
+
+	auto Character = Cast<ABaseCharacter>( GetOwner() );
+
+	FVector vecTarget = TargetCharacter->GetTargetComponent()->GetComponentLocation();
+	FVector vecDesired = vecTarget - Character->GetActorLocation();
+	auto rotDesired = vecDesired.Rotation();
+	FRotator rotCurrent = Character->GetControlRotation();
+	rotDesired = FRotator( -rotDesired.Pitch, rotDesired.Yaw, 0.0f );
+
+	Character->GetController()->SetControlRotation(
+		FMath::RInterpTo( rotCurrent, rotDesired, DeltaTime, 10.0f ) );
+	Character->SetActorRotation( rotDesired );
 }
