@@ -2,3 +2,6 @@ Content/ParagonMinions/Characters/Global/Eyes/Textures/EpicQuadPanorama_CC.uasse
 Content/ParagonMinions/Characters/Global/MaterialLayers/Wood/T_TreeBark_D.uasset filter=lfs diff=lfs merge=lfs -text
 Content/ParagonMinions/Characters/Global/MaterialLayers/Wood/T_TreeBark_N.uasset filter=lfs diff=lfs merge=lfs -text
 Content/ParagonPhase/Characters filter=lfs diff=lfs merge=lfs -text
+Content/ParagonSerath/Characters/Global/MaterialLayers/Metal filter=lfs diff=lfs merge=lfs -text
+Content/ParagonSerath/Characters/Heroes/Serath/Skins filter=lfs diff=lfs merge=lfs -text
+Content/ParagonSerath/Characters/Heroes/Serath/Textures filter=lfs diff=lfs merge=lfs -text
