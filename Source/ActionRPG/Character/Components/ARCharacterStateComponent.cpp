@@ -10,7 +10,6 @@
 #include "Character/BaseCharacter.h"
 #include "Character/BaseAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Character/Components/ARTargetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -30,7 +29,6 @@ UARCharacterStateComponent::UARCharacterStateComponent()
 	AbilitySystemComponent.Get()->ReplicationMode = EGameplayEffectReplicationMode::Full;
 
 	IsStunned = false;
-	bNowTargeting = false;
 }
 
 UAbilitySystemComponent* UARCharacterStateComponent::GetAbilitySystemComponent() const
@@ -75,11 +73,6 @@ void UARCharacterStateComponent::BeginPlay()
 void UARCharacterStateComponent::TickComponent( float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
-
-	if( bNowTargeting )
-	{
-		UpdateTargeting( DeltaTime );
-	}
 }
 
 void UARCharacterStateComponent::EndPlay( const EEndPlayReason::Type EndPlayReason )
@@ -202,81 +195,4 @@ void UARCharacterStateComponent::SetStiffEffectSpec( const FGameplayEffectSpecHa
 bool UARCharacterStateComponent::GetStunState() const
 {
 	return IsStunned;
-}
-
-bool UARCharacterStateComponent::SetTargeting( bool bTargeting )
-{
-	if( bTargeting )
-	{
-		auto Owner = Cast<ABaseCharacter>( GetOwner() );
-		if( ( !TargetCharacter.IsValid() ) && Owner )
-		{
-			if( GetWorld()->IsValidLowLevel() )
-			{
-				TArray<AActor*> arrCharacters;
-				UGameplayStatics::GetAllActorsOfClass( GetWorld(), ABaseCharacter::StaticClass(), arrCharacters );
-				for( AActor* FindOne : arrCharacters )
-				{
-					const ABaseCharacter* Target = Cast<ABaseCharacter>( FindOne );
-					if( Target )
-					{
-						if( !Target->GetTargetComponent() )
-						{
-							continue;
-						}
-
-						if( Target->GetCharacterType() != Owner->GetCharacterType() )
-						{
-							TargetCharacter = Target;
-							break;
-						}
-					}
-				}
-			}
-
-			if( TargetCharacter.IsValid() )
-			{
-				bNowTargeting = true;
-				Owner->GetCharacterMovement()->bOrientRotationToMovement = false;
-
-				return true;
-			}
-		}
-	}
-	else
-	{
-		TargetCharacter.Reset();
-		bNowTargeting = false;
-
-		auto Owner = Cast<ABaseCharacter>( GetOwner() );
-		if( Owner )
-		{
-			Owner->GetCharacterMovement()->bOrientRotationToMovement = true;
-		}
-
-		return true;
-	}
-
-	return false;
-}
-
-void UARCharacterStateComponent::UpdateTargeting( float DeltaTime )
-{
-	if( !TargetCharacter.IsValid() )
-	{
-		RLOG( Warning, TEXT( "Target is not Valid" ) );
-		return;
-	}
-
-	auto Character = Cast<ABaseCharacter>( GetOwner() );
-
-	FVector vecTarget = TargetCharacter->GetTargetComponent()->GetComponentLocation();
-	FVector vecDesired = vecTarget - Character->GetActorLocation();
-	auto rotDesired = vecDesired.Rotation();
-	FRotator rotCurrent = Character->GetControlRotation();
-	rotDesired = FRotator( -rotDesired.Pitch, rotDesired.Yaw, 0.0f );
-
-	Character->GetController()->SetControlRotation(
-		FMath::RInterpTo( rotCurrent, rotDesired, DeltaTime, 10.0f ) );
-	Character->SetActorRotation( rotDesired );
 }

@@ -10,6 +10,7 @@
 #include "Ability/ARAbilitySystemComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Character/ARProjectile.h"
+#include "Character/Components/ARTargetingComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARGA_ComboAttackWithProjectile)
 
@@ -188,7 +189,22 @@ void UARGA_ComboAttackWithProjectile::ProjectileFire( FGameplayEventData Payload
 	const FVector HeroLocation = Hero->GetActorLocation();
 
 	FVector Start = Hero->FindComponentByClass<USkeletalMeshComponent>()->GetSocketLocation( ComboAttackDatas[CurComboIndex].StartSocketName );
-	FVector End = FVector( HeroLocation.X, HeroLocation.Y, Start.Z ) + Forward * Range;
+	FVector End;
+
+	auto HeroTargetingComponent = Hero->GetTargetingComponent();
+	auto EnemyTargetingComponent = ( HeroTargetingComponent->GetTargetCharacter() )
+		? HeroTargetingComponent->GetTargetCharacter()->GetTargetingComponent() : nullptr;
+
+	if( EnemyTargetingComponent )
+	{
+		End = EnemyTargetingComponent->GetComponentLocation();
+		RLOG( Warning, TEXT( "%f, %f, %f" ), End.X, End.Y, End.Z );
+	}
+	else
+	{
+		End = FVector( HeroLocation.X, HeroLocation.Y, Start.Z ) + Forward * Range;
+	}
+
 	FRotator Rotation = UKismetMathLibrary::FindLookAtRotation( Start, End );
 
 	FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec( DamageCalcEffect, GetAbilityLevel() );

@@ -12,6 +12,9 @@
 #include "InputActionValue.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Character/Components/ARCharacterStateComponent.h"
+#include "Character/Components/ARTargetingComponent.h"
+
 #include "Character/Attribute/ARVitRefAttribSet.h"
 #include "Character/Attribute/ARAttackAttribSet.h"
 #include "Character/Attribute/ARAgiRefAttribSet.h"
@@ -175,6 +178,11 @@ void AHeroCharacter::Move( const FInputActionValue& Value )
 
 void AHeroCharacter::Look( const FInputActionValue& Value )
 {
+	if( TargetingComponent->GetTargetCharacter() )
+	{
+		return;
+	}
+
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 

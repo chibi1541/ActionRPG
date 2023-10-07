@@ -60,12 +60,6 @@ public:
 	UFUNCTION( BlueprintCallable, Category = "CharacterState|Stun" )
 		bool GetStunState() const;
 
-	UFUNCTION( BlueprintCallable, Category = "CharacterState|Targeting" )
-		bool SetTargeting( bool bTargeting );
-
-private:
-	void UpdateTargeting( float DeltaTime );
-
 private:
 	TWeakObjectPtr<UGetHitComponent> GetHitComp;
 
@@ -75,13 +69,11 @@ private:
 	// State Variable
 	bool IsStunned;
 
-	bool bNowTargeting;
-
-	TWeakObjectPtr<const ABaseCharacter> TargetCharacter;
-
 	TWeakObjectPtr<const UARVitRefAttribSet> HealthAttrib;
 
 	TWeakObjectPtr<const UARIntRefAttribSet> ManaAttrib;
+
+	int TargetIndex;
 
 public:
 

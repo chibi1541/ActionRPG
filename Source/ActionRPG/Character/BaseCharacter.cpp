@@ -8,7 +8,7 @@
 #include "Ability/ARAbilitySystemComponent.h"
 #include "Character/ARMovementComponent.h"
 #include "Character/Attribute/ARBaseAttribSet.h"
-#include "Character/Components/ARTargetComponent.h"
+#include "Character/Components/ARTargetingComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BaseCharacter)
 
@@ -23,8 +23,8 @@ ABaseCharacter::ABaseCharacter( const FObjectInitializer& ObjectInitializer /*= 
 
 	BaseAttribSet = CreateDefaultSubobject<UARBaseAttribSet>( TEXT( "ARBaseAttribSet" ) );
 
-	TargetComponent = CreateDefaultSubobject<UARTargetComponent>( TEXT( "TARGETCOMP" ) );
-	TargetComponent->SetupAttachment( RootComponent );
+	TargetingComponent = CreateDefaultSubobject<UARTargetingComponent>( TEXT( "TARGETINGCOMP" ) );
+	TargetingComponent->SetupAttachment( RootComponent );
 }
 
 class UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
@@ -55,15 +55,36 @@ UARCharacterStateComponent* ABaseCharacter::GetCharacterStateComponenet() const
 	return CharacterStateComponent;
 }
 
-UARTargetComponent* ABaseCharacter::GetTargetComponent() const
+UARTargetingComponent* ABaseCharacter::GetTargetingComponent() const
 {
-	if( CharacterType == ECharacterType::CT_Hero 
-	|| CharacterType == ECharacterType::CT_Monster)
+	if( CharacterType == ECharacterType::CT_Hero
+		|| CharacterType == ECharacterType::CT_Monster )
 	{
-		return TargetComponent;
+		return TargetingComponent;
 	}
 
 	return nullptr;
+}
+
+FVector ABaseCharacter::GetCurrentVelocity() const
+{
+	const auto MovementComponent = GetMovementComponent();
+	if( !MovementComponent )
+	{
+		return FVector::Zero();
+	}
+
+	FVector Velocity = MovementComponent->Velocity;
+	if( Velocity.Size2D() == 0.f )
+	{
+		return FVector::Zero();
+	}
+
+	const FRotator Rotation = Controller->GetControlRotation();
+	float Yaw = 360.f - Rotation.Yaw;
+	Velocity = Velocity.RotateAngleAxis( Yaw, FVector::UpVector );
+
+	return Velocity;
 }
 
 void ABaseCharacter::InitAbilitySystem()
