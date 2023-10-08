@@ -64,6 +64,8 @@ protected:
 
 	virtual void InitializerAttributes();
 
+	virtual void OnSpeedChange( const FOnAttributeChangeData& Data );
+
 protected:
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "Components|State" )
 		TObjectPtr<UARCharacterStateComponent> CharacterStateComponent;

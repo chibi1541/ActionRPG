@@ -105,6 +105,11 @@ void AHeroCharacter::BeginPlay()
 
 	GetCharacterMovement()->MaxWalkSpeed = GetMoveSpeed();
 
+	if( AgiRefAttribSet )
+	{
+		AbilitySystemComp->GetGameplayAttributeValueChangeDelegate( AgiRefAttribSet->GetModifiedMoveSpeedAttribute() ).AddUObject( this, &AHeroCharacter::OnSpeedChange );
+	}
+
 	if( !PassiveEffects.IsEmpty() )
 	{
 		FGameplayEffectContextHandle EffectContext = AbilitySystemComp->MakeEffectContext();

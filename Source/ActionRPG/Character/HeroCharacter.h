@@ -79,8 +79,6 @@ protected:
 	virtual void SetStamina( float Stamina );
 	virtual void SetShieldGauge( float ShieldGauge );
 
-
-
 protected:
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = Camera )
 		TObjectPtr<USpringArmComponent> CameraBoom;

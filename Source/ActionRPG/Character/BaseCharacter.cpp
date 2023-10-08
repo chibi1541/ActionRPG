@@ -116,6 +116,11 @@ void ABaseCharacter::InitializerAttributes()
 	}
 }
 
+void ABaseCharacter::OnSpeedChange( const FOnAttributeChangeData& Data )
+{
+	GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
+}
+
 int32 ABaseCharacter::GetCharacterLevel() const
 {
 	if( BaseAttribSet )

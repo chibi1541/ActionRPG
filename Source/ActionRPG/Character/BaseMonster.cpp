@@ -77,6 +77,11 @@ void ABaseMonster::BeginPlay()
 	SetShieldGauge( GetMaxShieldGauge() );
 
 	GetCharacterMovement()->MaxWalkSpeed = GetMoveSpeed();
+
+	if( AgiRefAttribSet )
+	{
+		AbilitySystemComp->GetGameplayAttributeValueChangeDelegate( AgiRefAttribSet->GetModifiedMoveSpeedAttribute() ).AddUObject( this, &ABaseMonster::OnSpeedChange );
+	}
 }
 
 void ABaseMonster::SetHealth( float Health )

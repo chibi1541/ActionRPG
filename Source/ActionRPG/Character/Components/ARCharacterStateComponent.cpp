@@ -123,12 +123,10 @@ void UARCharacterStateComponent::OnStaminaChange( const FOnAttributeChangeData& 
 	if( Data.NewValue == 0.f )
 	{
 		AbilitySystemComponent->AddLooseGameplayTag( Tags.CharacterStateTag_Exhausted );
-		return;
 	}
 	else if( Data.OldValue == 0.f )
 	{
 		AbilitySystemComponent->RemoveLooseGameplayTag( Tags.CharacterStateTag_Exhausted );
-		return;
 	}
 
 	if( Data.NewValue > Data.OldValue && Data.NewValue >= HealthAttrib->GetMaxStamina() )
