@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Ability/ActionRPGGlobalTags.h"
+#include "AbilitySystemComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARTargetingComponent)
 
@@ -88,7 +89,8 @@ bool UARTargetingComponent::SetTargeting( bool bTargeting )
 
 			if( TargetCharacter.IsValid() )
 			{
-				Owner->GetCharacterMovement()->bOrientRotationToMovement = false;
+
+
 				return true;
 			}
 		}
@@ -96,12 +98,6 @@ bool UARTargetingComponent::SetTargeting( bool bTargeting )
 	else
 	{
 		TargetCharacter.Reset();
-		auto Owner = Cast<ABaseCharacter>( GetOwner() );
-		if( Owner )
-		{
-			Owner->GetCharacterMovement()->bOrientRotationToMovement = true;
-		}
-
 		return true;
 	}
 
@@ -165,7 +161,13 @@ void UARTargetingComponent::UpdateTargeting( float DeltaTime )
 
 	Character->GetController()->SetControlRotation(
 		FMath::RInterpTo( rotCurrent, rotDesired, DeltaTime, 10.0f ) );
-	Character->SetActorRotation( rotDesired );
+
+	const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
+	const auto ASC = Character->GetAbilitySystemComponent();
+	if( ASC && !ASC->HasMatchingGameplayTag( Tags.AbilityStateTag_Sprint ) )
+	{
+		Character->SetActorRotation( FRotator( 0.f, rotDesired.Yaw, 0.f ) );
+	}
 }
 
 void UARTargetingComponent::ArrageTargetList()

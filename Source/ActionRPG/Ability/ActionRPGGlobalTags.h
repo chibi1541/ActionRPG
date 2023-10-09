@@ -20,6 +20,7 @@ struct ACTIONRPG_API FActionRPGGlobalTags : public FGameplayTagNativeAdder
 	// State Tags (Ability.State)
 	FGameplayTag AbilityStateTag_Guard;
 	FGameplayTag AbilityStateTag_TargetingCancel;
+	FGameplayTag AbilityStateTag_Sprint;
 
 	// Condition Tags
 	FGameplayTag CharacterStateTag_Stiff;
@@ -53,8 +54,10 @@ protected:
 		InputTag_Confirm = Manager.AddNativeGameplayTag( TEXT( "InputTag.Confirm" ) );
 
 		AbilityActionTag_Guard = Manager.AddNativeGameplayTag( TEXT( "Ability.Action.Guard" ) );
+
 		AbilityStateTag_Guard = Manager.AddNativeGameplayTag( TEXT( "Ability.State.Guard" ) );
 		AbilityStateTag_TargetingCancel = Manager.AddNativeGameplayTag( TEXT( "Ability.State.TargetingCancel" ) );
+		AbilityStateTag_Sprint = Manager.AddNativeGameplayTag( TEXT( "Ability.State.Sprint" ) );
 
 		CharacterStateTag_Stiff = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Stiff" ) );
 		CharacterStateTag_Stun = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Stun" ) );
