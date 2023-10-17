@@ -52,9 +52,10 @@ protected:
 	// UsedTraceHit Interface
 	virtual void OnHit_Implementation( FHitResult HitResult ) override;
 
-private:
 	UFUNCTION()
-		void OnPlayMontage( int CurrentIndex );
+		virtual void OnPlayMontage( int CurrentIndex );
+
+private:
 
 	UFUNCTION()
 		bool NextAttackAvailable() const;

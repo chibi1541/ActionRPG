@@ -7,6 +7,14 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARUsedTraceHitInterface)
 
+void IARUsedTraceHitInterface::InitHitTraceOnHit_Implementation( UHitTraceComponent* Component )
+{
+	if( Component )
+	{
+		HitTraceComp = Component;
+	}
+}
+
 void IARUsedTraceHitInterface::InitDelegateOnHit_Implementation()
 {
 	if( !HitTraceComp.IsValid() )

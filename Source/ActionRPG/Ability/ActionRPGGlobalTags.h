@@ -13,6 +13,7 @@ struct ACTIONRPG_API FActionRPGGlobalTags : public FGameplayTagNativeAdder
 	FGameplayTag InputTag_Move;
 	FGameplayTag InputTag_Look;
 	FGameplayTag InputTag_Confirm;
+	FGameplayTag InputTag_Attack;
 
 	// Ability Tags (Ability.Action)
 	FGameplayTag AbilityActionTag_Guard;
@@ -21,6 +22,8 @@ struct ACTIONRPG_API FActionRPGGlobalTags : public FGameplayTagNativeAdder
 	FGameplayTag AbilityStateTag_Guard;
 	FGameplayTag AbilityStateTag_TargetingCancel;
 	FGameplayTag AbilityStateTag_Sprint;
+	FGameplayTag AbilityStateTag_Attack;
+	FGameplayTag AbilityStateTag_NextAttack;
 
 	// Condition Tags
 	FGameplayTag CharacterStateTag_Stiff;
@@ -52,12 +55,15 @@ protected:
 		InputTag_Move = Manager.AddNativeGameplayTag( TEXT( "InputTag.Move" ) );
 		InputTag_Look = Manager.AddNativeGameplayTag( TEXT( "InputTag.Look" ) );
 		InputTag_Confirm = Manager.AddNativeGameplayTag( TEXT( "InputTag.Confirm" ) );
+		InputTag_Attack = Manager.AddNativeGameplayTag( TEXT( "InputTag.Attack" ) );
 
 		AbilityActionTag_Guard = Manager.AddNativeGameplayTag( TEXT( "Ability.Action.Guard" ) );
 
 		AbilityStateTag_Guard = Manager.AddNativeGameplayTag( TEXT( "Ability.State.Guard" ) );
 		AbilityStateTag_TargetingCancel = Manager.AddNativeGameplayTag( TEXT( "Ability.State.TargetingCancel" ) );
 		AbilityStateTag_Sprint = Manager.AddNativeGameplayTag( TEXT( "Ability.State.Sprint" ) );
+		AbilityStateTag_Attack = Manager.AddNativeGameplayTag( TEXT( "Ability.State.Attack" ) );
+		AbilityStateTag_NextAttack = Manager.AddNativeGameplayTag( TEXT( "Ability.State.NextAttack" ) );
 
 		CharacterStateTag_Stiff = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Stiff" ) );
 		CharacterStateTag_Stun = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Stun" ) );

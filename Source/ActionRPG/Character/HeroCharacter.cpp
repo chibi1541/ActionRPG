@@ -14,6 +14,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Character/Components/ARCharacterStateComponent.h"
 #include "Character/Components/ARTargetingComponent.h"
+#include "Character/Components/ARComboAttackComponent.h"
 
 #include "Character/Attribute/ARVitRefAttribSet.h"
 #include "Character/Attribute/ARAttackAttribSet.h"
@@ -65,6 +66,10 @@ AHeroCharacter::AHeroCharacter( const FObjectInitializer& ObjectInitializer /*= 
 	AgiRefAttribSet = CreateDefaultSubobject<UARAgiRefAttribSet>( TEXT( "ARAgiRefAttribSet" ) );
 
 	IntRefAttribSet = CreateDefaultSubobject<UARIntRefAttribSet>( TEXT( "ARIntRefAttribSet" ) );
+
+	// Create a ComboAttackComponent
+	ComboAttackComponent = CreateDefaultSubobject<UARComboAttackComponent>(TEXT("COMBOATTACKCOMP"));
+
 }
 
 void AHeroCharacter::SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent )
@@ -92,6 +97,7 @@ void AHeroCharacter::SetupPlayerInputComponent( class UInputComponent* PlayerInp
 	HeroIC->BindNativeAction( InputConfig, GameplayTags.InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::Move, true );
 	HeroIC->BindNativeAction( InputConfig, GameplayTags.InputTag_Look, ETriggerEvent::Triggered, this, &ThisClass::Look, true );
 	HeroIC->BindNativeAction( InputConfig, GameplayTags.InputTag_Confirm, ETriggerEvent::Triggered, this, &ThisClass::Confirm, true );
+	HeroIC->BindNativeAction( InputConfig, GameplayTags.InputTag_Attack, ETriggerEvent::Triggered, this, &ThisClass::ComboAttack, true );
 }
 
 void AHeroCharacter::BeginPlay()
@@ -204,6 +210,14 @@ void AHeroCharacter::Confirm()
 	if( AbilitySystemComp )
 	{
 		AbilitySystemComp->InputConfirm();
+	}
+}
+
+void AHeroCharacter::ComboAttack()
+{
+	if( ComboAttackComponent )
+	{
+		ComboAttackComponent->StartComboAttack();
 	}
 }
 

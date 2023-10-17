@@ -25,6 +25,11 @@ class ACTIONRPG_API IARUsedTraceHitInterface
 
 public:
 	UFUNCTION( BlueprintCallable, BlueprintNativeEvent, Category = "HitTrace|Init" )
+		void InitHitTraceOnHit( UHitTraceComponent* Component );
+
+		virtual void InitHitTraceOnHit_Implementation( UHitTraceComponent* Component );
+
+	UFUNCTION( BlueprintCallable, BlueprintNativeEvent, Category = "HitTrace|Init" )
 		void InitDelegateOnHit();
 
 	virtual void InitDelegateOnHit_Implementation();

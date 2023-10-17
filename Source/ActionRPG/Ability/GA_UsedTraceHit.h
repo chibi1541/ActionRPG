@@ -30,7 +30,7 @@ protected:
 		virtual void ResetHitTraceComp();
 
 protected:
-	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "HitTrace" )
+	UPROPERTY( VisibleAnywhere, BlueprintReadWrite, Category = "HitTrace" )
 		TObjectPtr<UHitTraceComponent> HitTraceComp;
 
 

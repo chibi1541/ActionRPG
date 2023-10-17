@@ -11,6 +11,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class UHeroMovementComponent;
+class UARComboAttackComponent;
 class UInputMappingContext;
 class UHeroInputConfig;
 class UTagRelationship;
@@ -68,6 +69,7 @@ protected:
 	virtual void Move( const FInputActionValue& Value );
 	virtual void Look( const FInputActionValue& Value );
 	virtual void Confirm();
+	virtual void ComboAttack();
 
 	void Input_AbilityInputTagPressed( FGameplayTag InputTag );
 	void Input_AbilityInputTagReleased( FGameplayTag InputTag );
@@ -85,6 +87,7 @@ protected:
 
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = Camera )
 		TObjectPtr<UCameraComponent> FollowCamera;
+
 
 	//Input
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = Input )
@@ -120,11 +123,14 @@ protected:
 	UPROPERTY()
 		TObjectPtr<UARIntRefAttribSet> IntRefAttribSet;
 
+	UPROPERTY( VisibleAnywhere, BlueprintReadOnly )
+		TObjectPtr<UARComboAttackComponent> ComboAttackComponent;
+
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "ClassType" )
 		EHeroClass HeroClass;
 
 	// Passive
-	// do apart way
+	// To Do : apart way
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Passive Effect" )
 		TArray<TSubclassOf<UGameplayEffect>> PassiveEffects;
 
@@ -134,6 +140,8 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	FORCEINLINE class UARComboAttackComponent* GetComboAttackComponent() const { return ComboAttackComponent; }
 
 	FORCEINLINE EHeroClass GetHeroClass() const { return HeroClass; }
 };

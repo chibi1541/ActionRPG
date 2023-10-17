@@ -38,4 +38,7 @@ protected:
 
 	UPROPERTY( EditDefaultsOnly, meta = ( Category = "AbilitySet" ) )
 	TArray<TSubclassOf<UGameplayAbility>> Abilities;
+
+	UPROPERTY( EditDefaultsOnly, meta = ( Category = "AbilitySet" ) )
+	TArray<TSubclassOf<UGameplayAbility>> ComboAttackAbilities;
 };

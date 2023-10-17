@@ -2,7 +2,10 @@
 
 
 #include "Ability/AbilitySet.h"
+
 #include "AbilitySystemComponent.h"
+#include "Character/HeroCharacter.h"
+#include "Character/Components/ARComboAttackComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(AbilitySet)
 
@@ -22,15 +25,15 @@ void UAbilitySet::GiveToAbilitySystem( UAbilitySystemComponent* AbilitySystemCom
 
 		if( IsValid( AbilityToGrant.Ability ) == false )
 		{
-			RLOG( Error, TEXT( "GrantedGameplayAbilities[%d] on ability set [%s] is not valid." ), AbilityIndex, *GetNameSafe( this ) )
-			continue;
+			RLOG( Error, TEXT( "KeyBindingAbilities[%d] on ability set [%s] is not valid." ), AbilityIndex, *GetNameSafe( this ) )
+				continue;
 		}
 
 		UGameplayAbility* AbilityCDO = AbilityToGrant.Ability->GetDefaultObject<UGameplayAbility>();
 		FGameplayAbilitySpec AbilitySpec( AbilityCDO, 1 );
-		AbilitySpec.DynamicAbilityTags.AddTag(AbilityToGrant.InputTag);
+		AbilitySpec.DynamicAbilityTags.AddTag( AbilityToGrant.InputTag );
 
-		AbilitySystemComponent->GiveAbility(AbilitySpec);
+		AbilitySystemComponent->GiveAbility( AbilitySpec );
 	}
 
 	for( int32 AbilityIndex = 0; AbilityIndex < Abilities.Num(); AbilityIndex++ )
@@ -39,7 +42,7 @@ void UAbilitySet::GiveToAbilitySystem( UAbilitySystemComponent* AbilitySystemCom
 
 		if( IsValid( Ability ) == false )
 		{
-			RLOG( Error, TEXT( "GrantedGameplayAbilities[%d] on ability set [%s] is not valid." ), AbilityIndex, *GetNameSafe( this ) )
+			RLOG( Error, TEXT( "Abilities[%d] on ability set [%s] is not valid." ), AbilityIndex, *GetNameSafe( this ) )
 				continue;
 		}
 
@@ -47,5 +50,30 @@ void UAbilitySet::GiveToAbilitySystem( UAbilitySystemComponent* AbilitySystemCom
 		FGameplayAbilitySpec AbilitySpec( AbilityCDO, 1 );
 
 		AbilitySystemComponent->GiveAbility( AbilitySpec );
+	}
+
+	auto Hero = Cast<AHeroCharacter>( AbilitySystemComponent->GetAvatarActor() );
+	if( Hero )
+	{
+		for( int32 AbilityIndex = 0; AbilityIndex < ComboAttackAbilities.Num(); AbilityIndex++ )
+		{
+			auto Ability = ComboAttackAbilities[AbilityIndex];
+
+			if( IsValid( Ability ) == false )
+			{
+				RLOG( Error, TEXT( "ComboAttackAbilities[%d] on ability set [%s] is not valid." ), AbilityIndex, *GetNameSafe( this ) )
+					continue;
+			}
+
+			UGameplayAbility* AbilityCDO = Ability->GetDefaultObject<UGameplayAbility>();
+			FGameplayAbilitySpec AbilitySpec( AbilityCDO, 1 );
+
+			FGameplayAbilitySpecHandle Handle = AbilitySystemComponent->GiveAbility( AbilitySpec );
+
+			if( Handle.IsValid() )
+			{
+				Hero->GetComboAttackComponent()->AddAttackAbilityHandle( Handle );
+			}
+		}
 	}
 }
