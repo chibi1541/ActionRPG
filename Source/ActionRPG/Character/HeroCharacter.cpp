@@ -15,6 +15,7 @@
 #include "Character/Components/ARCharacterStateComponent.h"
 #include "Character/Components/ARTargetingComponent.h"
 #include "Character/Components/ARComboAttackComponent.h"
+#include "Camera/PlayerCameraManager.h"
 
 #include "Character/Attribute/ARVitRefAttribSet.h"
 #include "Character/Attribute/ARAttackAttribSet.h"
@@ -68,7 +69,7 @@ AHeroCharacter::AHeroCharacter( const FObjectInitializer& ObjectInitializer /*= 
 	IntRefAttribSet = CreateDefaultSubobject<UARIntRefAttribSet>( TEXT( "ARIntRefAttribSet" ) );
 
 	// Create a ComboAttackComponent
-	ComboAttackComponent = CreateDefaultSubobject<UARComboAttackComponent>(TEXT("COMBOATTACKCOMP"));
+	ComboAttackComponent = CreateDefaultSubobject<UARComboAttackComponent>( TEXT( "COMBOATTACKCOMP" ) );
 
 }
 
@@ -100,6 +101,19 @@ void AHeroCharacter::SetupPlayerInputComponent( class UInputComponent* PlayerInp
 	HeroIC->BindNativeAction( InputConfig, GameplayTags.InputTag_Attack, ETriggerEvent::Triggered, this, &ThisClass::ComboAttack, true );
 }
 
+void AHeroCharacter::PossessedBy( AController* NewController )
+{
+	Super::PossessedBy( NewController );
+
+	if( NewController->IsPlayerController() )
+	{
+		auto PlayerController = Cast<APlayerController>( NewController );
+		PlayerController->PlayerCameraManager->ViewPitchMin = -60.f;
+		PlayerController->PlayerCameraManager->ViewPitchMax = 40.f;
+	}
+}
+
+
 void AHeroCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -129,7 +143,6 @@ void AHeroCharacter::BeginPlay()
 			}
 		}
 	}
-
 }
 
 void AHeroCharacter::InitAbilitySystem()
@@ -223,9 +236,7 @@ void AHeroCharacter::ComboAttack()
 
 void AHeroCharacter::Input_AbilityInputTagPressed( FGameplayTag InputTag )
 {
-	const UInputAction* IA = InputConfig->FindAbilityInputActionForTag( InputTag, false );
-
-	if( GetWorld()->IsPaused() && !IA->bTriggerWhenPaused )
+	if( GetWorld()->IsPaused() && !InputConfig->IsTriggerWhenPaused( InputTag, false ) )
 	{
 		return;
 	}
@@ -238,6 +249,11 @@ void AHeroCharacter::Input_AbilityInputTagPressed( FGameplayTag InputTag )
 
 void AHeroCharacter::Input_AbilityInputTagReleased( FGameplayTag InputTag )
 {
+	if( GetWorld()->IsPaused() && !InputConfig->IsTriggerWhenPaused( InputTag, false ) )
+	{
+		return;
+	}
+
 	if( UARAbilitySystemComponent* ArASC = GetARAbilitySystemComponent() )
 	{
 		ArASC->AbilityInputTagReleased( InputTag );

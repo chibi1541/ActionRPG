@@ -24,6 +24,7 @@ protected:
 	virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
 	
 public:
+	// Enemy
 	UFUNCTION( BlueprintCallable, Category = "CharacterState|Targeting" )
 		bool SetTargeting( bool bTargeting );
 
@@ -33,15 +34,35 @@ public:
 	UFUNCTION( BlueprintCallable, Category = "CharacterState|Targeting" )
 		const ABaseCharacter* GetTargetCharacter() const;
 
+	// Alliance
+	UFUNCTION( BlueprintCallable, Category = "CharacterState|Targeting" )
+		bool SetAllianceTargeting( bool bTargeting );
+
+	UFUNCTION( BlueprintCallable, Category = "CharacterState|Targeting" )
+		void ChangeAllianceTargeting( bool ReverseOrder );
+
+	UFUNCTION( BlueprintCallable, Category = "CharacterState|Targeting" )
+		const ABaseCharacter* GetAllianceTargetCharacter() const;
+
 private:
 	void UpdateTargeting( float DeltaTime );
 
 	void ArrageTargetList();
 
 private:
+
+	// Enemy
 	TWeakObjectPtr<const ABaseCharacter> TargetCharacter;
 
 	TArray<TWeakObjectPtr<const ABaseCharacter>> TargetList;
 
 	int TargetingIndex;
+
+	// Alliance
+	TWeakObjectPtr<const ABaseCharacter> AllianceTargetCharacter;
+	
+	TArray<TWeakObjectPtr<const ABaseCharacter>> AllianceList;
+
+	int AllianceTargetingIndex;
+
 };

@@ -44,3 +44,21 @@ const UInputAction* UHeroInputConfig::FindAbilityInputActionForTag( const FGamep
 
 	return nullptr;
 }
+
+bool UHeroInputConfig::IsTriggerWhenPaused( const FGameplayTag& InputTag, bool bLogNotFound ) const
+{
+	for( const FHeroInputAction& Action : AbilityInputActions )
+	{
+		if( Action.InputAction != nullptr && Action.InputTag == InputTag )
+		{
+			return Action.bTriggerWhenPaused;
+		}
+	}
+
+	if( bLogNotFound == true )
+	{
+		RLOG( Error, TEXT( "Can't find AbilityInputAction for InputTag [%s] on InputConfig [%s]." ), *InputTag.ToString(), *GetNameSafe( this ) );
+	}
+
+	return false;
+}

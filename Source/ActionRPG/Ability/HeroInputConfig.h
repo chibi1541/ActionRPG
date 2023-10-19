@@ -20,8 +20,12 @@ public:
 	UPROPERTY( EditDefaultsOnly, BlueprintReadOnly )
 	TObjectPtr<const UInputAction> InputAction = nullptr;
 
+	UPROPERTY( EditDefaultsOnly, BlueprintReadOnly )
+		bool bTriggerWhenPaused;
+
 	UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Meta = ( Categories = "InputTag" ) )
 	FGameplayTag InputTag;
+
 };
 
 /**
@@ -41,6 +45,9 @@ public:
 
 	UFUNCTION( BlueprintCallable, Category = "Hero|Input" )
 	const UInputAction* FindAbilityInputActionForTag( const FGameplayTag& InputTag, bool bLogNotFound ) const;
+
+	UFUNCTION( BlueprintCallable, Category = "Hero|Input" )
+	bool IsTriggerWhenPaused( const FGameplayTag& InputTag, bool bLogNotFound ) const;
 
 public:
 	UPROPERTY( EditDefaultsOnly, BlueprintReadOnly, Meta = ( TitleProperty = "InputAction" ) )

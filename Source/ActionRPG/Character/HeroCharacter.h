@@ -60,6 +60,8 @@ protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent ) override;
 
+	virtual void PossessedBy( AController* NewController ) override;
+
 	virtual void BeginPlay() override;
 
 	virtual void InitAbilitySystem() override;
