@@ -4,6 +4,7 @@
 #include "Ability/ARGA_Casting.h"
 
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "TimerManager.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARGA_Casting)
 
@@ -25,7 +26,7 @@ void UARGA_Casting::ActivateAbility( const FGameplayAbilitySpecHandle Handle, co
 	UAbilityTask_PlayMontageAndWait* PlayMontageTask =
 		UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this, NAME_None, CastingMontage, 1.0f, NAME_None,
-		true, 1.0f, StartTimeSeconds );
+		true, 1.0f, 0.0f );
 
 	PlayMontageTask->OnCompleted.AddDynamic( this, &UARGA_Casting::OnCompleted );
 	PlayMontageTask->OnBlendOut.AddDynamic( this, &UARGA_Casting::OnCompleted );
@@ -33,13 +34,21 @@ void UARGA_Casting::ActivateAbility( const FGameplayAbilitySpecHandle Handle, co
 	PlayMontageTask->OnInterrupted.AddDynamic( this, &UARGA_Casting::OnCancelled );
 
 	PlayMontageTask->ReadyForActivation();
+
+	if( GetWorld()->IsValidLowLevel() )
+		GetWorld()->GetTimerManager().SetTimer( Timer, this, &UARGA_Casting::TriggerAbility, CastingTime, false );
 }
 
 void UARGA_Casting::OnCompleted()
 {
 	RLOG( Warning, TEXT( "Casting Over" ) );
 
-	TriggerAbility();
+	//TriggerAbility();
+
+	if( Timer.IsValid() )
+	{
+		GetWorld()->GetTimerManager().ClearTimer(Timer);
+	}
 
 	EndAbility( CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false );
 }
@@ -47,6 +56,11 @@ void UARGA_Casting::OnCompleted()
 void UARGA_Casting::OnCancelled()
 {
 	RLOG( Warning, TEXT( "Casting Interrupted" ) );
+
+	if( Timer.IsValid() )
+	{
+		GetWorld()->GetTimerManager().ClearTimer( Timer );
+	}
 
 	EndAbility( CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true );
 }

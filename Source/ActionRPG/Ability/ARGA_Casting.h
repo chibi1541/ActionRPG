@@ -33,4 +33,6 @@ protected:
 	UPROPERTY( EditDefaultsOnly, BlueprintReadOnly )
 		float CastingTime;
 
+	FTimerHandle Timer;
+
 };
