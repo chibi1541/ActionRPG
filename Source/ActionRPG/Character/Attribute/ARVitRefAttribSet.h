@@ -72,6 +72,10 @@ public:
 	FGameplayAttributeData ShieldGauge;
 	ATTRIBUTE_ACCESSORS( UARVitRefAttribSet, ShieldGauge )
 
+	UPROPERTY( BlueprintReadOnly, Category = "Defence" )
+	FGameplayAttributeData ShieldGaugeRegene;
+	ATTRIBUTE_ACCESSORS( UARVitRefAttribSet, ShieldGaugeRegene )
+
 	UPROPERTY( BlueprintReadOnly, Category = "Meta_Attribute" )
 	FGameplayAttributeData ReceivedDamage;
 	ATTRIBUTE_ACCESSORS( UARVitRefAttribSet, ReceivedDamage )

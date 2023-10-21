@@ -76,8 +76,6 @@ protected:
 	void Input_AbilityInputTagPressed( FGameplayTag InputTag );
 	void Input_AbilityInputTagReleased( FGameplayTag InputTag );
 
-	virtual void InitializerAttributes() override;
-
 	virtual void SetHealth( float Health );
 	virtual void SetMana( float Mana );
 	virtual void SetStamina( float Stamina );
@@ -130,12 +128,6 @@ protected:
 
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "ClassType" )
 		EHeroClass HeroClass;
-
-	// Passive
-	// To Do : apart way
-	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Passive Effect" )
-		TArray<TSubclassOf<UGameplayEffect>> PassiveEffects;
-
 
 public:
 	/** Returns CameraBoom subobject **/

@@ -35,6 +35,8 @@ struct ACTIONRPG_API FActionRPGGlobalTags : public FGameplayTagNativeAdder
 	FGameplayTag CharacterStateTag_FullStamina;
 	FGameplayTag CharacterStateTag_FullHealth;
 	FGameplayTag CharacterStateTag_FullMana;
+	FGameplayTag CharacterStateTag_FullShield;
+	FGameplayTag CharacterStateTag_DelayShieldRegene;
 
 	// Cost Tags
 	FGameplayTag AbilityCostTag_Stamina;
@@ -77,6 +79,8 @@ protected:
 		CharacterStateTag_FullStamina = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.FullStamina" ) );
 		CharacterStateTag_FullHealth = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.FullHealth" ) );
 		CharacterStateTag_FullMana = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.FullMana" ) );
+		CharacterStateTag_FullShield = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.FullShield" ) );
+		CharacterStateTag_DelayShieldRegene = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.DelayShieldRegene" ) );
 
 		AbilityCostTag_Stamina = Manager.AddNativeGameplayTag( TEXT( "Ability.Cost.Stamina" ) );
 

@@ -19,6 +19,7 @@ class UARBaseAttribSet;
 class UGameplayEffect;
 class UARCharacterStateComponent;
 class UARTargetingComponent;
+class UGameplayEffectSet;
 
 UCLASS( config = Game )
 class ACTIONRPG_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayCueInterface, public IGameplayTagAssetInterface
@@ -62,7 +63,9 @@ public:
 protected:
 	virtual void InitAbilitySystem();
 
-	virtual void InitializerAttributes();
+	virtual void InitializeAttributes();
+
+	virtual void InitPassiveEffect();
 
 	virtual void OnSpeedChange( const FOnAttributeChangeData& Data );
 
@@ -78,6 +81,9 @@ protected:
 
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Ability" )
 		TArray<TObjectPtr<UAbilitySet>> AbilitySets;
+
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Ability" )
+		TArray<TObjectPtr<UGameplayEffectSet>> GameplayEffectSets;
 
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Attribute|Base" )
 		TSubclassOf<UGameplayEffect> BaseAttribInitializer;

@@ -9,6 +9,7 @@
 #include "Character/ARMovementComponent.h"
 #include "Character/Attribute/ARBaseAttribSet.h"
 #include "Character/Components/ARTargetingComponent.h"
+#include "Ability/GameplayEffectSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BaseCharacter)
 
@@ -46,7 +47,9 @@ void ABaseCharacter::BeginPlay()
 		AbilitySystemComp->InitAbilityActorInfo( this, this );
 		InitAbilitySystem();
 
-		InitializerAttributes();
+		InitializeAttributes();
+
+		InitPassiveEffect();
 	}
 }
 
@@ -98,21 +101,31 @@ void ABaseCharacter::InitAbilitySystem()
 	}
 }
 
-void ABaseCharacter::InitializerAttributes()
+void ABaseCharacter::InitializeAttributes()
 {
-	if( !BaseAttribInitializer )
+	if( GameplayEffectSets.Num() == 0 )
 	{
-		RLOG( Error, TEXT( "BaseAttribInitializer is Missing : %s" ), *GetName() );
+		RLOG( Error, TEXT( "GameplayEffectSets is Missing : %s" ), *GetName() );
 		return;
 	}
 
-	FGameplayEffectContextHandle BaseEffectContext = AbilitySystemComp->MakeEffectContext();
-	BaseEffectContext.AddSourceObject( this );
-
-	FGameplayEffectSpecHandle BaseHandle = AbilitySystemComp->MakeOutgoingSpec( BaseAttribInitializer, GetCharacterLevel(), BaseEffectContext );
-	if( BaseHandle.IsValid() )
+	for( auto GameplayEffectSet : GameplayEffectSets )
 	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComp->ApplyGameplayEffectSpecToTarget( *BaseHandle.Data.Get(), AbilitySystemComp.Get() );
+		GameplayEffectSet->AttribInitialize( AbilitySystemComp );
+	}
+}
+
+void ABaseCharacter::InitPassiveEffect()
+{
+	if( GameplayEffectSets.Num() == 0 )
+	{
+		RLOG( Error, TEXT( "GameplayEffectSets is Missing : %s" ), *GetName() );
+		return;
+	}
+
+	for( auto GameplayEffectSet : GameplayEffectSets )
+	{
+		GameplayEffectSet->PassiveInitialize( AbilitySystemComp );
 	}
 }
 

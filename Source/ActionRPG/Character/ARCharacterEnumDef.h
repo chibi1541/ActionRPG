@@ -28,3 +28,14 @@ enum class EMonsterType : uint8
 	MT_Proto		UMETA( DisplayName = "Proto" ),
 	Num				UMETA( Hidden )
 };
+
+UENUM( BlueprintType )
+enum class EAttribType : uint8
+{
+	AT_Base			UMETA( DisplayName = "BaseAttrib" ),
+	AT_Health		UMETA( DisplayName = "HealthAttrib" ),
+	AT_Attack		UMETA( DisplayName = "AttackAttrib" ),
+	AT_Agility		UMETA( DisplayName = "AgilityAttrib" ),
+	AT_Int			UMETA( DisplayName = "IntelligenceAttrib" ),
+	Num				UMETA( Hidden )
+};

@@ -24,50 +24,6 @@ ABaseMonster::ABaseMonster( const FObjectInitializer& ObjectInitializer )
 	AgiRefAttribSet = CreateDefaultSubobject<UARAgiRefAttribSet>( "UARAgiRefAttribSet" );
 }
 
-void ABaseMonster::InitializerAttributes()
-{
-	Super::InitializerAttributes();
-
-	if( !HealthAttribInitializer )
-	{
-		RLOG( Error, TEXT( "HealthAttribInitializer is Missing : %s" ), *GetName() );
-		return;
-	}
-
-	FGameplayEffectContextHandle EffectContext = AbilitySystemComp->MakeEffectContext();
-	EffectContext.AddSourceObject( this );
-
-	FGameplayEffectSpecHandle HealthHandle = AbilitySystemComp->MakeOutgoingSpec( HealthAttribInitializer, GetCharacterLevel(), EffectContext );
-	if( HealthHandle.IsValid() )
-	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComp->ApplyGameplayEffectSpecToTarget( *HealthHandle.Data.Get(), AbilitySystemComp.Get() );
-	}
-
-	if( !AttackAttribInitializer )
-	{
-		RLOG( Error, TEXT( "AttackAttribInitializer is Missing : %s" ), *GetName() );
-		return;
-	}
-
-	FGameplayEffectSpecHandle AttackHandle = AbilitySystemComp->MakeOutgoingSpec( AttackAttribInitializer, GetCharacterLevel(), EffectContext );
-	if( AttackHandle.IsValid() )
-	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComp->ApplyGameplayEffectSpecToTarget( *AttackHandle.Data.Get(), AbilitySystemComp.Get() );
-	}
-
-	if( !AgilityRefAttribInitializer )
-	{
-		RLOG( Error, TEXT( "AgilityRefAttribInitializer is Missing : %s" ), *GetName() );
-		return;
-	}
-
-	FGameplayEffectSpecHandle AGIHandle = AbilitySystemComp->MakeOutgoingSpec( AgilityRefAttribInitializer, GetCharacterLevel(), EffectContext );
-	if( AGIHandle.IsValid() )
-	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComp->ApplyGameplayEffectSpecToTarget( *AGIHandle.Data.Get(), AbilitySystemComp.Get() );
-	}
-}
-
 void ABaseMonster::BeginPlay()
 {
 	Super::BeginPlay();

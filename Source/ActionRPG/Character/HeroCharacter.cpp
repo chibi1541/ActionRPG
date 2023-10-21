@@ -129,20 +129,6 @@ void AHeroCharacter::BeginPlay()
 	{
 		AbilitySystemComp->GetGameplayAttributeValueChangeDelegate( AgiRefAttribSet->GetModifiedMoveSpeedAttribute() ).AddUObject( this, &AHeroCharacter::OnSpeedChange );
 	}
-
-	if( !PassiveEffects.IsEmpty() )
-	{
-		FGameplayEffectContextHandle EffectContext = AbilitySystemComp->MakeEffectContext();
-
-		for( auto Effect : PassiveEffects )
-		{
-			FGameplayEffectSpecHandle NewHandle = AbilitySystemComp->MakeOutgoingSpec( Effect, GetCharacterLevel(), EffectContext );
-			if( NewHandle.IsValid() )
-			{
-				FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComp->ApplyGameplayEffectSpecToTarget( *NewHandle.Data.Get(), AbilitySystemComp.Get() );
-			}
-		}
-	}
 }
 
 void AHeroCharacter::InitAbilitySystem()
@@ -257,62 +243,6 @@ void AHeroCharacter::Input_AbilityInputTagReleased( FGameplayTag InputTag )
 	if( UARAbilitySystemComponent* ArASC = GetARAbilitySystemComponent() )
 	{
 		ArASC->AbilityInputTagReleased( InputTag );
-	}
-}
-
-void AHeroCharacter::InitializerAttributes()
-{
-	Super::InitializerAttributes();
-
-	if( !HealthAttribInitializer )
-	{
-		RLOG( Error, TEXT( "HealthAttribInitializer is Missing : %s" ), *GetName() );
-		return;
-	}
-
-	FGameplayEffectContextHandle EffectContext = AbilitySystemComp->MakeEffectContext();
-	EffectContext.AddSourceObject( this );
-
-	FGameplayEffectSpecHandle HealthHandle = AbilitySystemComp->MakeOutgoingSpec( HealthAttribInitializer, GetCharacterLevel(), EffectContext );
-	if( HealthHandle.IsValid() )
-	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComp->ApplyGameplayEffectSpecToTarget( *HealthHandle.Data.Get(), AbilitySystemComp.Get() );
-	}
-
-	if( !AttackAttribInitializer )
-	{
-		RLOG( Error, TEXT( "AttackAttribInitializer is Missing : %s" ), *GetName() );
-		return;
-	}
-
-	FGameplayEffectSpecHandle AttackHandle = AbilitySystemComp->MakeOutgoingSpec( AttackAttribInitializer, GetCharacterLevel(), EffectContext );
-	if( AttackHandle.IsValid() )
-	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComp->ApplyGameplayEffectSpecToTarget( *AttackHandle.Data.Get(), AbilitySystemComp.Get() );
-	}
-
-	if( !AgilityRefAttribInitializer )
-	{
-		RLOG( Error, TEXT( "AgilityRefAttribInitializer is Missing : %s" ), *GetName() );
-		return;
-	}
-
-	FGameplayEffectSpecHandle AGIHandle = AbilitySystemComp->MakeOutgoingSpec( AgilityRefAttribInitializer, GetCharacterLevel(), EffectContext );
-	if( AGIHandle.IsValid() )
-	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComp->ApplyGameplayEffectSpecToTarget( *AGIHandle.Data.Get(), AbilitySystemComp.Get() );
-	}
-
-	if( !IntelligenceRefAttribInitializer )
-	{
-		RLOG( Error, TEXT( "IntelligenceRefAttribInitializer is Missing : %s" ), *GetName() );
-		return;
-	}
-
-	FGameplayEffectSpecHandle INTHandle = AbilitySystemComp->MakeOutgoingSpec( IntelligenceRefAttribInitializer, GetCharacterLevel(), EffectContext );
-	if( INTHandle.IsValid() )
-	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComp->ApplyGameplayEffectSpecToTarget( *INTHandle.Data.Get(), AbilitySystemComp.Get() );
 	}
 }
 

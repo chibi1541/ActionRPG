@@ -25,8 +25,6 @@ public:
 	ABaseMonster( const FObjectInitializer& ObjectInitializer );
 
 protected:
-	virtual void InitializerAttributes() override;
-
 	virtual void BeginPlay() override;
 
 	virtual void SetHealth( float Health );

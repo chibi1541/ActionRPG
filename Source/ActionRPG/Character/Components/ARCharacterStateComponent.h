@@ -53,6 +53,8 @@ protected:
 
 	virtual void OnManaChange( const FOnAttributeChangeData& Data );
 
+	virtual void OnShieldGaugeChange( const FOnAttributeChangeData& Data );
+
 public:
 	UFUNCTION( BlueprintCallable, Category = "CharacterState|Stiff" )
 		void SetStiffEffectSpec( const FGameplayEffectSpecHandle& SpecHandle );
