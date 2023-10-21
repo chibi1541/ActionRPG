@@ -29,6 +29,8 @@ UARCharacterStateComponent::UARCharacterStateComponent()
 	AbilitySystemComponent.Get()->ReplicationMode = EGameplayEffectReplicationMode::Full;
 
 	IsStunned = false;
+
+	IsDead = false;
 }
 
 UAbilitySystemComponent* UARCharacterStateComponent::GetAbilitySystemComponent() const
@@ -153,6 +155,16 @@ void UARCharacterStateComponent::OnHealthChange( const FOnAttributeChangeData& D
 	}
 
 	// Change Dead State
+	if( Data.NewValue <= 0.f && Data.OldValue > 0.f )
+	{
+		IsDead = true;
+		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_Dead, 1 );
+	}
+	else if( Data.NewValue > 0.f && IsDead )
+	{
+		IsDead = false;
+		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_Dead, 0 );
+	}
 }
 
 void UARCharacterStateComponent::OnManaChange( const FOnAttributeChangeData& Data )
@@ -193,4 +205,9 @@ void UARCharacterStateComponent::SetStiffEffectSpec( const FGameplayEffectSpecHa
 bool UARCharacterStateComponent::GetStunState() const
 {
 	return IsStunned;
+}
+
+bool UARCharacterStateComponent::GetDeadState() const
+{
+	return IsDead;
 }

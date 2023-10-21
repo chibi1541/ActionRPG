@@ -30,6 +30,7 @@ struct ACTIONRPG_API FActionRPGGlobalTags : public FGameplayTagNativeAdder
 	FGameplayTag CharacterStateTag_Stun;
 	FGameplayTag CharacterStateTag_Provoked;
 	FGameplayTag CharacterStateTag_Exhausted;
+	FGameplayTag CharacterStateTag_Dead;
 	FGameplayTag CharacterStateTag_SpendStamina;
 	FGameplayTag CharacterStateTag_FullStamina;
 	FGameplayTag CharacterStateTag_FullHealth;
@@ -41,6 +42,8 @@ struct ACTIONRPG_API FActionRPGGlobalTags : public FGameplayTagNativeAdder
 	// Extra Damage Tag
 	FGameplayTag ExtraDamageTag;
 	FGameplayTag ExtraDamageCoeffTag;
+
+	FGameplayTag PercentageTag;
 
 	// Cooldown Duration Tag
 	FGameplayTag CooldownDurationTag;
@@ -69,6 +72,7 @@ protected:
 		CharacterStateTag_Stun = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Stun" ) );
 		CharacterStateTag_Provoked = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Provoked" ) );
 		CharacterStateTag_Exhausted = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Exhausted" ) );
+		CharacterStateTag_Dead = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Dead" ) );
 		CharacterStateTag_SpendStamina = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.SpendStamina" ) );
 		CharacterStateTag_FullStamina = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.FullStamina" ) );
 		CharacterStateTag_FullHealth = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.FullHealth" ) );
@@ -78,6 +82,8 @@ protected:
 
 		ExtraDamageTag = Manager.AddNativeGameplayTag( TEXT( "Ability.Value.ExtraDamage" ) );
 		ExtraDamageTag = Manager.AddNativeGameplayTag( TEXT( "Ability.Value.ExtraDamageCoeff" ) );
+
+		PercentageTag = Manager.AddNativeGameplayTag( TEXT( "Ability.Value.Percentage" ) );
 
 		CooldownDurationTag = Manager.AddNativeGameplayTag( TEXT( "Ability.Value.CooldownDuration" ) );
 	}

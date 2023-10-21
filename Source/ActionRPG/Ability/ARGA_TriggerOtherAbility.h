@@ -18,7 +18,8 @@ protected:
 	UFUNCTION( BlueprintNativeEvent )
 	void MakePayloadData(FGameplayEventData& Payload);
 
-	void TriggerAbility();
+	UFUNCTION()
+	virtual void TriggerAbility();
 
 protected:
 	UPROPERTY( EditDefaultsOnly, BlueprintReadOnly )

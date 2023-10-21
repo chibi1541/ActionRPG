@@ -41,10 +41,6 @@ void UARGA_Casting::ActivateAbility( const FGameplayAbilitySpecHandle Handle, co
 
 void UARGA_Casting::OnCompleted()
 {
-	RLOG( Warning, TEXT( "Casting Over" ) );
-
-	//TriggerAbility();
-
 	if( Timer.IsValid() )
 	{
 		GetWorld()->GetTimerManager().ClearTimer(Timer);
@@ -55,12 +51,24 @@ void UARGA_Casting::OnCompleted()
 
 void UARGA_Casting::OnCancelled()
 {
-	RLOG( Warning, TEXT( "Casting Interrupted" ) );
-
 	if( Timer.IsValid() )
 	{
 		GetWorld()->GetTimerManager().ClearTimer( Timer );
 	}
 
 	EndAbility( CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true );
+}
+
+void UARGA_Casting::TriggerAbility()
+{
+	Super::TriggerAbility();
+
+	RLOG( Warning, TEXT( "Casting Over" ) );
+
+	if( Timer.IsValid() )
+	{
+		GetWorld()->GetTimerManager().ClearTimer( Timer );
+	}
+
+	EndAbility( CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false );
 }

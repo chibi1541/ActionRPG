@@ -60,6 +60,9 @@ public:
 	UFUNCTION( BlueprintCallable, Category = "CharacterState|Stun" )
 		bool GetStunState() const;
 
+	UFUNCTION( BlueprintCallable, Category = "CharacterState|Dead" )
+		bool GetDeadState() const;
+
 private:
 	TWeakObjectPtr<UGetHitComponent> GetHitComp;
 
@@ -68,6 +71,8 @@ private:
 
 	// State Variable
 	bool IsStunned;
+
+	bool IsDead;
 
 	TWeakObjectPtr<const UARVitRefAttribSet> HealthAttrib;
 

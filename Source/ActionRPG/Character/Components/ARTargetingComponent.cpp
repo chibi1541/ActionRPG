@@ -50,10 +50,6 @@ void UARTargetingComponent::BeginPlay()
 					{
 						TargetList.Add( Target );
 					}
-					else if( Owner != Target )
-					{
-						AllianceList.Add( Target );
-					}
 				}
 			}
 		}
@@ -142,75 +138,6 @@ const ABaseCharacter* UARTargetingComponent::GetTargetCharacter() const
 	}
 
 	return TargetCharacter.Get();
-}
-
-bool UARTargetingComponent::SetAllianceTargeting( bool bTargeting )
-{
-	if( bTargeting )
-	{
-		auto Owner = Cast<ABaseCharacter>( GetOwner() );
-		if( ( !AllianceTargetCharacter.IsValid() ) && Owner )
-		{
-			if( AllianceList.Num() > 0 )
-			{
-				if( AllianceTargetingIndex >= AllianceList.Num() )
-				{
-					AllianceTargetingIndex = 0;
-				}
-
-				AllianceTargetCharacter = AllianceList[AllianceTargetingIndex];
-			}
-
-			if( AllianceTargetCharacter.IsValid() )
-			{
-				return true;
-			}
-		}
-	}
-	else
-	{
-		AllianceTargetCharacter.Reset();
-		return true;
-	}
-
-	return false;
-}
-
-void UARTargetingComponent::ChangeAllianceTargeting( bool ReverseOrder )
-{
-	if( AllianceList.Num() <= 1 )
-	{
-		return;
-	}
-
-	if( ReverseOrder )
-	{
-		AllianceTargetingIndex--;
-		if( AllianceTargetingIndex < 0 )
-		{
-			AllianceTargetingIndex = AllianceList.Num() - 1;
-		}
-	}
-	else
-	{
-		AllianceTargetingIndex++;
-		if( AllianceTargetingIndex >= AllianceList.Num() )
-		{
-			AllianceTargetingIndex = 0;
-		}
-	}
-
-	AllianceTargetCharacter = AllianceList[AllianceTargetingIndex];
-}
-
-const ABaseCharacter* UARTargetingComponent::GetAllianceTargetCharacter() const
-{
-	if( !AllianceTargetCharacter.IsValid() )
-	{
-		return nullptr;
-	}
-
-	return AllianceTargetCharacter.Get();
 }
 
 void UARTargetingComponent::UpdateTargeting( float DeltaTime )

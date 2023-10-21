@@ -34,16 +34,6 @@ public:
 	UFUNCTION( BlueprintCallable, Category = "CharacterState|Targeting" )
 		const ABaseCharacter* GetTargetCharacter() const;
 
-	// Alliance
-	UFUNCTION( BlueprintCallable, Category = "CharacterState|Targeting" )
-		bool SetAllianceTargeting( bool bTargeting );
-
-	UFUNCTION( BlueprintCallable, Category = "CharacterState|Targeting" )
-		void ChangeAllianceTargeting( bool ReverseOrder );
-
-	UFUNCTION( BlueprintCallable, Category = "CharacterState|Targeting" )
-		const ABaseCharacter* GetAllianceTargetCharacter() const;
-
 private:
 	void UpdateTargeting( float DeltaTime );
 
@@ -57,12 +47,5 @@ private:
 	TArray<TWeakObjectPtr<const ABaseCharacter>> TargetList;
 
 	int TargetingIndex;
-
-	// Alliance
-	TWeakObjectPtr<const ABaseCharacter> AllianceTargetCharacter;
-	
-	TArray<TWeakObjectPtr<const ABaseCharacter>> AllianceList;
-
-	int AllianceTargetingIndex;
 
 };

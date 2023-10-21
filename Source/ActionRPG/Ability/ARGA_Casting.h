@@ -26,6 +26,9 @@ protected:
 	UFUNCTION()
 		void OnCancelled();
 
+	virtual void TriggerAbility() override;
+
+
 protected:
 	UPROPERTY( EditDefaultsOnly, BlueprintReadOnly )
 		TObjectPtr<UAnimMontage> CastingMontage;

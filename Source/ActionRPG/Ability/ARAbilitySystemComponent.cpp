@@ -49,6 +49,9 @@ void UARAbilitySystemComponent::AbilityInputTagPressed( const FGameplayTag& Inpu
 				}
 			}
 		}
+
+		FGameplayEventData Payload;
+		HandleGameplayEvent( InputTag, &Payload );
 	}
 }
 

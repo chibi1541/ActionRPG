@@ -10,5 +10,5 @@ enum class EGameplayEffectDelegateType :uint8
 	EDT_None		UMETA( DisplayName = "None" ),
 	EDT_Stiff		UMETA( DisplayName = "Stiff" ),
 	EDT_Stun		UMETA( DisplayName = "Stun" ),
-	EDT_Provoke		UMETA( DisplayName = "Provoke" )
+	EDT_Provoke		UMETA( DisplayName = "Provoke" ),
 };
