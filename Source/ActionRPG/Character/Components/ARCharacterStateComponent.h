@@ -47,6 +47,12 @@ protected:
 	UFUNCTION()
 		void OnRefreshProvoked( FActiveGameplayEffect& EffectSpec );
 
+	UFUNCTION()
+		void OnGuard( const FGameplayEffectSpec& EffectSpec );
+
+	UFUNCTION()
+		void OnGuardRemoved( const FActiveGameplayEffect& ActiveEffect );
+
 	virtual void OnStaminaChange( const FOnAttributeChangeData& Data );
 
 	virtual void OnHealthChange( const FOnAttributeChangeData& Data );
@@ -65,6 +71,9 @@ public:
 	UFUNCTION( BlueprintCallable, Category = "CharacterState|Dead" )
 		bool GetDeadState() const;
 
+	UFUNCTION( BlueprintCallable, Category = "CharacterState|Guard" )
+		bool GetGuardState() const;
+
 private:
 	TWeakObjectPtr<UGetHitComponent> GetHitComp;
 
@@ -75,6 +84,8 @@ private:
 	bool IsStunned;
 
 	bool IsDead;
+
+	bool IsGuard;
 
 	TWeakObjectPtr<const UARVitRefAttribSet> HealthAttrib;
 

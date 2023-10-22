@@ -60,6 +60,9 @@ void UARCharacterStateComponent::BeginPlay()
 	AbilitySystemComponent->GameplayEffectRemoveCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Stun ).AddDynamic( this, &UARCharacterStateComponent::OnStunStateRemoved );
 	AbilitySystemComponent->ActiveGameplayEffectCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Provoke ).AddDynamic( this, &UARCharacterStateComponent::OnProvoked );
 
+	AbilitySystemComponent->ActiveGameplayEffectCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Guard ).AddDynamic( this, &UARCharacterStateComponent::OnGuard );
+	AbilitySystemComponent->GameplayEffectRemoveCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Guard ).AddDynamic( this, &UARCharacterStateComponent::OnGuardRemoved );
+
 	if( HealthAttrib.IsValid() )
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetStaminaAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnStaminaChange );
@@ -93,11 +96,16 @@ void UARCharacterStateComponent::EndPlay( const EEndPlayReason::Type EndPlayReas
 void UARCharacterStateComponent::OnGetStuned( const FGameplayEffectSpec& EffectSpec )
 {
 	IsStunned = true;
+
+	// Hit Reaction Delegate Set 
 }
 
 void UARCharacterStateComponent::OnStunStateRemoved( const FActiveGameplayEffect& ActiveEffect )
 {
 	IsStunned = false;
+
+	// Hit Reaction Delegate Remove 
+
 }
 
 void UARCharacterStateComponent::OnProvoked( const FGameplayEffectSpec& EffectSpec )
@@ -121,6 +129,16 @@ void UARCharacterStateComponent::OnProvoked( const FGameplayEffectSpec& EffectSp
 void UARCharacterStateComponent::OnRefreshProvoked( FActiveGameplayEffect& EffectSpec )
 {
 
+}
+
+void UARCharacterStateComponent::OnGuard( const FGameplayEffectSpec& EffectSpec )
+{
+	IsGuard = true;
+}
+
+void UARCharacterStateComponent::OnGuardRemoved( const FActiveGameplayEffect& ActiveEffect )
+{
+	IsGuard = false;
 }
 
 void UARCharacterStateComponent::OnStaminaChange( const FOnAttributeChangeData& Data )
@@ -229,4 +247,9 @@ bool UARCharacterStateComponent::GetStunState() const
 bool UARCharacterStateComponent::GetDeadState() const
 {
 	return IsDead;
+}
+
+bool UARCharacterStateComponent::GetGuardState() const
+{
+	return IsGuard;
 }

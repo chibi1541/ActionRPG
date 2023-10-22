@@ -46,6 +46,10 @@ void UARVitRefAttribSet::PostGameplayEffectExecute( const FGameplayEffectModCall
 	{
 		SetStamina( FMath::Clamp( GetStamina(), 0.0f, GetMaxStamina() ) );
 	}
+	else if( Data.EvaluatedData.Attribute == GetShieldGaugeAttribute() )
+	{
+		SetShieldGauge( FMath::Clamp( GetShieldGauge(), 0.0f, GetMaxShieldGauge() ) );
+	}
 	else if( Data.EvaluatedData.Attribute == GetReceivedDamageAttribute() )
 	{
 		const float TempDamage = GetReceivedDamage();

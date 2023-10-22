@@ -7,6 +7,7 @@
 #include "Animation/AnimMontage.h"
 #include "GameplayTagContainer.h"
 #include "GameplayEffect.h"
+#include "Abilities/GameplayAbilityTypes.h"
 
 #include "GetHitComponent.generated.h"
 
@@ -55,6 +56,9 @@ protected:
 	UPROPERTY( EditAnywhere, Category = "HitMontages|Left" )
 		TObjectPtr<UAnimMontage> HitMontage_Left;
 
+	UPROPERTY( EditAnywhere, Category = "HitMontages|Block" )
+		TObjectPtr<UAnimMontage> GuardBlockMontage;
+
 	UPROPERTY( EditAnywhere, Category = "GrantingTags" )
 		FGameplayTagContainer GrantingTags;
 
@@ -67,6 +71,8 @@ private:
 
 	UPROPERTY()
 		TObjectPtr<UAnimInstance> AnimInstance;
+
+	FDelegateHandle GuardingHandle;
 
 };
 

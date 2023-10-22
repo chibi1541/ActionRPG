@@ -38,13 +38,18 @@ void UGetHitComponent::BeginPlay()
 		return;
 	}
 
-	const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
 	ASC->ActiveGameplayEffectCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Stiff ).AddDynamic( this, &UGetHitComponent::OnHit );
 	ASC->GameplayEffectDurationChangeCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Stiff ).AddDynamic( this, &UGetHitComponent::OnEffectDurationChange );
 }
 
 UAnimMontage* UGetHitComponent::GetMontagetoPlay( const FVector AttackVec ) const
 {
+	const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
+	if( ASC->HasMatchingGameplayTag( Tags.AbilityStateTag_Guard ) && GuardBlockMontage )
+	{
+		return GuardBlockMontage;
+	}
+
 	UAnimMontage* Return = HitMontage_Front;
 
 	float DotProduct_Right = FVector::DotProduct( GetOwner()->GetActorRightVector(), AttackVec );
