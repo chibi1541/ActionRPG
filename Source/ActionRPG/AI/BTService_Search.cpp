@@ -8,6 +8,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/HeroCharacter.h"
 #include "DrawDebugHelpers.h"
+#include "Character/Components/ARCharacterStateComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BTService_Search)
 
@@ -67,6 +68,12 @@ void UBTService_Search::TickNode( UBehaviorTreeComponent& OwnerComp, uint8* Node
 			AHeroCharacter* Hero = Cast<AHeroCharacter>( OverlapResult.GetActor() );
 			if( Hero != NULL )
 			{
+				auto StateComponent = Hero->GetCharacterStateComponenet();
+				if( StateComponent && StateComponent->GetDeadState() )
+				{
+					continue;
+				}
+
 				OwnerComp.GetBlackboardComponent()->SetValueAsObject( ABaseAIController::TargetKey, Hero );;
 				DrawDebugSphere( World, Center, SearchRadius, 16, FColor::Green, false, 0.3f );
 				DrawDebugPoint( World, Hero->GetActorLocation(), 10.f, FColor::Blue, false, 0.3f );

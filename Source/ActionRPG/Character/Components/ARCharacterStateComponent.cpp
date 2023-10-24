@@ -96,16 +96,11 @@ void UARCharacterStateComponent::EndPlay( const EEndPlayReason::Type EndPlayReas
 void UARCharacterStateComponent::OnGetStuned( const FGameplayEffectSpec& EffectSpec )
 {
 	IsStunned = true;
-
-	// Hit Reaction Delegate Set 
 }
 
 void UARCharacterStateComponent::OnStunStateRemoved( const FActiveGameplayEffect& ActiveEffect )
 {
 	IsStunned = false;
-
-	// Hit Reaction Delegate Remove 
-
 }
 
 void UARCharacterStateComponent::OnProvoked( const FGameplayEffectSpec& EffectSpec )
@@ -124,11 +119,6 @@ void UARCharacterStateComponent::OnProvoked( const FGameplayEffectSpec& EffectSp
 	}
 
 	Blackboard->SetValueAsObject( ABaseAIController::TargetKey, EffectSpec.GetEffectContext().GetInstigator() );
-}
-
-void UARCharacterStateComponent::OnRefreshProvoked( FActiveGameplayEffect& EffectSpec )
-{
-
 }
 
 void UARCharacterStateComponent::OnGuard( const FGameplayEffectSpec& EffectSpec )
@@ -170,11 +160,11 @@ void UARCharacterStateComponent::OnHealthChange( const FOnAttributeChangeData& D
 
 	if( Data.NewValue > Data.OldValue && Data.NewValue >= HealthAttrib->GetMaxHealth() )
 	{
-		AbilitySystemComponent->AddLooseGameplayTag( Tags.CharacterStateTag_FullHealth );
+		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_FullHealth, 1 );
 	}
 	else if( Data.NewValue < HealthAttrib->GetMaxHealth() && AbilitySystemComponent->HasMatchingGameplayTag( Tags.CharacterStateTag_FullHealth ) )
 	{
-		AbilitySystemComponent->RemoveLooseGameplayTag( Tags.CharacterStateTag_FullHealth );
+		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_FullHealth, 0 );
 	}
 
 	// Change Dead State
@@ -182,6 +172,7 @@ void UARCharacterStateComponent::OnHealthChange( const FOnAttributeChangeData& D
 	{
 		IsDead = true;
 		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_Dead, 1 );
+		AbilitySystemComponent->CancelAllAbilities();
 	}
 	else if( Data.NewValue > 0.f && IsDead )
 	{
@@ -196,11 +187,11 @@ void UARCharacterStateComponent::OnManaChange( const FOnAttributeChangeData& Dat
 
 	if( Data.NewValue > Data.OldValue && Data.NewValue >= ManaAttrib->GetMaxMana() )
 	{
-		AbilitySystemComponent->AddLooseGameplayTag( Tags.CharacterStateTag_FullMana );
+		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_FullMana, 1 );
 	}
 	else if( Data.NewValue < ManaAttrib->GetMaxMana() && AbilitySystemComponent->HasMatchingGameplayTag( Tags.CharacterStateTag_FullMana ) )
 	{
-		AbilitySystemComponent->RemoveLooseGameplayTag( Tags.CharacterStateTag_FullMana );
+		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_FullMana, 0 );
 	}
 }
 
@@ -210,21 +201,21 @@ void UARCharacterStateComponent::OnShieldGaugeChange( const FOnAttributeChangeDa
 
 	if( HealthAttrib->GetMaxShieldGauge() > 0.f && Data.NewValue == 0.f )
 	{
-		AbilitySystemComponent->AddLooseGameplayTag( Tags.CharacterStateTag_ShieldEmpty );
+		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_ShieldEmpty, 1 );
 	}
 	else if( HealthAttrib->GetMaxShieldGauge() > 0.f && Data.OldValue == 0.f )
 	{
-		AbilitySystemComponent->RemoveLooseGameplayTag( Tags.CharacterStateTag_ShieldEmpty );
+		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_ShieldEmpty, 0 );
 	}
 
 
 	if( Data.NewValue > Data.OldValue && Data.NewValue >= HealthAttrib->GetMaxShieldGauge() )
 	{
-		AbilitySystemComponent->AddLooseGameplayTag( Tags.CharacterStateTag_FullShield );
+		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_FullShield, 1 );
 	}
 	else if( Data.NewValue < HealthAttrib->GetMaxShieldGauge() && AbilitySystemComponent->HasMatchingGameplayTag( Tags.CharacterStateTag_FullShield ) )
 	{
-		AbilitySystemComponent->RemoveLooseGameplayTag( Tags.CharacterStateTag_FullShield );
+		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_FullShield, 0 );
 	}
 }
 

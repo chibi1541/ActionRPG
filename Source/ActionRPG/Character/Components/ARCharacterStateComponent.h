@@ -45,9 +45,6 @@ protected:
 		void OnProvoked( const FGameplayEffectSpec& EffectSpec );
 
 	UFUNCTION()
-		void OnRefreshProvoked( FActiveGameplayEffect& EffectSpec );
-
-	UFUNCTION()
 		void OnGuard( const FGameplayEffectSpec& EffectSpec );
 
 	UFUNCTION()
