@@ -6,3 +6,4 @@ Content/ParagonSerath/Characters/Global/MaterialLayers/Metal filter=lfs diff=lfs
 Content/ParagonSerath/Characters/Heroes/Serath/Skins filter=lfs diff=lfs merge=lfs -text
 Content/ParagonSerath/Characters/Heroes/Serath/Textures filter=lfs diff=lfs merge=lfs -text
 Content/ParagonTerra/Audio/Wavs filter=lfs diff=lfs merge=lfs -text
+Content/InfinityBladeEffects/Environments filter=lfs diff=lfs merge=lfs -text
