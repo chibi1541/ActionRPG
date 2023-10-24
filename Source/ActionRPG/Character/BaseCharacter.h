@@ -42,6 +42,9 @@ public:
 	UFUNCTION( BlueprintCallable, Category = "ARCharacter|TargetingComponent" )
 		UARTargetingComponent* GetTargetingComponent() const;
 
+	UFUNCTION( BlueprintCallable, Category = "ARCharacter|Component" )
+		USceneComponent* GetConditionEffectPosComp() const;
+
 	UFUNCTION( BlueprintCallable )
 		FVector GetCurrentVelocity() const;
 
@@ -78,6 +81,9 @@ protected:
 
 	UPROPERTY( EditAnywhere, BlueprintReadOnly )
 		TObjectPtr<UARTargetingComponent> TargetingComponent;
+
+	UPROPERTY( EditAnywhere, BlueprintReadOnly )
+		TObjectPtr<USceneComponent> ConditionEffectPosComp;
 
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Ability" )
 		TArray<TObjectPtr<UAbilitySet>> AbilitySets;

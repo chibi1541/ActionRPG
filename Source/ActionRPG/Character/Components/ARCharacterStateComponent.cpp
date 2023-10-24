@@ -147,20 +147,20 @@ void UARCharacterStateComponent::OnStaminaChange( const FOnAttributeChangeData& 
 
 	if( Data.NewValue == 0.f )
 	{
-		AbilitySystemComponent->AddLooseGameplayTag( Tags.CharacterStateTag_Exhausted );
+		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_Exhausted, 1 );
 	}
 	else if( Data.OldValue == 0.f )
 	{
-		AbilitySystemComponent->RemoveLooseGameplayTag( Tags.CharacterStateTag_Exhausted );
+		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_Exhausted, 0 );
 	}
 
 	if( Data.NewValue > Data.OldValue && Data.NewValue >= HealthAttrib->GetMaxStamina() )
 	{
-		AbilitySystemComponent->AddLooseGameplayTag( Tags.CharacterStateTag_FullStamina );
+		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_FullStamina, 1 );
 	}
 	else if( Data.NewValue < HealthAttrib->GetMaxStamina() && AbilitySystemComponent->HasMatchingGameplayTag( Tags.CharacterStateTag_FullStamina ) )
 	{
-		AbilitySystemComponent->RemoveLooseGameplayTag( Tags.CharacterStateTag_FullStamina );
+		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_FullStamina, 0 );
 	}
 }
 
@@ -207,6 +207,16 @@ void UARCharacterStateComponent::OnManaChange( const FOnAttributeChangeData& Dat
 void UARCharacterStateComponent::OnShieldGaugeChange( const FOnAttributeChangeData& Data )
 {
 	const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
+
+	if( HealthAttrib->GetMaxShieldGauge() > 0.f && Data.NewValue == 0.f )
+	{
+		AbilitySystemComponent->AddLooseGameplayTag( Tags.CharacterStateTag_ShieldEmpty );
+	}
+	else if( HealthAttrib->GetMaxShieldGauge() > 0.f && Data.OldValue == 0.f )
+	{
+		AbilitySystemComponent->RemoveLooseGameplayTag( Tags.CharacterStateTag_ShieldEmpty );
+	}
+
 
 	if( Data.NewValue > Data.OldValue && Data.NewValue >= HealthAttrib->GetMaxShieldGauge() )
 	{

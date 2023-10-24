@@ -44,12 +44,6 @@ void UGetHitComponent::BeginPlay()
 
 UAnimMontage* UGetHitComponent::GetMontagetoPlay( const FVector AttackVec ) const
 {
-	const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
-	if( ASC->HasMatchingGameplayTag( Tags.AbilityStateTag_Guard ) && GuardBlockMontage )
-	{
-		return GuardBlockMontage;
-	}
-
 	UAnimMontage* Return = HitMontage_Front;
 
 	float DotProduct_Right = FVector::DotProduct( GetOwner()->GetActorRightVector(), AttackVec );

@@ -56,9 +56,6 @@ protected:
 	UPROPERTY( EditAnywhere, Category = "HitMontages|Left" )
 		TObjectPtr<UAnimMontage> HitMontage_Left;
 
-	UPROPERTY( EditAnywhere, Category = "HitMontages|Block" )
-		TObjectPtr<UAnimMontage> GuardBlockMontage;
-
 	UPROPERTY( EditAnywhere, Category = "GrantingTags" )
 		FGameplayTagContainer GrantingTags;
 

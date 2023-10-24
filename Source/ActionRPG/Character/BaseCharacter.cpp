@@ -26,6 +26,9 @@ ABaseCharacter::ABaseCharacter( const FObjectInitializer& ObjectInitializer /*= 
 
 	TargetingComponent = CreateDefaultSubobject<UARTargetingComponent>( TEXT( "TARGETINGCOMP" ) );
 	TargetingComponent->SetupAttachment( RootComponent );
+
+	ConditionEffectPosComp = CreateDefaultSubobject<USceneComponent>( TEXT( "CONDITIONEFFECTCOMP" ) );
+	ConditionEffectPosComp->SetupAttachment( RootComponent );
 }
 
 class UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
@@ -67,6 +70,11 @@ UARTargetingComponent* ABaseCharacter::GetTargetingComponent() const
 	}
 
 	return nullptr;
+}
+
+USceneComponent* ABaseCharacter::GetConditionEffectPosComp() const
+{
+	return ConditionEffectPosComp;
 }
 
 FVector ABaseCharacter::GetCurrentVelocity() const

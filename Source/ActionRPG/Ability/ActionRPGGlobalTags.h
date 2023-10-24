@@ -37,11 +37,15 @@ struct ACTIONRPG_API FActionRPGGlobalTags : public FGameplayTagNativeAdder
 	FGameplayTag CharacterStateTag_FullMana;
 	FGameplayTag CharacterStateTag_FullShield;
 	FGameplayTag CharacterStateTag_DelayShieldRegene;
+	FGameplayTag CharacterStateTag_Blocking;
+	FGameplayTag CharacterStateTag_ShieldEmpty;
+
 
 	// Cost Tags
 	FGameplayTag AbilityCostTag_Stamina;
 
 	// Extra Damage Tag
+	FGameplayTag DamageTag;
 	FGameplayTag ExtraDamageTag;
 	FGameplayTag ExtraDamageCoeffTag;
 
@@ -81,9 +85,12 @@ protected:
 		CharacterStateTag_FullMana = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.FullMana" ) );
 		CharacterStateTag_FullShield = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.FullShield" ) );
 		CharacterStateTag_DelayShieldRegene = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.DelayShieldRegene" ) );
+		CharacterStateTag_Blocking = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Blocking" ) );
+		CharacterStateTag_ShieldEmpty = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.ShieldEmpty" ) );
 
 		AbilityCostTag_Stamina = Manager.AddNativeGameplayTag( TEXT( "Ability.Cost.Stamina" ) );
 
+		DamageTag = Manager.AddNativeGameplayTag( TEXT( "Ability.Value.Damage" ) );
 		ExtraDamageTag = Manager.AddNativeGameplayTag( TEXT( "Ability.Value.ExtraDamage" ) );
 		ExtraDamageTag = Manager.AddNativeGameplayTag( TEXT( "Ability.Value.ExtraDamageCoeff" ) );
 
