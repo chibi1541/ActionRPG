@@ -24,7 +24,6 @@ protected:
 	virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
 	
 public:
-	// Enemy
 	UFUNCTION( BlueprintCallable, Category = "CharacterState|Targeting" )
 		bool SetTargeting( bool bTargeting );
 
@@ -41,7 +40,6 @@ private:
 
 private:
 
-	// Enemy
 	TWeakObjectPtr<const ABaseCharacter> TargetCharacter;
 
 	TArray<TWeakObjectPtr<const ABaseCharacter>> TargetList;

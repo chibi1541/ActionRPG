@@ -6,7 +6,7 @@
 #include "Character/BaseAIController.h"
 #include "Engine/World.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Character/HeroCharacter.h"
+#include "Character/BaseCharacter.h"
 #include "DrawDebugHelpers.h"
 #include "Character/Components/ARCharacterStateComponent.h"
 
@@ -24,7 +24,13 @@ void UBTService_Search::TickNode( UBehaviorTreeComponent& OwnerComp, uint8* Node
 	Super::TickNode( OwnerComp, NodeMemory, DeltaSeconds );
 
 	const APawn* ControllingPawn = OwnerComp.GetAIOwner()->GetPawn();
-	if( ControllingPawn == nullptr )
+	if( !ControllingPawn )
+	{
+		return;
+	}
+
+	const ABaseCharacter* Owener = Cast<ABaseCharacter>( ControllingPawn );
+	if( !Owener )
 	{
 		return;
 	}
@@ -65,19 +71,24 @@ void UBTService_Search::TickNode( UBehaviorTreeComponent& OwnerComp, uint8* Node
 		OwnerComp.GetBlackboardComponent()->SetValueAsObject( ABaseAIController::TargetKey, nullptr );
 		for( const FOverlapResult OverlapResult : OverlapResults )
 		{
-			AHeroCharacter* Hero = Cast<AHeroCharacter>( OverlapResult.GetActor() );
-			if( Hero != NULL )
+			ABaseCharacter* CheckCharacter = Cast<ABaseCharacter>( OverlapResult.GetActor() );
+			if( CheckCharacter )
 			{
-				auto StateComponent = Hero->GetCharacterStateComponenet();
+				if( Owener->GetCharacterType() == CheckCharacter->GetCharacterType() )
+				{
+					continue;
+				}
+
+				auto StateComponent = CheckCharacter->GetCharacterStateComponenet();
 				if( StateComponent && StateComponent->GetDeadState() )
 				{
 					continue;
 				}
 
-				OwnerComp.GetBlackboardComponent()->SetValueAsObject( ABaseAIController::TargetKey, Hero );;
+				OwnerComp.GetBlackboardComponent()->SetValueAsObject( ABaseAIController::TargetKey, CheckCharacter );
 				DrawDebugSphere( World, Center, SearchRadius, 16, FColor::Green, false, 0.3f );
-				DrawDebugPoint( World, Hero->GetActorLocation(), 10.f, FColor::Blue, false, 0.3f );
-				DrawDebugLine( World, ControllingPawn->GetActorLocation(), Hero->GetActorLocation(), FColor::Blue, false, 0.3f );
+				DrawDebugPoint( World, CheckCharacter->GetActorLocation(), 10.f, FColor::Blue, false, 0.3f );
+				DrawDebugLine( World, ControllingPawn->GetActorLocation(), CheckCharacter->GetActorLocation(), FColor::Blue, false, 0.3f );
 				return;
 			}
 		}

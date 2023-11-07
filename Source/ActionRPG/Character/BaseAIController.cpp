@@ -19,14 +19,14 @@ ABaseAIController::ABaseAIController( const FObjectInitializer& ObjectInitialize
 	:Super( ObjectInitializer )
 {
 	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTObject(
-		TEXT( "/Game/Blueprints/AI/BT_Monster" ) );
+		TEXT( "/Game/Blueprints/AI/Monster/BT_Monster" ) );
 	if( BTObject.Succeeded() )
 	{
 		BehaviorTree = BTObject.Object;
 	}
 
 	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBObject(
-		TEXT( "/Game/Blueprints/AI/BB_Monster" ) );
+		TEXT( "/Game/Blueprints/AI/Monster/BB_Monster" ) );
 	if( BBObject.Succeeded() )
 	{
 		BlackboardData = BBObject.Object;
