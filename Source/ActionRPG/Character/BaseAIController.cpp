@@ -13,7 +13,8 @@
 const FName ABaseAIController::HomePosKey( TEXT( "HomePos" ) );
 const FName ABaseAIController::PatrolPosKey( TEXT( "PatrolPos" ) );
 const FName ABaseAIController::TargetKey( TEXT( "Target" ) );
-const FName ABaseAIController::ASCKey(TEXT("ASC"));
+const FName ABaseAIController::ASCKey( TEXT( "ASC" ) );
+const FName ABaseAIController::InAttackRangeKey( TEXT( "InAttackRange" ) );
 
 ABaseAIController::ABaseAIController( const FObjectInitializer& ObjectInitializer )
 	:Super( ObjectInitializer )

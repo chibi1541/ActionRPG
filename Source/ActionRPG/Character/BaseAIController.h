@@ -30,6 +30,7 @@ public:
 	static const FName PatrolPosKey;
 	static const FName TargetKey;
 	static const FName ASCKey;
+	static const FName InAttackRangeKey;
 
 private:
 	UARAbilitySystemComponent* GetARAbilitySystemComponent() const;
