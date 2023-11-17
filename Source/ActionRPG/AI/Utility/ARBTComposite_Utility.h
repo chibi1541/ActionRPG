@@ -2,9 +2,8 @@
 
 #pragma once
 
-#include "ActionRPG_Lib.h"
-#include "BehaviorTree/BTCompositeNode.h"
 #include "AI/Utility/ARBTUtilityTypes.h"
+#include "BehaviorTree/BTCompositeNode.h"
 
 #include "ARBTComposite_Utility.generated.h"
 
@@ -24,7 +23,7 @@ struct FARBTUtilityMemory : public FBTCompositeMemory
 	FUtilityExecutionOrdering ExecutionOrdering;
 };
 
-class UBTDecorator_UtilityFunction;
+class UARBTDecorator_UtilityFunction;
 
 /**
  *
@@ -46,10 +45,15 @@ public:
 	virtual FString GetStaticDescription() const override;
 
 protected:
-
-	//const UBTDecorator_UtilityFunction* FindChildUtilityFunction( int32 ChildIndex ) const;
+	virtual int32 GetNextChildHandler( struct FBehaviorTreeSearchData& SearchData, int32 PrevChild, EBTNodeResult::Type LastResult ) const override;
+	
+	const UARBTDecorator_UtilityFunction* FindChildUtilityFunction( int32 ChildIndex ) const;
 
 	virtual void NotifyNodeActivation( FBehaviorTreeSearchData& SearchData ) const override;
+
+
+	bool EvaluateUtilityScores(FBehaviorTreeSearchData& SearchData, OUT TArray<float>& Scores ) const;
+
 
 
 };

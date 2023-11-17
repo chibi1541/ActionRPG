@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ActionRPG_Lib.h"
 
 #define MAX_UTILITY_CHILDREN 16
 
