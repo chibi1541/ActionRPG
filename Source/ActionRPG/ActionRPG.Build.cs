@@ -26,6 +26,7 @@ public class ActionRPG : ModuleRules
                 "SourceControl",
                 "Json",
                 "JsonUtilities",
+                "BTUtilityPlugin",
             }
             );
 
