@@ -4,8 +4,10 @@
 
 #include "ActionRPG_Lib.h"
 #include "Components/ActorComponent.h"
+#include "GameplayEffectTypes.h"
 
 #include "ARUtilityStateComponent.generated.h"
+
 
 class UBlackboardComponent;
 class UARAbilitySystemComponent;
@@ -24,8 +26,10 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	//void InitializeComponent( const UBlackboardComponent* BlackboardComponent );
+	void InitializeOnPossessed( UBlackboardComponent* BlackboardComponent );
 
+protected:
+	virtual void OnHealthChange( const FOnAttributeChangeData& Data );
 
 
 public:
