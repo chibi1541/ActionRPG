@@ -3,11 +3,30 @@
 #pragma once
 
 #include "Decorator/BTDecorator_UtilityFunction.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Float.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Int.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 #include "BTDecorator_UtilityCurve.generated.h"
 
+USTRUCT( BlueprintType )
+struct BTUTILITYPLUGIN_API FCurveInfo
+{
+	GENERATED_USTRUCT_BODY()
+
+	FCurveInfo()
+	{
+	}
+
+	UPROPERTY( EditAnywhere, BlueprintReadOnly )
+		TObjectPtr<class UCurveFloat> CurveValue;
+
+	UPROPERTY( EditAnywhere, BlueprintReadOnly )
+		FBlackboardKeySelector StateValueKey;
+};
+
 /**
- * 
+ *
  */
 UCLASS( Meta = ( DisplayName = "Utility Curve" ), Category = "Utility Functions" )
 class BTUTILITYPLUGIN_API UBTDecorator_UtilityCurve : public UBTDecorator_UtilityFunction
@@ -23,14 +42,10 @@ protected:
 	virtual float CalculateUtilityValue( UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory ) const override;
 
 private:
-	const float GetStateValue( const UBehaviorTreeComponent& OwnerComp ) const;
-
+	const float GetStateValue( const UBehaviorTreeComponent& OwnerComp, const int& ArrayIndex ) const;
 
 protected:
 	UPROPERTY( EditAnywhere, Category = "Curve" )
-		TObjectPtr<class UCurveFloat> CurveValue;
-
-	UPROPERTY( EditAnywhere, Category = "State Value" )
-		struct FBlackboardKeySelector StateValueKey;
+		TArray<FCurveInfo> CurveInfoArray;
 
 };

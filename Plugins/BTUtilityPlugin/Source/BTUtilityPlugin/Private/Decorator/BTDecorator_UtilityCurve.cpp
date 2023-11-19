@@ -4,9 +4,7 @@
 #include "Decorator/BTDecorator_UtilityCurve.h"
 
 #include "Curves/CurveFloat.h"
-#include "BehaviorTree/Blackboard/BlackboardKeyType_Float.h"
-#include "BehaviorTree/Blackboard/BlackboardKeyType_Int.h"
-#include "BehaviorTree/BlackboardComponent.h"
+
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BTDecorator_UtilityCurve)
 
@@ -15,23 +13,35 @@ UBTDecorator_UtilityCurve::UBTDecorator_UtilityCurve( const FObjectInitializer& 
 {
 	NodeName = TEXT( "Utility Curve" );
 
-	StateValueKey.AddFloatFilter( this, GET_MEMBER_NAME_CHECKED( UBTDecorator_UtilityCurve, StateValueKey ) );
-	StateValueKey.AddIntFilter( this, GET_MEMBER_NAME_CHECKED( UBTDecorator_UtilityCurve, StateValueKey ) );
 }
 
 void UBTDecorator_UtilityCurve::InitializeFromAsset( UBehaviorTree& Asset )
 {
 	Super::InitializeFromAsset( Asset );
 
-	StateValueKey.ResolveSelectedKey( *GetBlackboardAsset() );
+	for( auto CurveInfo : CurveInfoArray )
+	{
+		CurveInfo.StateValueKey.ResolveSelectedKey( *GetBlackboardAsset() );
+	}
 }
 
 FString UBTDecorator_UtilityCurve::GetStaticDescription() const
 {
 	FString CurveName;
-	if( CurveValue != nullptr )
+	if( !CurveInfoArray.IsEmpty() )
 	{
-		CurveName = CurveValue->GetName();
+		for( const auto CurveInfo : CurveInfoArray )
+		{
+			if( CurveInfo.CurveValue )
+			{
+				CurveName.Append( FString::Printf( TEXT( "%s, " ), *CurveInfo.CurveValue->GetName() ) );
+			}
+			else
+			{
+				CurveName.Append( TEXT( "None, " ) );
+			}
+		}
+
 	}
 
 	return FString::Printf( TEXT( "Utility Key : %s" ), *CurveName );
@@ -42,10 +52,22 @@ void UBTDecorator_UtilityCurve::DescribeRuntimeValues( const UBehaviorTreeCompon
 	Super::DescribeRuntimeValues( OwnerComp, NodeMemory, Verbosity, Values );
 
 	FString DescKeyValue;
-
-	if( CurveValue != nullptr )
+	if( !CurveInfoArray.IsEmpty() )
 	{
-		DescKeyValue = FString::SanitizeFloat( CurveValue->GetFloatValue( GetStateValue( OwnerComp ) ) );
+		for( int Index = 0; Index < CurveInfoArray.Num(); Index++ )
+		{
+			if( CurveInfoArray[Index].CurveValue )
+			{
+				DescKeyValue.Append(
+					FString::Printf( TEXT( "%s, " ), *FString::SanitizeFloat(
+					CurveInfoArray[Index].CurveValue->GetFloatValue(
+					GetStateValue( OwnerComp, Index ) ) ) ) );
+			}
+			else
+			{
+				DescKeyValue.Append( TEXT( "None, " ) );
+			}
+		}
 	}
 
 	Values.Add( FString::Printf( TEXT( "Utility : %s" ), *DescKeyValue ) );
@@ -53,26 +75,45 @@ void UBTDecorator_UtilityCurve::DescribeRuntimeValues( const UBehaviorTreeCompon
 
 float UBTDecorator_UtilityCurve::CalculateUtilityValue( UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory ) const
 {
-	if( CurveValue != nullptr )
+	float CurveValueSum = 0.f;
+
+	if( !CurveInfoArray.IsEmpty() )
 	{
-		return CurveValue->GetFloatValue( GetStateValue( OwnerComp ) );
+		for( int Index = 0; Index < CurveInfoArray.Num(); Index++ )
+		{
+			if( !CurveInfoArray[Index].CurveValue )
+			{
+				// error log
+				continue;
+			}
+			else
+			{
+				CurveValueSum += CurveInfoArray[Index].CurveValue->GetFloatValue( GetStateValue( OwnerComp, Index ) );
+			}
+		}
 	}
 
-	return 0.0f;
+	return ( CurveInfoArray.Num() > 0 ) ? CurveValueSum / CurveInfoArray.Num() : 0.f;
 }
 
-const float UBTDecorator_UtilityCurve::GetStateValue( const UBehaviorTreeComponent& OwnerComp ) const
+const float UBTDecorator_UtilityCurve::GetStateValue( const UBehaviorTreeComponent& OwnerComp, const int& ArrayIndex ) const
 {
 	const UBlackboardComponent* MyBlackboard = OwnerComp.GetBlackboardComponent();
 	float Value = 0.0f;
 
-	if( StateValueKey.SelectedKeyType == UBlackboardKeyType_Float::StaticClass() )
+	const auto Curve = CurveInfoArray[ArrayIndex];
+
+	if( Curve.StateValueKey.SelectedKeyType == UBlackboardKeyType_Float::StaticClass() )
 	{
-		Value = MyBlackboard->GetValue<UBlackboardKeyType_Float>( StateValueKey.GetSelectedKeyID() );
+		Value = MyBlackboard->GetValue<UBlackboardKeyType_Float>( Curve.StateValueKey.GetSelectedKeyID() );
 	}
-	else if( StateValueKey.SelectedKeyType == UBlackboardKeyType_Int::StaticClass() )
+	else if( Curve.StateValueKey.SelectedKeyType == UBlackboardKeyType_Int::StaticClass() )
 	{
-		Value = ( float )MyBlackboard->GetValue<UBlackboardKeyType_Int>( StateValueKey.GetSelectedKeyID() );
+		Value = ( float )MyBlackboard->GetValue<UBlackboardKeyType_Int>( Curve.StateValueKey.GetSelectedKeyID() );
+	}
+	else
+	{
+		// show error log
 	}
 
 	return FMath::Max( Value, 0.0f );
