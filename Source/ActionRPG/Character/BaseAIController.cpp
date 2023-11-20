@@ -7,6 +7,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Ability/ARAbilitySystemComponent.h"
 #include "Character/BaseCharacter.h"
+#include "Character/Components/ARUtilityStateComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BaseAIController)
 
@@ -19,19 +20,7 @@ const FName ABaseAIController::InAttackRangeKey( TEXT( "InAttackRange" ) );
 ABaseAIController::ABaseAIController( const FObjectInitializer& ObjectInitializer )
 	:Super( ObjectInitializer )
 {
-	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTObject(
-		TEXT( "/Game/Blueprints/AI/Monster/BT_Monster" ) );
-	if( BTObject.Succeeded() )
-	{
-		BehaviorTree = BTObject.Object;
-	}
 
-	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBObject(
-		TEXT( "/Game/Blueprints/AI/Monster/BB_Monster" ) );
-	if( BBObject.Succeeded() )
-	{
-		BlackboardData = BBObject.Object;
-	}
 }
 
 void ABaseAIController::OnPossess( APawn* InPawn )
@@ -57,6 +46,21 @@ void ABaseAIController::OnPossess( APawn* InPawn )
 			RLOG( Error, TEXT( "AIController couldn't run BehaviorTree!" ) );
 		}
 	}
+
+	const auto BaseCharacter = Cast<ABaseCharacter>( InPawn );
+	if( BaseCharacter )
+	{
+		auto ActorComp = BaseCharacter->GetComponentByClass( UARUtilityStateComponent::StaticClass() );
+		if( ActorComp )
+		{
+			auto UtilityStateComp = Cast<UARUtilityStateComponent>( ActorComp );
+			if( UtilityStateComp )
+			{
+				UtilityStateComp->InitializeOnPossessed( Blackboard );
+			}
+		}
+	}
+
 }
 
 void ABaseAIController::OnUnPossess()
@@ -65,6 +69,20 @@ void ABaseAIController::OnUnPossess()
 	if( BehaviorTreeComponent != nullptr )
 	{
 		BehaviorTreeComponent->StopTree( EBTStopMode::Safe );
+	}
+
+	const auto BaseCharacter = ( GetCharacter() ) ? Cast<ABaseCharacter>( GetCharacter() ) : nullptr;
+	if( BaseCharacter )
+	{
+		auto ActorComp = BaseCharacter->GetComponentByClass( UARUtilityStateComponent::StaticClass() );
+		if( ActorComp )
+		{
+			auto UtilityStateComp = Cast<UARUtilityStateComponent>( ActorComp );
+			if( UtilityStateComp )
+			{
+				UtilityStateComp->UnPossessController();
+			}
+		}
 	}
 }
 

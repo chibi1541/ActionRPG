@@ -20,6 +20,7 @@ class UGameplayEffect;
 class UARCharacterStateComponent;
 class UARTargetingComponent;
 class UGameplayEffectSet;
+class UARUtilityStateComponent;
 
 UCLASS( config = Game )
 class ACTIONRPG_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayCueInterface, public IGameplayTagAssetInterface
@@ -75,6 +76,9 @@ protected:
 protected:
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "Components|State" )
 		TObjectPtr<UARCharacterStateComponent> CharacterStateComponent;
+
+	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "Components|State" )
+		TObjectPtr<UARUtilityStateComponent> UtilityStateComponent;
 
 	UPROPERTY()
 		TObjectPtr<UARAbilitySystemComponent> AbilitySystemComp;

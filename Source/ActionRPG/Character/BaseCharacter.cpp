@@ -10,6 +10,7 @@
 #include "Character/Attribute/ARBaseAttribSet.h"
 #include "Character/Components/ARTargetingComponent.h"
 #include "Ability/GameplayEffectSet.h"
+#include "Character/Components/ARUtilityStateComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BaseCharacter)
 
@@ -29,6 +30,8 @@ ABaseCharacter::ABaseCharacter( const FObjectInitializer& ObjectInitializer /*= 
 
 	ConditionEffectPosComp = CreateDefaultSubobject<USceneComponent>( TEXT( "CONDITIONEFFECTCOMP" ) );
 	ConditionEffectPosComp->SetupAttachment( RootComponent );
+
+	UtilityStateComponent = CreateDefaultSubobject<UARUtilityStateComponent>( TEXT( "UTILITYSTATECOMP" ) );
 }
 
 class UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const

@@ -10,7 +10,7 @@
 
 
 class UBlackboardComponent;
-class UARAbilitySystemComponent;
+class UAbilitySystemComponent;
 class UARVitRefAttribSet;
 class UARIntRefAttribSet;
 
@@ -47,12 +47,17 @@ public:
 	static const FName ShieldGaugeRateKey;
 
 protected:
-
 	TWeakObjectPtr<UBlackboardComponent> Blackboard;
 
+	TWeakObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	TWeakObjectPtr<const UARVitRefAttribSet> HealthAttrib;
 
 	TWeakObjectPtr<const UARIntRefAttribSet> ManaAttrib;
+
+	FDelegateHandle HealthRateHandle;
+	FDelegateHandle StaminaRateHandle;
+	FDelegateHandle ManaRateHandle;
+	FDelegateHandle ShieldRateHandle;
 
 };

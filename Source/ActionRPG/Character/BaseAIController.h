@@ -14,7 +14,7 @@ class UBehaviorTree;
 class UBlackboardData;
 class UARAbilitySystemComponent;
 
-UCLASS()
+UCLASS( Blueprintable )
 class ACTIONRPG_API ABaseAIController : public AAIController
 {
 	GENERATED_BODY()
@@ -36,10 +36,10 @@ private:
 	UARAbilitySystemComponent* GetARAbilitySystemComponent() const;
 
 protected:
-	UPROPERTY( VisibleAnywhere, Category = "AILogic", meta = ( AllowPrivateAccess = "true" ) )
+	UPROPERTY( EditDefaultsOnly, BlueprintReadWrite, Category = "AILogic", meta = ( AllowPrivateAccess = "true" ) )
 		TObjectPtr<UBehaviorTree> BehaviorTree;
 
-	UPROPERTY( VisibleAnywhere, Category = "AILogic", meta = ( AllowPrivateAccess = "true" ) )
+	UPROPERTY( EditDefaultsOnly, BlueprintReadWrite, Category = "AILogic", meta = ( AllowPrivateAccess = "true" ) )
 		TObjectPtr<UBlackboardData> BlackboardData;
 
 public:
