@@ -28,8 +28,16 @@ protected:
 public:
 	void InitializeOnPossessed( UBlackboardComponent* BlackboardComponent );
 
+	void UnPossessController();
+
 protected:
-	virtual void OnHealthChange( const FOnAttributeChangeData& Data );
+	void OnHealthChange( const FOnAttributeChangeData& Data );
+
+	void OnStaminaChange( const FOnAttributeChangeData& Data );
+
+	void OnManaChange( const FOnAttributeChangeData& Data );
+
+	void OnShieldGaugeChange( const FOnAttributeChangeData& Data );
 
 
 public:
@@ -39,8 +47,8 @@ public:
 	static const FName ShieldGaugeRateKey;
 
 protected:
-	UPROPERTY( BlueprintReadOnly )
-		TObjectPtr<UBlackboardComponent> Blackboard;
+
+	TWeakObjectPtr<UBlackboardComponent> Blackboard;
 
 
 	TWeakObjectPtr<const UARVitRefAttribSet> HealthAttrib;

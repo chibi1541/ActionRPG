@@ -55,8 +55,39 @@ void UARUtilityStateComponent::InitializeOnPossessed( UBlackboardComponent* Blac
 	Blackboard = BlackboardComponent;
 }
 
+void UARUtilityStateComponent::UnPossessController()
+{
+	// Release AIController
+	Blackboard.Reset();
+}
+
 void UARUtilityStateComponent::OnHealthChange( const FOnAttributeChangeData& Data )
+{
+	// Set New Health Rate On Blackboard
+	float HpRate = 0.f;
+
+	if( HealthAttrib.IsValid() )
+	{
+		if( HealthAttrib->GetMaxHealth() >= 0.f && Data.NewValue >= 0.f )
+		{
+			HpRate = Data.NewValue / HealthAttrib->GetMaxHealth();
+		}
+
+
+	}
+}
+
+void UARUtilityStateComponent::OnStaminaChange( const FOnAttributeChangeData& Data )
 {
 
 }
 
+void UARUtilityStateComponent::OnManaChange( const FOnAttributeChangeData& Data )
+{
+
+}
+
+void UARUtilityStateComponent::OnShieldGaugeChange( const FOnAttributeChangeData& Data )
+{
+
+}
