@@ -22,6 +22,7 @@
 UARCharacterStateComponent::UARCharacterStateComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+	bWantsInitializeComponent = true;
 
 	StiffEffectSpecHandle = FGameplayEffectSpecHandle( nullptr );
 
@@ -38,6 +39,17 @@ UAbilitySystemComponent* UARCharacterStateComponent::GetAbilitySystemComponent()
 	return GetARAbilitySystemComponent();
 }
 
+void UARCharacterStateComponent::InitializeComponent()
+{
+	Super::InitializeComponent();
+
+	if( AbilitySystemComponent )
+	{
+		HealthAttrib = AbilitySystemComponent->GetSet<UARVitRefAttribSet>();
+		ManaAttrib = AbilitySystemComponent->GetSet<UARIntRefAttribSet>();
+	}
+}
+
 // Called when the game starts
 void UARCharacterStateComponent::BeginPlay()
 {
@@ -51,9 +63,6 @@ void UARCharacterStateComponent::BeginPlay()
 	}
 
 	GetHitComp = Cast<UGetHitComponent>( Owner->GetComponentByClass( UGetHitComponent::StaticClass() ) );
-
-	HealthAttrib = AbilitySystemComponent->GetSet<UARVitRefAttribSet>();
-	ManaAttrib = AbilitySystemComponent->GetSet<UARIntRefAttribSet>();
 
 	const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
 	AbilitySystemComponent->ActiveGameplayEffectCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Stun ).AddDynamic( this, &UARCharacterStateComponent::OnGetStuned );
@@ -79,6 +88,8 @@ void UARCharacterStateComponent::BeginPlay()
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( ManaAttrib->GetManaAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnManaChange );
 	}
 }
+
+
 
 void UARCharacterStateComponent::TickComponent( float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
 {

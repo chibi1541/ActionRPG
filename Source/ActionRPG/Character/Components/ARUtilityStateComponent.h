@@ -20,12 +20,9 @@ class ACTIONRPG_API UARUtilityStateComponent : public UActorComponent
 {
 	GENERATED_UCLASS_BODY()
 
-
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
 public:
+	virtual void InitializeComponent() override;
+
 	void InitializeOnPossessed( UBlackboardComponent* BlackboardComponent );
 
 	void UnPossessController();
@@ -47,6 +44,7 @@ public:
 	static const FName ShieldGaugeRateKey;
 
 protected:
+
 	TWeakObjectPtr<UBlackboardComponent> Blackboard;
 
 	TWeakObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;

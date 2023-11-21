@@ -22,13 +22,13 @@ UARUtilityStateComponent::UARUtilityStateComponent( const FObjectInitializer& Ob
 	:Super( ObjectInitializer )
 {
 	PrimaryComponentTick.bCanEverTick = false;
+
+	bWantsInitializeComponent = true;
 }
 
-
-// Called when the game starts
-void UARUtilityStateComponent::BeginPlay()
+void UARUtilityStateComponent::InitializeComponent()
 {
-	Super::BeginPlay();
+	Super::InitializeComponent();
 
 	const ABaseCharacter* Owner = Cast<ABaseCharacter>( GetOwner() );
 	if( !Owner )
@@ -40,13 +40,15 @@ void UARUtilityStateComponent::BeginPlay()
 	AbilitySystemComponent = Owner->GetAbilitySystemComponent();
 	if( !AbilitySystemComponent.IsValid() )
 	{
-		RLOG( Error, TEXT( "AbilitySystemComponent is not Valid" ) );
+		RLOG( Error, TEXT( "AbilitySystemComponent is not Valid : %s" ), *Owner->GetName() );
 		return;
 	}
 
-	HealthAttrib = AbilitySystemComponent->GetSet<UARVitRefAttribSet>();
-	ManaAttrib = AbilitySystemComponent->GetSet<UARIntRefAttribSet>();
-
+	if( AbilitySystemComponent.IsValid() )
+	{
+		HealthAttrib = AbilitySystemComponent->GetSet<UARVitRefAttribSet>();
+		ManaAttrib = AbilitySystemComponent->GetSet<UARIntRefAttribSet>();
+	}
 }
 
 void UARUtilityStateComponent::InitializeOnPossessed( UBlackboardComponent* BlackboardComponent )
