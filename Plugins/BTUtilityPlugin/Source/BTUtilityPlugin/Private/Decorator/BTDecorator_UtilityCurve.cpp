@@ -19,7 +19,7 @@ void UBTDecorator_UtilityCurve::InitializeFromAsset( UBehaviorTree& Asset )
 {
 	Super::InitializeFromAsset( Asset );
 
-	for( auto CurveInfo : CurveInfoArray )
+	for( auto& CurveInfo : CurveInfoArray )
 	{
 		CurveInfo.StateValueKey.ResolveSelectedKey( *GetBlackboardAsset() );
 	}
@@ -30,7 +30,7 @@ FString UBTDecorator_UtilityCurve::GetStaticDescription() const
 	FString CurveName;
 	if( !CurveInfoArray.IsEmpty() )
 	{
-		for( const auto CurveInfo : CurveInfoArray )
+		for( const auto& CurveInfo : CurveInfoArray )
 		{
 			if( CurveInfo.CurveValue )
 			{
