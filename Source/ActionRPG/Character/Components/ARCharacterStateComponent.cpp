@@ -39,17 +39,6 @@ UAbilitySystemComponent* UARCharacterStateComponent::GetAbilitySystemComponent()
 	return GetARAbilitySystemComponent();
 }
 
-void UARCharacterStateComponent::InitializeComponent()
-{
-	Super::InitializeComponent();
-
-	if( AbilitySystemComponent )
-	{
-		HealthAttrib = AbilitySystemComponent->GetSet<UARVitRefAttribSet>();
-		ManaAttrib = AbilitySystemComponent->GetSet<UARIntRefAttribSet>();
-	}
-}
-
 // Called when the game starts
 void UARCharacterStateComponent::BeginPlay()
 {
@@ -71,6 +60,9 @@ void UARCharacterStateComponent::BeginPlay()
 
 	AbilitySystemComponent->ActiveGameplayEffectCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Guard ).AddDynamic( this, &UARCharacterStateComponent::OnGuard );
 	AbilitySystemComponent->GameplayEffectRemoveCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Guard ).AddDynamic( this, &UARCharacterStateComponent::OnGuardRemoved );
+
+	HealthAttrib = AbilitySystemComponent->GetSet<UARVitRefAttribSet>();
+	ManaAttrib = AbilitySystemComponent->GetSet<UARIntRefAttribSet>();
 
 	if( HealthAttrib.IsValid() )
 	{

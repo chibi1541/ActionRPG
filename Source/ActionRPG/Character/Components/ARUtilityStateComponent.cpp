@@ -26,9 +26,9 @@ UARUtilityStateComponent::UARUtilityStateComponent( const FObjectInitializer& Ob
 	bWantsInitializeComponent = true;
 }
 
-void UARUtilityStateComponent::InitializeComponent()
+void UARUtilityStateComponent::BeginPlay()
 {
-	Super::InitializeComponent();
+	Super::BeginPlay();
 
 	const ABaseCharacter* Owner = Cast<ABaseCharacter>( GetOwner() );
 	if( !Owner )
@@ -44,10 +44,13 @@ void UARUtilityStateComponent::InitializeComponent()
 		return;
 	}
 
-	if( AbilitySystemComponent.IsValid() )
+	HealthAttrib = AbilitySystemComponent->GetSet<UARVitRefAttribSet>();
+	ManaAttrib = AbilitySystemComponent->GetSet<UARIntRefAttribSet>();
+
+	// AIControll Possessed When BeginPlay Called
+	if( Blackboard.IsValid() )
 	{
-		HealthAttrib = AbilitySystemComponent->GetSet<UARVitRefAttribSet>();
-		ManaAttrib = AbilitySystemComponent->GetSet<UARIntRefAttribSet>();
+		BindAttributeDelegate();
 	}
 }
 
@@ -61,46 +64,7 @@ void UARUtilityStateComponent::InitializeOnPossessed( UBlackboardComponent* Blac
 
 	Blackboard = BlackboardComponent;
 
-	if( !AbilitySystemComponent.IsValid() )
-	{
-		RLOG( Error, TEXT( "AbilitySystemComponent is not Valid" ) );
-		return;
-	}
-
-	if( HealthAttrib.IsValid() )
-	{
-		if( !HealthRateHandle.IsValid() )
-		{
-			HealthRateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetHealthAttribute() ).AddUObject( this, &UARUtilityStateComponent::OnHealthChange );
-		}
-
-		if( !StaminaRateHandle.IsValid() )
-		{
-			StaminaRateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetStaminaAttribute() ).AddUObject( this, &UARUtilityStateComponent::OnStaminaChange );
-		}
-
-		if( !ShieldRateHandle.IsValid() )
-		{
-			ShieldRateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetShieldGaugeAttribute() ).AddUObject( this, &UARUtilityStateComponent::OnShieldGaugeChange );
-		}
-	}
-	else
-	{
-		RLOG( Error, TEXT( "HealthAttrib is not Valid" ) );
-	}
-
-	if( ManaAttrib.IsValid() )
-	{
-		if( !ManaRateHandle.IsValid() )
-		{
-			ManaRateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( ManaAttrib->GetManaAttribute() ).AddUObject( this, &UARUtilityStateComponent::OnManaChange );
-		}
-	}
-	else
-	{
-		RLOG( Error, TEXT( "ManaAttrib is not Valid" ) );
-	}
-
+	BindAttributeDelegate();
 }
 
 void UARUtilityStateComponent::UnPossessController()
@@ -226,4 +190,35 @@ void UARUtilityStateComponent::OnShieldGaugeChange( const FOnAttributeChangeData
 	}
 
 	Blackboard->SetValueAsFloat( ShieldGaugeRateKey, ShieldGaugeRate );
+}
+
+void UARUtilityStateComponent::BindAttributeDelegate()
+{
+	if( !HealthAttrib.IsValid() )
+	{
+		return;
+	}
+
+	if( !HealthRateHandle.IsValid() )
+	{
+		HealthRateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetHealthAttribute() ).AddUObject( this, &UARUtilityStateComponent::OnHealthChange );
+	}
+
+	if( !StaminaRateHandle.IsValid() )
+	{
+		StaminaRateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetStaminaAttribute() ).AddUObject( this, &UARUtilityStateComponent::OnStaminaChange );
+	}
+
+	if( !ShieldRateHandle.IsValid() )
+	{
+		ShieldRateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetShieldGaugeAttribute() ).AddUObject( this, &UARUtilityStateComponent::OnShieldGaugeChange );
+	}
+
+	if( ManaAttrib.IsValid() )
+	{
+		if( !ManaRateHandle.IsValid() )
+		{
+			ManaRateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( ManaAttrib->GetManaAttribute() ).AddUObject( this, &UARUtilityStateComponent::OnManaChange );
+		}
+	}
 }

@@ -21,7 +21,8 @@ class ACTIONRPG_API UARUtilityStateComponent : public UActorComponent
 	GENERATED_UCLASS_BODY()
 
 public:
-	virtual void InitializeComponent() override;
+
+	virtual void BeginPlay() override;
 
 	void InitializeOnPossessed( UBlackboardComponent* BlackboardComponent );
 
@@ -36,6 +37,8 @@ protected:
 
 	void OnShieldGaugeChange( const FOnAttributeChangeData& Data );
 
+private:
+	void BindAttributeDelegate();
 
 public:
 	static const FName HealthRateKey;
