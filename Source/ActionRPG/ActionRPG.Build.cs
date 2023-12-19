@@ -27,6 +27,9 @@ public class ActionRPG : ModuleRules
                 "Json",
                 "JsonUtilities",
                 "BTUtilityPlugin",
+                "Slate",
+                "SlateCore",
+                "CommonUI",
             }
             );
 
