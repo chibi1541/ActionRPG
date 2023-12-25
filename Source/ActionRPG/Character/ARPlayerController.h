@@ -9,14 +9,19 @@
 
 class UARAbilitySystemComponent;
 /**
- * 
+ *
  */
 UCLASS()
 class ACTIONRPG_API AARPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
+public:
+	virtual void ReceivedPlayer() override;
+
+
 protected:
-	virtual void PostProcessInput(const float DeltaTime, const bool bGamePaused) override;
+	virtual void PostProcessInput( const float DeltaTime, const bool bGamePaused ) override;
 
 private:
 	UARAbilitySystemComponent* GetARAbilitySystemComponent() const;

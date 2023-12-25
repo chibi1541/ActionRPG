@@ -3,11 +3,51 @@
 
 #include "Subsystem/UserInterface/ARGameUIManagerSubsystem.h"
 
+#include "ARGameInstance.h"
+#include "UserInterface/ARPrimaryGameLayout.h"
+#include "Engine/LocalPlayer.h"
+
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARGameUIManagerSubsystem)
 
 
 
-TSubclassOf<UARPrimaryGameLayout> UARGameUIManagerSubsystem::GetLayoutWidgetClass()
+UARGameUIManagerSubsystem::UARGameUIManagerSubsystem()
 {
-	return LayoutClass.LoadSynchronous();
+
+}
+
+void UARGameUIManagerSubsystem::Initialize( FSubsystemCollectionBase& Collection )
+{
+	Super::Initialize( Collection );
+}
+
+TObjectPtr<UARPrimaryGameLayout> UARGameUIManagerSubsystem::GetLayoutWidgetClass()
+{
+	return PrimaryLayout;
+}
+
+void UARGameUIManagerSubsystem::CreatePrimaryLayoutWidget( const ULocalPlayer* LocalPlayer )
+{
+	const UARGameInstance* GameInstance = Cast<UARGameInstance>( GetGameInstance() );
+	check( GameInstance );
+
+	TSubclassOf<UARPrimaryGameLayout> PrimaryLayoutClass = GameInstance->GetPrimaryLayoutClass();
+
+	if( APlayerController* PlayerController = LocalPlayer->GetPlayerController( GetWorld() ) )
+	{
+		if( ensure( PrimaryLayoutClass && !PrimaryLayoutClass->HasAnyClassFlags( CLASS_Abstract ) ) )
+		{
+			PrimaryLayout = CreateWidget<UARPrimaryGameLayout>( PlayerController, PrimaryLayoutClass );
+
+			AddLayoutToViewport( LocalPlayer, PrimaryLayout );
+		}
+	}
+}
+
+void UARGameUIManagerSubsystem::AddLayoutToViewport( const ULocalPlayer* LocalPlayer, UARPrimaryGameLayout* Layout )
+{
+	UE_LOG( ActionRPG, Log, TEXT( "[%s] is adding player [%s]'s root layout [%s] to the viewport" ), *GetName(), *GetNameSafe( LocalPlayer ), *GetNameSafe( Layout ) );
+
+	Layout->SetPlayerContext( FLocalPlayerContext( LocalPlayer ) );
+	Layout->AddToPlayerScreen( 1000 );
 }

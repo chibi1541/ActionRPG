@@ -8,6 +8,8 @@
 #include "ARGameUIManagerSubsystem.generated.h"
 
 class UARPrimaryGameLayout;
+class ULocalPlayer;
+
 
 /**
  *
@@ -17,12 +19,23 @@ class ACTIONRPG_API UARGameUIManagerSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
+
 public:
 
-	TSubclassOf<UARPrimaryGameLayout> GetLayoutWidgetClass();
+	UARGameUIManagerSubsystem();
+
+	virtual void Initialize( FSubsystemCollectionBase& Collection ) override;
+
+	TObjectPtr<UARPrimaryGameLayout> GetLayoutWidgetClass();
+
+	void CreatePrimaryLayoutWidget( const ULocalPlayer* LocalPlayer );
 
 private:
-	UPROPERTY( EditAnywhere )
-		TSoftClassPtr<UARPrimaryGameLayout> LayoutClass;
+
+	void AddLayoutToViewport( const ULocalPlayer* LocalPlayer, UARPrimaryGameLayout* Layout );
+
+private:
+	UPROPERTY( Transient )
+		TObjectPtr<UARPrimaryGameLayout> PrimaryLayout;
 
 };
