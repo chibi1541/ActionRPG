@@ -20,6 +20,7 @@ void AARPlayerController::ReceivedPlayer()
 		if( UARGameUIManagerSubsystem* UIManager = LocalPlayer->GetGameInstance()->GetSubsystem<UARGameUIManagerSubsystem>() )
 		{
 			UIManager->CreatePrimaryLayoutWidget( LocalPlayer );
+			UIManager->AddMainGameWidget();
 		}
 	}
 }

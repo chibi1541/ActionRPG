@@ -9,6 +9,7 @@
 
 class UARPrimaryGameLayout;
 class ULocalPlayer;
+class UCommonActivatableWidget;
 
 
 /**
@@ -30,6 +31,8 @@ public:
 
 	void CreatePrimaryLayoutWidget( const ULocalPlayer* LocalPlayer );
 
+	void AddMainGameWidget();
+
 private:
 
 	void AddLayoutToViewport( const ULocalPlayer* LocalPlayer, UARPrimaryGameLayout* Layout );
@@ -38,4 +41,5 @@ private:
 	UPROPERTY( Transient )
 		TObjectPtr<UARPrimaryGameLayout> PrimaryLayout;
 
+	TArray<TWeakObjectPtr<UCommonActivatableWidget>> Layouts;
 };

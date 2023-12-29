@@ -6,6 +6,7 @@
 #include "ARGameInstance.h"
 #include "UserInterface/ARPrimaryGameLayout.h"
 #include "Engine/LocalPlayer.h"
+#include "UserInterface/ARHUDLayoutSet.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARGameUIManagerSubsystem)
 
@@ -50,4 +51,25 @@ void UARGameUIManagerSubsystem::AddLayoutToViewport( const ULocalPlayer* LocalPl
 
 	Layout->SetPlayerContext( FLocalPlayerContext( LocalPlayer ) );
 	Layout->AddToPlayerScreen( 1000 );
+}
+
+void UARGameUIManagerSubsystem::AddMainGameWidget()
+{
+	if( !PrimaryLayout )
+	{
+		// error log 
+		return;
+	}
+
+
+	if( ULocalPlayer* LocalPlayer = Cast<ULocalPlayer>( PrimaryLayout->GetOwningLocalPlayer() ) )
+	{
+		const UARGameInstance* GameInstance = Cast<UARGameInstance>( GetGameInstance() );
+		check( GameInstance );
+
+		if( TObjectPtr<UARHUDLayoutSet> LayoutSet = GameInstance->GetMainGameHUDLayoutSet() )
+		{
+			Layouts.Add( LayoutSet->AddLayout( PrimaryLayout ) );
+		}
+	}
 }

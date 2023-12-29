@@ -6,6 +6,7 @@
 #include "CommonUserWidget.h"
 #include "GameplayTagContainer.h"
 #include "CommonActivatableWidget.h"
+#include "Widgets/CommonActivatableWidgetContainer.h"
 
 #include "ARPrimaryGameLayout.generated.h"
 

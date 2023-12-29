@@ -11,6 +11,7 @@
 #include "ARGameInstance.generated.h"
 
 class UARDA_AttributeInfo;
+class UARHUDLayoutSet;
 
 /**
  *
@@ -24,14 +25,20 @@ class ACTIONRPG_API UARGameInstance : public UGameInstance
 
 protected:
 	UPROPERTY( EditAnywhere, Category = "Subsystem|Attribute" )
-	TObjectPtr<UARDA_AttributeInfo> AttribSubsystemDataAsset;
+		TObjectPtr<UARDA_AttributeInfo> AttribSubsystemDataAsset;
 
 	UPROPERTY( EditAnywhere, Category = "Subsystem|UIManager" )
-	TSoftClassPtr<UARPrimaryGameLayout> PrimaryLayoutClass;
+		TSoftClassPtr<UARPrimaryGameLayout> PrimaryLayoutClass;
+
+	UPROPERTY( EditAnywhere, Category = "Subsystem|UIManager" )
+		TObjectPtr<UARHUDLayoutSet> MainGameHUDLayoutSet;
 
 public:
 	FORCEINLINE UARDA_AttributeInfo* GetAttribSubsystemDataAsset() const { return AttribSubsystemDataAsset; }
 
 	FORCEINLINE TSubclassOf<UARPrimaryGameLayout> GetPrimaryLayoutClass() const { return PrimaryLayoutClass.LoadSynchronous(); }
+
+	FORCEINLINE TObjectPtr<UARHUDLayoutSet> GetMainGameHUDLayoutSet() const { return MainGameHUDLayoutSet; }
+
 
 };

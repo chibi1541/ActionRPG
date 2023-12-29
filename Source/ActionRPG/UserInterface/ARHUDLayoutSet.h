@@ -9,6 +9,7 @@
 
 #include "ARHUDLayoutSet.generated.h"
 
+class UARPrimaryGameLayout;
 
 USTRUCT()
 struct FHUDLayoutInfo
@@ -44,7 +45,9 @@ class ACTIONRPG_API UARHUDLayoutSet : public UPrimaryDataAsset
 public:
 	UARHUDLayoutSet();
 
-	void AddLayout( AActor* Actor );
+	UCommonActivatableWidget* AddLayout( UARPrimaryGameLayout* PrimaryLayout );
+
+
 
 private:
 
