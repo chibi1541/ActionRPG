@@ -31,11 +31,9 @@ public:
 
 	void CreatePrimaryLayoutWidget( const ULocalPlayer* LocalPlayer );
 
-	void AddMainGameWidget();
+	void AddMainGameLayoutWidget();
 
-private:
 
-	void AddLayoutToViewport( const ULocalPlayer* LocalPlayer, UARPrimaryGameLayout* Layout );
 
 private:
 	UPROPERTY( Transient )

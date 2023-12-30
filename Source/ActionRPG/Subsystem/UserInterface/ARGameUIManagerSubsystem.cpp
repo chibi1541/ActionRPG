@@ -40,20 +40,18 @@ void UARGameUIManagerSubsystem::CreatePrimaryLayoutWidget( const ULocalPlayer* L
 		{
 			PrimaryLayout = CreateWidget<UARPrimaryGameLayout>( PlayerController, PrimaryLayoutClass );
 
-			AddLayoutToViewport( LocalPlayer, PrimaryLayout );
+			if( PrimaryLayout )
+			{
+				UE_LOG( ActionRPG, Log, TEXT( "[%s] is adding player [%s]'s root layout [%s] to the viewport" ), *GetName(), *GetNameSafe( LocalPlayer ), *GetNameSafe( PrimaryLayout ) );
+
+				PrimaryLayout->SetPlayerContext( FLocalPlayerContext( LocalPlayer ) );
+				PrimaryLayout->AddToPlayerScreen( 1000 );
+			}
 		}
 	}
 }
 
-void UARGameUIManagerSubsystem::AddLayoutToViewport( const ULocalPlayer* LocalPlayer, UARPrimaryGameLayout* Layout )
-{
-	UE_LOG( ActionRPG, Log, TEXT( "[%s] is adding player [%s]'s root layout [%s] to the viewport" ), *GetName(), *GetNameSafe( LocalPlayer ), *GetNameSafe( Layout ) );
-
-	Layout->SetPlayerContext( FLocalPlayerContext( LocalPlayer ) );
-	Layout->AddToPlayerScreen( 1000 );
-}
-
-void UARGameUIManagerSubsystem::AddMainGameWidget()
+void UARGameUIManagerSubsystem::AddMainGameLayoutWidget()
 {
 	if( !PrimaryLayout )
 	{
@@ -73,3 +71,4 @@ void UARGameUIManagerSubsystem::AddMainGameWidget()
 		}
 	}
 }
+ 
