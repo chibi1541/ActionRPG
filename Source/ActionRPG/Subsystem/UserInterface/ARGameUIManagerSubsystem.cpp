@@ -8,8 +8,33 @@
 #include "Engine/LocalPlayer.h"
 #include "UserInterface/ARHUDLayoutSet.h"
 
+
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARGameUIManagerSubsystem)
 
+
+bool FUIExtensionPoint::DoesExtensionPassContract( const FUIExtension* Extension ) const
+{
+	if( UObject* DataPtr = Extension->Data )
+	{
+		const bool bMatchesContext =
+			( ContextObject.IsExplicitlyNull() && Extension->ContextObject.IsExplicitlyNull() ) ||
+			ContextObject == Extension->ContextObject;
+
+		if( bMatchesContext )
+		{
+			const UClass* DataClass = DataPtr->IsA( UClass::StaticClass() ) ? Cast<UClass>( DataPtr ) : DataPtr->GetClass();
+			for( const UClass* AllowedDataClass : AllowedDataClasses )
+			{
+				if( DataClass->IsChildOf( AllowedDataClass ) || DataClass->ImplementsInterface( AllowedDataClass ) )
+				{
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
+}
 
 
 UARGameUIManagerSubsystem::UARGameUIManagerSubsystem()
@@ -67,8 +92,71 @@ void UARGameUIManagerSubsystem::AddMainGameLayoutWidget()
 
 		if( TObjectPtr<UARHUDLayoutSet> LayoutSet = GameInstance->GetMainGameHUDLayoutSet() )
 		{
-			Layouts.Add( LayoutSet->AddLayout( PrimaryLayout ) );
+			Layouts.Add( PrimaryLayout->PushWidgetToLayerStack( LayoutSet->Layout.LayerTag, LayoutSet->Layout.LayoutClass.Get() ) );
 		}
 	}
 }
  
+FUIExtensionPointHandle UARGameUIManagerSubsystem::RegisterExtensionPoint( const FGameplayTag& ExtensionPointTag, UObject* ContextObject, EExtensionPointMatch TagMatchType, const TArray<UClass*>& AllowedDataClasses, FExtendExtensionPointDelegate ExtensionCallback )
+{
+	if( !ExtensionPointTag.IsValid() )
+	{
+		RLOG(Error, TEXT( "Trying to register an invalid extension point." ) );
+		return FUIExtensionPointHandle();
+	}
+
+	if( !ExtensionCallback.IsBound() )
+	{
+		RLOG( Error, TEXT( "Trying to register an invalid extension point." ) );
+		return FUIExtensionPointHandle();
+	}
+
+	if( AllowedDataClasses.Num() == 0 )
+	{
+		RLOG( Error, TEXT( "Trying to register an invalid extension point." ) );
+		return FUIExtensionPointHandle();
+	}
+
+	FExtensionPointList& List = ExtensionPointMap.FindOrAdd( ExtensionPointTag );
+
+	TSharedPtr<FUIExtensionPoint>& Entry = List.Add_GetRef( MakeShared<FUIExtensionPoint>() );
+	Entry->ExtensionPointTag = ExtensionPointTag;
+	Entry->ContextObject = ContextObject;
+	Entry->TagMatchType = TagMatchType;
+	Entry->AllowedDataClasses = AllowedDataClasses;
+	Entry->Callback = MoveTemp( ExtensionCallback );
+
+	RLOG( Verbose, TEXT( "Extension Point [%s] Registered" ), *ExtensionPointTag.ToString() );
+
+	NotifyExtensionPointOfExtensions( Entry );
+
+	return FUIExtensionPointHandle( Entry );
+}
+
+void UARGameUIManagerSubsystem::NotifyExtensionPointOfExtensions( TSharedPtr<FUIExtensionPoint>& ExtensionPoint )
+{
+	for( FGameplayTag Tag = ExtensionPoint->ExtensionPointTag; Tag.IsValid(); Tag = Tag.RequestDirectParent() )
+	{
+		if( const FExtensionList* ListPtr = ExtensionMap.Find( Tag ) )
+		{
+			// Copy in case there are removals while handling callbacks
+			FExtensionList ExtensionArray( *ListPtr );
+
+			for( const TSharedPtr<FUIExtension>& Extension : ExtensionArray )
+			{
+				if( ExtensionPoint->DoesExtensionPassContract( Extension.Get() ) )
+				{
+					FUIExtensionRequest Request;
+					Request.ExtensionHandle = FUIExtensionHandle( Extension );
+					Request.Data = Extension->Data;
+					ExtensionPoint->Callback.ExecuteIfBound( EExtensionAction::Added, Request );
+				}
+			}
+		}
+
+		if( ExtensionPoint->TagMatchType == EExtensionPointMatch::ExactMatch )
+		{
+			break;
+		}
+	}
+}

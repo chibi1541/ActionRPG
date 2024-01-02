@@ -45,14 +45,10 @@ class ACTIONRPG_API UARHUDLayoutSet : public UPrimaryDataAsset
 public:
 	UARHUDLayoutSet();
 
-	UCommonActivatableWidget* AddLayout( UARPrimaryGameLayout* PrimaryLayout );
-
-
-
-private:
+public:
 
 	UPROPERTY( EditAnywhere, Category = UI )
-		TArray<FHUDLayoutInfo> Layout;
+		FHUDLayoutInfo Layout;
 
 	UPROPERTY( EditAnywhere, Category = UI )
 		TArray<FHUDElementInfo> Widgets;
