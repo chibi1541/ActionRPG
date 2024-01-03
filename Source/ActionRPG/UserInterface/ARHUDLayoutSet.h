@@ -6,10 +6,12 @@
 #include "Engine/DataAsset.h"
 #include "CommonActivatableWidget.h"
 #include "GameplayTagContainer.h"
+//#include "Subsystem/UserInterface/ARGameUIManagerSubsystem.h"
 
 #include "ARHUDLayoutSet.generated.h"
 
 class UARPrimaryGameLayout;
+class UARGameUIManagerSubsystem;
 
 USTRUCT()
 struct FHUDLayoutInfo
@@ -45,12 +47,13 @@ class ACTIONRPG_API UARHUDLayoutSet : public UPrimaryDataAsset
 public:
 	UARHUDLayoutSet();
 
-public:
+private:
+
+	friend UARGameUIManagerSubsystem;
 
 	UPROPERTY( EditAnywhere, Category = UI )
 		FHUDLayoutInfo Layout;
 
 	UPROPERTY( EditAnywhere, Category = UI )
 		TArray<FHUDElementInfo> Widgets;
-
 };

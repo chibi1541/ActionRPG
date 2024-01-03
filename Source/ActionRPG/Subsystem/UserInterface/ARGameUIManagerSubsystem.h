@@ -35,8 +35,7 @@ public:
 
 	FGameplayTag ExtensionPointTag;
 	int32 Priority = INDEX_NONE;
-	TWeakObjectPtr<UObject> ContextObject;
-	UObject* Data = nullptr;
+	UObject* Widget = nullptr;
 };
 
 DECLARE_DELEGATE_TwoParams( FExtendExtensionPointDelegate, EExtensionAction Action, const FUIExtensionRequest& Request );
@@ -48,7 +47,7 @@ struct FUIExtensionPoint : TSharedFromThis<FUIExtensionPoint>
 public:
 
 	FGameplayTag ExtensionPointTag;
-	TWeakObjectPtr<UObject> ContextObject;
+	//TWeakObjectPtr<UObject> ContextObject;
 	EExtensionPointMatch TagMatchType = EExtensionPointMatch::ExactMatch;
 	TArray<UClass*> AllowedDataClasses;
 	FExtendExtensionPointDelegate Callback;
@@ -57,7 +56,7 @@ public:
 };
 
 USTRUCT( BlueprintType )
-struct ACTIONRPG_API FUIExtensionPointHandle
+struct FUIExtensionPointHandle
 {
 	GENERATED_BODY()
 
@@ -68,20 +67,14 @@ public:
 
 	bool IsValid() const { return DataPtr.IsValid(); }
 
-	bool operator==( const FUIExtensionPointHandle& Other ) const { return DataPtr == Other.DataPtr; }
-	bool operator!=( const FUIExtensionPointHandle& Other ) const { return !operator==( Other ); }
-
-	friend FORCEINLINE uint32 GetTypeHash( const FUIExtensionPointHandle& Handle )
-	{
-		return PointerHash( Handle.DataPtr.Get() );
-	}
-
 private:
+	TWeakObjectPtr<UARGameUIManagerSubsystem> UIManager;
+
 	TSharedPtr<FUIExtensionPoint> DataPtr;
 
 	friend UARGameUIManagerSubsystem;
 
-	FUIExtensionPointHandle( const TSharedPtr<FUIExtensionPoint>& InDataPtr ) : DataPtr( InDataPtr ) {}
+	FUIExtensionPointHandle( UARGameUIManagerSubsystem* ManagerSource, const TSharedPtr<FUIExtensionPoint>& InDataPtr ) : UIManager( ManagerSource ), DataPtr( InDataPtr ) {}
 };
 
 USTRUCT( BlueprintType )
@@ -105,11 +98,13 @@ public:
 	}
 
 private:
+	TWeakObjectPtr<UARGameUIManagerSubsystem> UIManager;
+
 	TSharedPtr<FUIExtension> DataPtr;
 
 	friend UARGameUIManagerSubsystem;
 
-	FUIExtensionHandle( const TSharedPtr<FUIExtension>& InDataPtr ) : DataPtr( InDataPtr ) {}
+	FUIExtensionHandle( UARGameUIManagerSubsystem* ManagerSource, const TSharedPtr<FUIExtension>& InDataPtr ) : UIManager( ManagerSource ), DataPtr( InDataPtr ) {}
 };
 
 USTRUCT( BlueprintType )
@@ -121,9 +116,11 @@ public:
 	UPROPERTY( EditAnywhere, BlueprintReadOnly )
 		FUIExtensionHandle ExtensionHandle;
 
-	// Widget Class
 	UPROPERTY( EditAnywhere, BlueprintReadOnly )
-		TObjectPtr<UObject> Data = nullptr;
+		FGameplayTag ExtensionPointTag;
+
+	UPROPERTY( EditAnywhere, BlueprintReadOnly )
+		TObjectPtr<UObject> Widget = nullptr;
 };
 
 UCLASS()
@@ -144,11 +141,18 @@ public:
 
 	void AddMainGameLayoutWidget();
 
-	FUIExtensionPointHandle RegisterExtensionPoint( const FGameplayTag& ExtensionPointTag, UObject* ContextObject, EExtensionPointMatch TagMatchType, const TArray<UClass*>& AllowedDataClasses, FExtendExtensionPointDelegate ExtensionCallback );
+	FUIExtensionPointHandle RegisterExtensionPoint( const FGameplayTag& ExtensionPointTag, EExtensionPointMatch TagMatchType, const TArray<UClass*>& AllowedDataClasses, FExtendExtensionPointDelegate ExtensionCallback );
 
+	FUIExtensionHandle RegisterExtensionWidget( const FGameplayTag& ExtensionPointTag, TSubclassOf<UUserWidget> WidgetClass );
+
+
+	void UnregisterExtensionPoint( const FGameplayTag& ExtensionPointTag );
 
 protected:
-	void NotifyExtensionPointOfExtensions( TSharedPtr<FUIExtensionPoint>& ExtensionPoint );
+	
+	void NotifyRegisterExtensionPoint( TSharedPtr<FUIExtensionPoint>& ExtensionPoint );
+
+	void NotifyRegisterExtensionWidget( EExtensionAction Action, TSharedPtr<FUIExtension>& Extension );
 
 private:
 	UPROPERTY( Transient )
@@ -156,9 +160,8 @@ private:
 
 	TArray<TWeakObjectPtr<UCommonActivatableWidget>> Layouts;
 
-
-	typedef TArray<TSharedPtr<FUIExtensionPoint>> FExtensionPointList;
-	TMap<FGameplayTag, FExtensionPointList> ExtensionPointMap;
+	// typedef TArray<TSharedPtr<FUIExtensionPoint>> FExtensionPointList;
+	TMap<FGameplayTag, TSharedPtr<FUIExtensionPoint>> ExtensionPointMap;
 
 	typedef TArray<TSharedPtr<FUIExtension>> FExtensionList;
 	TMap<FGameplayTag, FExtensionList> ExtensionMap;
