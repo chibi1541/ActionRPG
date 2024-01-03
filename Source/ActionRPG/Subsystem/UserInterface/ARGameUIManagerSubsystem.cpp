@@ -93,14 +93,12 @@ void UARGameUIManagerSubsystem::AddMainGameLayoutWidget()
 
 		if( TObjectPtr<UARHUDLayoutSet> LayoutSet = GameInstance->GetMainGameHUDLayoutSet() )
 		{
-			Layouts.Add( PrimaryLayout->PushWidgetToLayerStack( LayoutSet->Layout.LayerTag, LayoutSet->Layout.LayoutClass.Get() ) );
+			if( TSubclassOf<UCommonActivatableWidget> ConcreteWidgetClass = LayoutSet->Layout.LayoutClass.Get() )
+				Layouts.Add( PrimaryLayout->PushWidgetToLayerStack( LayoutSet->Layout.LayerTag, ConcreteWidgetClass ) );
 
 			for( const FHUDElementInfo& Element : LayoutSet->Widgets )
 			{
-				if( FExtensionList* ListPtr = ExtensionMap.Find( Element.SlotTag ) )
-				{
-					RegisterExtensionWidget( Element.SlotTag, Element.WidgetClass.Get() );
-				}
+				RegisterExtensionWidget( Element.SlotTag, Element.WidgetClass.Get() );
 			}
 		}
 	}
@@ -150,7 +148,7 @@ FUIExtensionPointHandle UARGameUIManagerSubsystem::RegisterExtensionPoint( const
 	return FUIExtensionPointHandle( this, Entry );
 }
 
-FUIExtensionHandle UARGameUIManagerSubsystem::RegisterExtensionWidget( const FGameplayTag& ExtensionPointTag, TSubclassOf<UUserWidget> WidgetClass )
+FUIExtensionHandle UARGameUIManagerSubsystem::RegisterExtensionWidget( const FGameplayTag& ExtensionPointTag, UObject* WidgetClass )
 {
 	if( !ExtensionPointTag.IsValid() )
 	{

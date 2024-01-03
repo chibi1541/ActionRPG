@@ -47,7 +47,6 @@ struct FUIExtensionPoint : TSharedFromThis<FUIExtensionPoint>
 public:
 
 	FGameplayTag ExtensionPointTag;
-	//TWeakObjectPtr<UObject> ContextObject;
 	EExtensionPointMatch TagMatchType = EExtensionPointMatch::ExactMatch;
 	TArray<UClass*> AllowedDataClasses;
 	FExtendExtensionPointDelegate Callback;
@@ -143,7 +142,7 @@ public:
 
 	FUIExtensionPointHandle RegisterExtensionPoint( const FGameplayTag& ExtensionPointTag, EExtensionPointMatch TagMatchType, const TArray<UClass*>& AllowedDataClasses, FExtendExtensionPointDelegate ExtensionCallback );
 
-	FUIExtensionHandle RegisterExtensionWidget( const FGameplayTag& ExtensionPointTag, TSubclassOf<UUserWidget> WidgetClass );
+	FUIExtensionHandle RegisterExtensionWidget( const FGameplayTag& ExtensionPointTag, UObject* WidgetClass );
 
 
 	void UnregisterExtensionPoint( const FGameplayTag& ExtensionPointTag );
