@@ -32,9 +32,7 @@ struct FUIExtension : TSharedFromThis<FUIExtension>
 {
 
 public:
-
 	FGameplayTag ExtensionPointTag;
-	int32 Priority = INDEX_NONE;
 	UObject* Widget = nullptr;
 };
 
@@ -159,7 +157,6 @@ private:
 
 	TArray<TWeakObjectPtr<UCommonActivatableWidget>> Layouts;
 
-	// typedef TArray<TSharedPtr<FUIExtensionPoint>> FExtensionPointList;
 	TMap<FGameplayTag, TSharedPtr<FUIExtensionPoint>> ExtensionPointMap;
 
 	typedef TArray<TSharedPtr<FUIExtension>> FExtensionList;
