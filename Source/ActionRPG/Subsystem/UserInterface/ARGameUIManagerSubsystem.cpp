@@ -77,7 +77,7 @@ void UARGameUIManagerSubsystem::CreatePrimaryLayoutWidget( const ULocalPlayer* L
 	}
 }
 
-void UARGameUIManagerSubsystem::AddMainGameLayoutWidget()
+void UARGameUIManagerSubsystem::AddMainGameHUDWidget()
 {
 	if( !PrimaryLayout )
 	{
@@ -139,7 +139,6 @@ FUIExtensionPointHandle UARGameUIManagerSubsystem::RegisterExtensionPoint( const
 	Entry->Callback = MoveTemp( ExtensionCallback );
 
 	ExtensionPointMap.Add( ExtensionPointTag, Entry );
-
 
 	RLOG( Verbose, TEXT( "Extension Point [%s] Registered" ), *ExtensionPointTag.ToString() );
 

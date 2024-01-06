@@ -136,7 +136,7 @@ public:
 
 	void CreatePrimaryLayoutWidget( const ULocalPlayer* LocalPlayer );
 
-	void AddMainGameLayoutWidget();
+	void AddMainGameHUDWidget();
 
 	FUIExtensionPointHandle RegisterExtensionPoint( const FGameplayTag& ExtensionPointTag, EExtensionPointMatch TagMatchType, const TArray<UClass*>& AllowedDataClasses, FExtendExtensionPointDelegate ExtensionCallback );
 
