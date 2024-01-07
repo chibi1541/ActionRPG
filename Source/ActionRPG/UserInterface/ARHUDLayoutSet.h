@@ -19,7 +19,7 @@ struct FHUDLayoutInfo
 	GENERATED_BODY()
 
 public:
-	UPROPERTY( EditAnywhere, Category = UI )
+	UPROPERTY( EditAnywhere, Category = UI, meta = (AssetBundles = "Client" ))
 		TSoftClassPtr<UCommonActivatableWidget> LayoutClass;
 
 	UPROPERTY( EditAnywhere, Category = UI, meta = ( Categories = "UI.Layer" ) )
@@ -32,7 +32,7 @@ struct FHUDElementInfo
 	GENERATED_BODY()
 
 public:
-	UPROPERTY( EditAnywhere, Category = UI )
+	UPROPERTY( EditAnywhere, Category = UI, meta = ( AssetBundles = "Client" ) )
 		TSoftClassPtr<UUserWidget> WidgetClass;
 
 	UPROPERTY( EditAnywhere, Category = UI )

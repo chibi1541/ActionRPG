@@ -20,6 +20,16 @@ void FUIExtensionPointHandle::Unregister()
 }
 
 
+void FUIExtensionHandle::Unregister()
+{
+	if( UARGameUIManagerSubsystem* Manager = UIManager.Get() )
+	{
+		Manager->UnregisterExtension( *this );
+	}
+}
+
+
+
 bool FUIExtensionPoint::DoesExtensionPassContract( const FUIExtension* Extension ) const
 {
 	if( UObject* DataPtr = Extension->Widget )
@@ -46,6 +56,14 @@ UARGameUIManagerSubsystem::UARGameUIManagerSubsystem()
 void UARGameUIManagerSubsystem::Initialize( FSubsystemCollectionBase& Collection )
 {
 	Super::Initialize( Collection );
+}
+
+void UARGameUIManagerSubsystem::Deinitialize()
+{
+
+
+
+	Super::Deinitialize();
 }
 
 TObjectPtr<UARPrimaryGameLayout> UARGameUIManagerSubsystem::GetLayoutWidgetClass()
@@ -177,6 +195,31 @@ void UARGameUIManagerSubsystem::UnregisterExtensionPoint( const FGameplayTag& Ex
 	ExtensionPointMap.Remove( ExtensionPointTag );
 }
 
+void UARGameUIManagerSubsystem::UnregisterExtension( const FUIExtensionHandle& ExtensionHandle )
+{
+	if( ExtensionHandle.IsValid() )
+	{
+		checkf( ExtensionHandle.UIManager == this, TEXT( "Trying to unregister an extension that's not from this UIManager" ) );
+
+		TSharedPtr<FUIExtension> Extension = ExtensionHandle.DataPtr;
+		if( FExtensionList* ListPtr = ExtensionMap.Find( Extension->ExtensionPointTag ) )
+		{
+			NotifyRegisterExtensionWidget( EExtensionAction::Removed, Extension );
+
+			ListPtr->RemoveSwap( Extension );
+
+			if( ListPtr->Num() == 0 )
+			{
+				ExtensionMap.Remove( Extension->ExtensionPointTag );
+			}
+		}
+	}
+	else
+	{
+		RLOG( Warning, TEXT( "Trying to unregister an invalid Handle." ) );
+	}
+}
+
 void UARGameUIManagerSubsystem::NotifyRegisterExtensionPoint( TSharedPtr<FUIExtensionPoint>& ExtensionPoint )
 {
 	for( FGameplayTag Tag = ExtensionPoint->ExtensionPointTag; Tag.IsValid(); Tag = Tag.RequestDirectParent() )
@@ -228,5 +271,4 @@ void UARGameUIManagerSubsystem::NotifyRegisterExtensionWidget( EExtensionAction 
 		bOnInitialTag = false;
 	}
 }
-
 

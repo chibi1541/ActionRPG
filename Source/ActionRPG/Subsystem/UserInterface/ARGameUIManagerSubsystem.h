@@ -132,6 +132,8 @@ public:
 
 	virtual void Initialize( FSubsystemCollectionBase& Collection ) override;
 
+	virtual void Deinitialize() override;
+
 	TObjectPtr<UARPrimaryGameLayout> GetLayoutWidgetClass();
 
 	void CreatePrimaryLayoutWidget( const ULocalPlayer* LocalPlayer );
@@ -144,6 +146,8 @@ public:
 
 
 	void UnregisterExtensionPoint( const FGameplayTag& ExtensionPointTag );
+
+	void UnregisterExtension( const FUIExtensionHandle& ExtensionHandle );
 
 protected:
 	

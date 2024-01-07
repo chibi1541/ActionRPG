@@ -22,6 +22,8 @@
 #include "Character/Attribute/ARAgiRefAttribSet.h"
 #include "Character/Attribute/ARIntRefAttribSet.h"
 
+#include "Blueprint/UserWidget.h"
+
 #include UE_INLINE_GENERATED_CPP_BY_NAME(HeroCharacter)
 
 UE_DEFINE_GAMEPLAY_TAG( TAG_MovingLocked, "Gameplay.MovingLocked" );
@@ -105,14 +107,34 @@ void AHeroCharacter::PossessedBy( AController* NewController )
 {
 	Super::PossessedBy( NewController );
 
+
 	if( NewController->IsPlayerController() )
 	{
+
 		auto PlayerController = Cast<APlayerController>( NewController );
 		PlayerController->PlayerCameraManager->ViewPitchMin = -60.f;
 		PlayerController->PlayerCameraManager->ViewPitchMax = 40.f;
+
+		// Create Main HUD Widget
+		if( UARGameUIManagerSubsystem* UIManager = GetGameInstance()->GetSubsystem<UARGameUIManagerSubsystem>() )
+		{
+			MainStatusWidgetHandle = UIManager->RegisterExtensionWidget( MainStatusWidgetTag, MainStatusWidget );
+		}
+	}
+	else
+	{
+		// Create Sub HUD Widget
 	}
 }
 
+
+void AHeroCharacter::UnPossessed()
+{
+	//if( MainStatusWidgetHandle.IsValid() )
+	//	MainStatusWidgetHandle.Unregister();
+
+	Super::UnPossessed();
+}
 
 void AHeroCharacter::BeginPlay()
 {

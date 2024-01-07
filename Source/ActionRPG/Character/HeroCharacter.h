@@ -4,6 +4,7 @@
 
 #include "Character/BaseCharacter.h"
 #include "NativeGameplayTags.h"
+#include "Subsystem/UserInterface/ARGameUIManagerSubsystem.h"
 
 #include "HeroCharacter.generated.h"
 
@@ -21,6 +22,8 @@ class UARAgiRefAttribSet;
 class UARIntRefAttribSet;
 struct FInputActionValue;
 struct FGameplayTag;
+
+class UUserWidget;
 
 
 ACTIONRPG_API UE_DECLARE_GAMEPLAY_TAG_EXTERN( TAG_MovingLocked );
@@ -61,6 +64,8 @@ protected:
 	virtual void SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent ) override;
 
 	virtual void PossessedBy( AController* NewController ) override;
+
+	virtual void UnPossessed() override;
 
 	virtual void BeginPlay() override;
 
@@ -128,6 +133,16 @@ protected:
 
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "ClassType" )
 		EHeroClass HeroClass;
+
+
+	// HUD Widget
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HUD|MainStatus" )
+		TSubclassOf<UUserWidget> MainStatusWidget;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HUD|MainStatus" )
+		FGameplayTag MainStatusWidgetTag;
+
+	FUIExtensionHandle MainStatusWidgetHandle;
 
 public:
 	/** Returns CameraBoom subobject **/

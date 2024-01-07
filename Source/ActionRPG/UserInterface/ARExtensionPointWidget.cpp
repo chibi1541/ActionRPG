@@ -103,7 +103,7 @@ void UARExtensionPointWidget::OnAddOrRemoveExtension( EExtensionAction Action, c
 				WidgetClass = GetWidgetClassForData.Execute( Data );
 
 				if( WidgetClass )
-				{
+				{	
 					if( UUserWidget* Widget = CreateEntryInternal( WidgetClass ) )
 					{
 						ExtensionMapping.Add( Request.ExtensionHandle, Widget );
