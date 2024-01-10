@@ -66,18 +66,22 @@ void UARCharacterStateComponent::BeginPlay()
 
 	if( HealthAttrib.IsValid() )
 	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetMaxHealthAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnMaxHealthChange );
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetStaminaAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnStaminaChange );
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetMaxStaminaAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnMaxStaminaChange );
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetHealthAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnHealthChange );
 
 		if( HealthAttrib->GetMaxShieldGauge() == 0.f )
 		{
 			AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetShieldGaugeAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnShieldGaugeChange );
+			AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetMaxShieldGaugeAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnMaxShieldGaugeChange );
 		}
 	}
 
 	if( ManaAttrib.IsValid() )
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( ManaAttrib->GetManaAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnManaChange );
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( ManaAttrib->GetMaxManaAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnMaxManaChange );
 	}
 }
 
@@ -134,27 +138,11 @@ void UARCharacterStateComponent::OnGuardRemoved( const FActiveGameplayEffect& Ac
 	IsGuard = false;
 }
 
-void UARCharacterStateComponent::OnStaminaChange( const FOnAttributeChangeData& Data )
+
+void UARCharacterStateComponent::OnMaxHealthChange( const FOnAttributeChangeData& Data )
 {
-	const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
-
-	if( Data.NewValue == 0.f )
-	{
-		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_Exhausted, 1 );
-	}
-	else if( Data.OldValue == 0.f )
-	{
-		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_Exhausted, 0 );
-	}
-
-	if( Data.NewValue > Data.OldValue && Data.NewValue >= HealthAttrib->GetMaxStamina() )
-	{
-		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_FullStamina, 1 );
-	}
-	else if( Data.NewValue < HealthAttrib->GetMaxStamina() && AbilitySystemComponent->HasMatchingGameplayTag( Tags.CharacterStateTag_FullStamina ) )
-	{
-		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_FullStamina, 0 );
-	}
+	if( OnMaxHealthChanged.IsBound() )
+		OnMaxHealthChanged.Broadcast( Data.OldValue, Data.NewValue );
 }
 
 void UARCharacterStateComponent::OnHealthChange( const FOnAttributeChangeData& Data )
@@ -182,6 +170,48 @@ void UARCharacterStateComponent::OnHealthChange( const FOnAttributeChangeData& D
 		IsDead = false;
 		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_Dead, 0 );
 	}
+
+	if( OnCurHealthChanged.IsBound() )
+		OnCurHealthChanged.Broadcast( Data.OldValue, Data.NewValue );
+}
+
+void UARCharacterStateComponent::OnMaxStaminaChange( const FOnAttributeChangeData& Data )
+{
+	if( OnMaxStaminaChanged.IsBound() )
+		OnMaxStaminaChanged.Broadcast( Data.OldValue, Data.NewValue );
+}
+
+void UARCharacterStateComponent::OnStaminaChange( const FOnAttributeChangeData& Data )
+{
+	const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
+
+	if( Data.NewValue == 0.f )
+	{
+		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_Exhausted, 1 );
+	}
+	else if( Data.OldValue == 0.f )
+	{
+		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_Exhausted, 0 );
+	}
+
+	if( Data.NewValue > Data.OldValue && Data.NewValue >= HealthAttrib->GetMaxStamina() )
+	{
+		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_FullStamina, 1 );
+	}
+	else if( Data.NewValue < HealthAttrib->GetMaxStamina() && AbilitySystemComponent->HasMatchingGameplayTag( Tags.CharacterStateTag_FullStamina ) )
+	{
+		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_FullStamina, 0 );
+	}
+
+	if( OnCurStaminaChanged.IsBound() )
+		OnCurStaminaChanged.Broadcast( Data.OldValue, Data.NewValue );
+}
+
+
+void UARCharacterStateComponent::OnMaxManaChange( const FOnAttributeChangeData& Data )
+{
+	if( OnMaxManaChanged.IsBound() )
+		OnMaxManaChanged.Broadcast( Data.OldValue, Data.NewValue );
 }
 
 void UARCharacterStateComponent::OnManaChange( const FOnAttributeChangeData& Data )
@@ -196,6 +226,15 @@ void UARCharacterStateComponent::OnManaChange( const FOnAttributeChangeData& Dat
 	{
 		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_FullMana, 0 );
 	}
+
+	if( OnCurManaChanged.IsBound() )
+		OnCurManaChanged.Broadcast( Data.OldValue, Data.NewValue );
+}
+
+void UARCharacterStateComponent::OnMaxShieldGaugeChange( const FOnAttributeChangeData& Data )
+{
+	if( OnMaxShieldGaugeChanged.IsBound() )
+		OnMaxShieldGaugeChanged.Broadcast( Data.OldValue, Data.NewValue );
 }
 
 void UARCharacterStateComponent::OnShieldGaugeChange( const FOnAttributeChangeData& Data )
@@ -220,6 +259,9 @@ void UARCharacterStateComponent::OnShieldGaugeChange( const FOnAttributeChangeDa
 	{
 		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_FullShield, 0 );
 	}
+
+	if( OnCurShieldGaugeChanged.IsBound() )
+		OnCurShieldGaugeChanged.Broadcast( Data.OldValue, Data.NewValue );
 }
 
 void UARCharacterStateComponent::SetStiffEffectSpec( const FGameplayEffectSpecHandle& SpecHandle )

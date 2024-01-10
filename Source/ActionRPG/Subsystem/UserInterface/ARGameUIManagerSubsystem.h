@@ -33,7 +33,8 @@ struct FUIExtension : TSharedFromThis<FUIExtension>
 
 public:
 	FGameplayTag ExtensionPointTag;
-	UObject* Widget = nullptr;
+	TSubclassOf<UUserWidget> WidgetClass;
+	UObject* Data = nullptr;
 };
 
 DECLARE_DELEGATE_TwoParams( FExtendExtensionPointDelegate, EExtensionAction Action, const FUIExtensionRequest& Request );
@@ -49,7 +50,7 @@ public:
 	TArray<UClass*> AllowedDataClasses;
 	FExtendExtensionPointDelegate Callback;
 
-	bool DoesExtensionPassContract( const FUIExtension* Extension ) const;
+	// bool DoesExtensionPassContract( const FUIExtension* Extension ) const;
 };
 
 USTRUCT( BlueprintType )
@@ -117,7 +118,10 @@ public:
 		FGameplayTag ExtensionPointTag;
 
 	UPROPERTY( EditAnywhere, BlueprintReadOnly )
-		TObjectPtr<UObject> Widget = nullptr;
+		TSubclassOf<UUserWidget> WidgetClass;
+
+	UPROPERTY( EditAnywhere, BlueprintReadOnly )
+		TObjectPtr<UObject> Data = nullptr;
 };
 
 UCLASS()
@@ -142,7 +146,7 @@ public:
 
 	FUIExtensionPointHandle RegisterExtensionPoint( const FGameplayTag& ExtensionPointTag, EExtensionPointMatch TagMatchType, const TArray<UClass*>& AllowedDataClasses, FExtendExtensionPointDelegate ExtensionCallback );
 
-	FUIExtensionHandle RegisterExtensionWidget( const FGameplayTag& ExtensionPointTag, UObject* WidgetClass );
+	FUIExtensionHandle RegisterExtensionWidget( const FGameplayTag& ExtensionPointTag, TSubclassOf<UUserWidget> WidgetClass, UObject* Data );
 
 
 	void UnregisterExtensionPoint( const FGameplayTag& ExtensionPointTag );
@@ -150,7 +154,7 @@ public:
 	void UnregisterExtension( const FUIExtensionHandle& ExtensionHandle );
 
 protected:
-	
+
 	void NotifyRegisterExtensionPoint( TSharedPtr<FUIExtensionPoint>& ExtensionPoint );
 
 	void NotifyRegisterExtensionWidget( EExtensionAction Action, TSharedPtr<FUIExtension>& Extension );

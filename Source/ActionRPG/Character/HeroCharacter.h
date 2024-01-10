@@ -36,25 +36,41 @@ class ACTIONRPG_API AHeroCharacter : public ABaseCharacter
 	GENERATED_BODY()
 
 public:
-	AHeroCharacter( const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get() );
+	AHeroCharacter( const FObjectInitializer& ObjectInitializer );
+
+#pragma region Get_Attribute
 
 	UFUNCTION( BlueprintCallable, Category = "ActionRPG|HealthAttributes" )
 		virtual float GetMaxHealth() const;
 
 	UFUNCTION( BlueprintCallable, Category = "ActionRPG|HealthAttributes" )
+		virtual float GetCurrentHealth() const;
+
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|IntAttributes" )
 		virtual float GetMaxMana() const;
+
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|IntAttributes" )
+		virtual float GetCurrentMana() const;
 
 	UFUNCTION( BlueprintCallable, Category = "ActionRPG|HealthAttributes" )
 		virtual float GetMaxStamina() const;
 
 	UFUNCTION( BlueprintCallable, Category = "ActionRPG|HealthAttributes" )
+		virtual float GetCurrentStamina() const;
+
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|HealthAttributes" )
 		virtual float GetMaxShieldGauge() const;
+
+	UFUNCTION( BlueprintCallable, Category = "ActionRPG|HealthAttributes" )
+		virtual float GetCurrentShieldGauge() const;
 
 	UFUNCTION( BlueprintCallable, Category = "ActionRPG|AgilityAttributes" )
 		virtual float GetMoveSpeed() const;
 
 	UFUNCTION( BlueprintCallable, Category = "ActionRPG|AgilityAttributes" )
 		virtual float GetAttackSpeed() const;
+
+#pragma endregion
 
 	UFUNCTION( BlueprintCallable, Category = "Input|InputAction" )
 		virtual const UInputAction* GetInputAction( const FGameplayTag InputTag ) const;
@@ -134,8 +150,8 @@ protected:
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "ClassType" )
 		EHeroClass HeroClass;
 
+#pragma region HUD_WIDGET
 
-	// HUD Widget
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HUD|MainStatus" )
 		TSubclassOf<UUserWidget> MainStatusWidget;
 
@@ -143,6 +159,18 @@ protected:
 		FGameplayTag MainStatusWidgetTag;
 
 	FUIExtensionHandle MainStatusWidgetHandle;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HUD|SubStatus" )
+		TSubclassOf<UUserWidget> SubStatusWidget;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HUD|SubStatus" )
+		FGameplayTag SubStatusWidgetTag;
+
+	FUIExtensionHandle SubStatusWidgetHandle;
+
+#pragma endregion
+
+
 
 public:
 	/** Returns CameraBoom subobject **/

@@ -14,7 +14,7 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BaseCharacter)
 
-ABaseCharacter::ABaseCharacter( const FObjectInitializer& ObjectInitializer /*= FObjectInitializer::Get() */ )
+ABaseCharacter::ABaseCharacter( const FObjectInitializer& ObjectInitializer )
 	:Super( ObjectInitializer.SetDefaultSubobjectClass<UARMovementComponent>( ACharacter::CharacterMovementComponentName ) )
 {
 	CharacterStateComponent = CreateDefaultSubobject<UARCharacterStateComponent>( TEXT( "STATECOMP" ) );

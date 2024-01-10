@@ -30,22 +30,22 @@ void FUIExtensionHandle::Unregister()
 
 
 
-bool FUIExtensionPoint::DoesExtensionPassContract( const FUIExtension* Extension ) const
-{
-	if( UObject* DataPtr = Extension->Widget )
-	{
-		const UClass* DataClass = DataPtr->IsA( UClass::StaticClass() ) ? Cast<UClass>( DataPtr ) : DataPtr->GetClass();
-		for( const UClass* AllowedDataClass : AllowedDataClasses )
-		{
-			if( DataClass->IsChildOf( AllowedDataClass ) || DataClass->ImplementsInterface( AllowedDataClass ) )
-			{
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
+//bool FUIExtensionPoint::DoesExtensionPassContract( const FUIExtension* Extension ) const
+//{
+//	if( UObject* DataPtr = Extension->WidgetClass )
+//	{
+//		const UClass* DataClass = DataPtr->IsA( UClass::StaticClass() ) ? Cast<UClass>( DataPtr ) : DataPtr->GetClass();
+//		for( const UClass* AllowedDataClass : AllowedDataClasses )
+//		{
+//			if( DataClass->IsChildOf( AllowedDataClass ) || DataClass->ImplementsInterface( AllowedDataClass ) )
+//			{
+//				return true;
+//			}
+//		}
+//	}
+//
+//	return false;
+//}
 
 
 UARGameUIManagerSubsystem::UARGameUIManagerSubsystem()
@@ -111,12 +111,12 @@ void UARGameUIManagerSubsystem::AddMainGameHUDWidget()
 
 		if( TObjectPtr<UARHUDLayoutSet> LayoutSet = GameInstance->GetMainGameHUDLayoutSet() )
 		{
-			if( TSubclassOf<UCommonActivatableWidget> ConcreteWidgetClass = LayoutSet->Layout.LayoutClass.Get() )
+			if( TSubclassOf<UCommonActivatableWidget> ConcreteWidgetClass = ( LayoutSet->Layout.LayoutClass.IsValid() ) ? LayoutSet->Layout.LayoutClass.Get() : LayoutSet->Layout.LayoutClass.LoadSynchronous() )
 				Layouts.Add( PrimaryLayout->PushWidgetToLayerStack( LayoutSet->Layout.LayerTag, ConcreteWidgetClass ) );
 
 			for( const FHUDElementInfo& Element : LayoutSet->Widgets )
 			{
-				RegisterExtensionWidget( Element.SlotTag, Element.WidgetClass.Get() );
+				RegisterExtensionWidget( Element.SlotTag, Element.WidgetClass.Get(), nullptr );
 			}
 		}
 	}
@@ -165,7 +165,7 @@ FUIExtensionPointHandle UARGameUIManagerSubsystem::RegisterExtensionPoint( const
 	return FUIExtensionPointHandle( this, Entry );
 }
 
-FUIExtensionHandle UARGameUIManagerSubsystem::RegisterExtensionWidget( const FGameplayTag& ExtensionPointTag, UObject* WidgetClass )
+FUIExtensionHandle UARGameUIManagerSubsystem::RegisterExtensionWidget( const FGameplayTag& ExtensionPointTag, TSubclassOf<UUserWidget> WidgetClass, UObject* Data )
 {
 	if( !ExtensionPointTag.IsValid() )
 	{
@@ -183,7 +183,8 @@ FUIExtensionHandle UARGameUIManagerSubsystem::RegisterExtensionWidget( const FGa
 
 	TSharedPtr<FUIExtension>& Entry = List.Add_GetRef( MakeShared<FUIExtension>() );
 	Entry->ExtensionPointTag = ExtensionPointTag;
-	Entry->Widget = WidgetClass;
+	Entry->WidgetClass = WidgetClass;
+	Entry->Data = Data;
 
 	NotifyRegisterExtensionWidget( EExtensionAction::Added, Entry );
 
@@ -231,13 +232,12 @@ void UARGameUIManagerSubsystem::NotifyRegisterExtensionPoint( TSharedPtr<FUIExte
 
 			for( const TSharedPtr<FUIExtension>& Extension : ExtensionArray )
 			{
-				if( ExtensionPoint->DoesExtensionPassContract( Extension.Get() ) )
-				{
-					FUIExtensionRequest Request;
-					Request.ExtensionHandle = FUIExtensionHandle( this, Extension );
-					Request.Widget = Extension->Widget;
-					ExtensionPoint->Callback.ExecuteIfBound( EExtensionAction::Added, Request );
-				}
+				FUIExtensionRequest Request;
+				Request.ExtensionHandle = FUIExtensionHandle( this, Extension );
+				Request.ExtensionPointTag = Extension->ExtensionPointTag;
+				Request.WidgetClass = Extension->WidgetClass;
+				Request.Data = Extension->Data;
+				ExtensionPoint->Callback.ExecuteIfBound( EExtensionAction::Added, Request );
 			}
 		}
 
@@ -257,14 +257,12 @@ void UARGameUIManagerSubsystem::NotifyRegisterExtensionWidget( EExtensionAction 
 		{
 			if( bOnInitialTag || ( ExtentionPoint->Get()->TagMatchType == EExtensionPointMatch::PartialMatch ) )
 			{
-				if( ExtentionPoint->Get()->DoesExtensionPassContract( Extension.Get() ) )
-				{
-					FUIExtensionRequest Request;
-					Request.ExtensionHandle = FUIExtensionHandle( this, Extension );
-					Request.ExtensionPointTag = Extension->ExtensionPointTag;
-					Request.Widget = Extension->Widget;
-					ExtentionPoint->Get()->Callback.ExecuteIfBound( Action, Request );
-				}
+				FUIExtensionRequest Request;
+				Request.ExtensionHandle = FUIExtensionHandle( this, Extension );
+				Request.ExtensionPointTag = Extension->ExtensionPointTag;
+				Request.WidgetClass = Extension->WidgetClass;
+				Request.Data = Extension->Data;
+				ExtentionPoint->Get()->Callback.ExecuteIfBound( Action, Request );
 			}
 		}
 

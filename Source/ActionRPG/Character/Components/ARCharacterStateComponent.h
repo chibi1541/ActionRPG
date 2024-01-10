@@ -15,6 +15,9 @@ class UARVitRefAttribSet;
 class UARIntRefAttribSet;
 class ABaseCharacter;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams( FAttribChanged, float, OldValue, float, NewValue );
+
+
 UCLASS( ClassGroup = ( Custom ), meta = ( BlueprintSpawnableComponent ) )
 class ACTIONRPG_API UARCharacterStateComponent : public UActorComponent, public IAbilitySystemInterface
 {
@@ -50,13 +53,24 @@ protected:
 	UFUNCTION()
 		void OnGuardRemoved( const FActiveGameplayEffect& ActiveEffect );
 
-	virtual void OnStaminaChange( const FOnAttributeChangeData& Data );
+	#pragma region Attrib Changed Function
+	virtual void OnMaxHealthChange( const FOnAttributeChangeData& Data );
 
 	virtual void OnHealthChange( const FOnAttributeChangeData& Data );
 
+	virtual void OnMaxStaminaChange( const FOnAttributeChangeData& Data );
+
+	virtual void OnStaminaChange( const FOnAttributeChangeData& Data );
+
+	virtual void OnMaxManaChange( const FOnAttributeChangeData& Data );
+
 	virtual void OnManaChange( const FOnAttributeChangeData& Data );
 
+	virtual void OnMaxShieldGaugeChange( const FOnAttributeChangeData& Data );
+
 	virtual void OnShieldGaugeChange( const FOnAttributeChangeData& Data );
+	#pragma endregion
+
 
 public:
 	UFUNCTION( BlueprintCallable, Category = "CharacterState|Stiff" )
@@ -94,5 +108,34 @@ public:
 
 	UPROPERTY( BlueprintReadWrite, Category = "Stiff" )
 		FGameplayEffectSpecHandle StiffEffectSpecHandle;
+
+	#pragma region Attrib Changed Event
+		
+	UPROPERTY( BlueprintAssignable )
+		FAttribChanged OnCurHealthChanged;
+
+	UPROPERTY( BlueprintAssignable )
+		FAttribChanged OnMaxHealthChanged;
+
+	UPROPERTY( BlueprintAssignable )
+		FAttribChanged OnCurManaChanged;
+
+	UPROPERTY( BlueprintAssignable )
+		FAttribChanged OnMaxManaChanged;
+
+	UPROPERTY( BlueprintAssignable )
+		FAttribChanged OnCurStaminaChanged;
+
+	UPROPERTY( BlueprintAssignable )
+		FAttribChanged OnMaxStaminaChanged;
+
+	UPROPERTY( BlueprintAssignable )
+		FAttribChanged OnCurShieldGaugeChanged;
+
+	UPROPERTY( BlueprintAssignable )
+		FAttribChanged OnMaxShieldGaugeChanged;
+
+	#pragma endregion 
+	
 
 };

@@ -28,7 +28,7 @@ class ACTIONRPG_API ABaseCharacter : public ACharacter, public IAbilitySystemInt
 	GENERATED_BODY()
 
 public:
-	ABaseCharacter( const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get() );
+	ABaseCharacter( const FObjectInitializer& ObjectInitializer );
 
 	UARAbilitySystemComponent* GetARAbilitySystemComponent() const { return AbilitySystemComp; }
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
@@ -80,8 +80,7 @@ protected:
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "Components|State" )
 		TObjectPtr<UARUtilityStateComponent> UtilityStateComponent;
 
-	UPROPERTY()
-		TObjectPtr<UARAbilitySystemComponent> AbilitySystemComp;
+	TObjectPtr<UARAbilitySystemComponent> AbilitySystemComp;
 
 	UPROPERTY( EditAnywhere, BlueprintReadOnly )
 		TObjectPtr<UARTargetingComponent> TargetingComponent;

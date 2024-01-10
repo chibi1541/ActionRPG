@@ -28,7 +28,7 @@
 
 UE_DEFINE_GAMEPLAY_TAG( TAG_MovingLocked, "Gameplay.MovingLocked" );
 
-AHeroCharacter::AHeroCharacter( const FObjectInitializer& ObjectInitializer /*= FObjectInitializer::Get() */ )
+AHeroCharacter::AHeroCharacter( const FObjectInitializer& ObjectInitializer )
 	:Super( ObjectInitializer )
 {
 	// Set size for collision capsule
@@ -118,20 +118,30 @@ void AHeroCharacter::PossessedBy( AController* NewController )
 		// Create Main HUD Widget
 		if( UARGameUIManagerSubsystem* UIManager = GetGameInstance()->GetSubsystem<UARGameUIManagerSubsystem>() )
 		{
-			MainStatusWidgetHandle = UIManager->RegisterExtensionWidget( MainStatusWidgetTag, MainStatusWidget );
+			MainStatusWidgetHandle = UIManager->RegisterExtensionWidget( MainStatusWidgetTag, MainStatusWidget, GetCharacterStateComponenet() );
 		}
 	}
 	else
 	{
-		// Create Sub HUD Widget
+		//if( UARGameUIManagerSubsystem* UIManager = GetGameInstance()->GetSubsystem<UARGameUIManagerSubsystem>() )
+		//{
+		//	if( !SubStatusWidgetHandle.IsValid() )
+		//	{
+		//		SubStatusWidgetHandle = UIManager->RegisterExtensionWidget( SubStatusWidgetTag, SubStatusWidget );
+		//	}
+		//}
 	}
 }
 
 
 void AHeroCharacter::UnPossessed()
 {
-	//if( MainStatusWidgetHandle.IsValid() )
-	//	MainStatusWidgetHandle.Unregister();
+	// 추후에 삭제될 코드
+	if( MainStatusWidgetHandle.IsValid() )
+		MainStatusWidgetHandle.Unregister();
+
+	if( SubStatusWidgetHandle.IsValid() )
+		SubStatusWidgetHandle.Unregister();
 
 	Super::UnPossessed();
 }
@@ -310,11 +320,31 @@ float AHeroCharacter::GetMaxHealth() const
 	return 0.f;
 }
 
+float AHeroCharacter::GetCurrentHealth() const
+{
+	if( VitRefAttribSet )
+	{
+		return VitRefAttribSet->GetHealth();
+	}
+
+	return 0.f;
+}
+
 float AHeroCharacter::GetMaxMana() const
 {
 	if( IntRefAttribSet )
 	{
 		return IntRefAttribSet->GetMaxMana();
+	}
+
+	return 0.f;
+}
+
+float AHeroCharacter::GetCurrentMana() const
+{
+	if( IntRefAttribSet )
+	{
+		return IntRefAttribSet->GetMana();
 	}
 
 	return 0.f;
@@ -330,11 +360,31 @@ float AHeroCharacter::GetMaxStamina() const
 	return 0.f;
 }
 
+float AHeroCharacter::GetCurrentStamina() const
+{
+	if( VitRefAttribSet )
+	{
+		return VitRefAttribSet->GetStamina();
+	}
+
+	return 0.f;
+}
+
 float AHeroCharacter::GetMaxShieldGauge() const
 {
 	if( VitRefAttribSet )
 	{
 		return VitRefAttribSet->GetMaxShieldGauge();
+	}
+
+	return 0.f;
+}
+
+float AHeroCharacter::GetCurrentShieldGauge() const
+{
+	if( VitRefAttribSet )
+	{
+		return VitRefAttribSet->GetShieldGauge();
 	}
 
 	return 0.f;

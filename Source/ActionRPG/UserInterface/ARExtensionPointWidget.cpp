@@ -88,30 +88,34 @@ void UARExtensionPointWidget::OnAddOrRemoveExtension( EExtensionAction Action, c
 {
 	if( Action == EExtensionAction::Added )
 	{
-		UObject* Data = Request.Widget;
-
-		TSubclassOf<UUserWidget> WidgetClass( Cast<UClass>( Data ) );
-		if( WidgetClass )
+		if( Request.WidgetClass )
 		{
-			UUserWidget* Widget = CreateEntryInternal( WidgetClass );
+			UUserWidget* Widget = CreateEntryInternal( Request.WidgetClass );
 			ExtensionMapping.Add( Request.ExtensionHandle, Widget );
-		}
-		else if( DataClasses.Num() > 0 )
-		{
-			if( GetWidgetClassForData.IsBound() )
+			if( Request.Data )
 			{
-				WidgetClass = GetWidgetClassForData.Execute( Data );
-
-				if( WidgetClass )
-				{	
-					if( UUserWidget* Widget = CreateEntryInternal( WidgetClass ) )
-					{
-						ExtensionMapping.Add( Request.ExtensionHandle, Widget );
-						ConfigureWidgetForData.ExecuteIfBound( Widget, Data );
-					}
-				}
+				ConfigureWidgetForData.ExecuteIfBound( Widget, Request.Data );
 			}
 		}
+		//else if( DataClasses.Num() > 0 )
+		//{
+		//	if( GetWidgetClassForData.IsBound() )
+		//	{
+		//		WidgetClass = GetWidgetClassForData.Execute( Data );
+
+		//		if( WidgetClass )
+		//		{	
+		//			if( UUserWidget* Widget = CreateEntryInternal( WidgetClass ) )
+		//			{
+		//				ExtensionMapping.Add( Request.ExtensionHandle, Widget );
+		//				if( Request.Data )
+		//				{
+		//					ConfigureWidgetForData.ExecuteIfBound( Widget, Request.Data );
+		//				}
+		//			}
+		//		}
+		//	}
+		//}
 	}
 	else
 	{
