@@ -105,6 +105,10 @@ protected:
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Transient, meta = ( ClampMin = "0.0" ) )
 		float ShieldGaugePointRate;
 
+protected:
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Emblem" )
+		
+
 private:
 
 	TWeakObjectPtr<UARCharacterStateComponent> HeroStateComponent;
