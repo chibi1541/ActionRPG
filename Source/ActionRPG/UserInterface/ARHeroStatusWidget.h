@@ -8,6 +8,7 @@
 #include "ARHeroStatusWidget.generated.h"
 
 class UARCharacterStateComponent;
+class UTextBlock;
 
 UCLASS( Blueprintable )
 class ACTIONRPG_API UARHeroStatusWidget : public UUserWidget
@@ -106,8 +107,13 @@ protected:
 		float ShieldGaugePointRate;
 
 protected:
-	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Emblem" )
-		
+	//UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Emblem" )
+
+	UPROPERTY( BlueprintReadWrite, meta = ( BindWidget ) )
+		TObjectPtr<UTextBlock> LevelText;
+
+	UPROPERTY( BlueprintReadWrite, meta = ( BindWidget ) )
+		TObjectPtr<UTextBlock> HPText;
 
 private:
 
