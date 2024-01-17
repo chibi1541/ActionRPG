@@ -17,19 +17,10 @@ class ACTIONRPG_API UARResizeTextBlock : public UTextBlock
 	GENERATED_UCLASS_BODY()
 
 public:
-	float GetMaxWidth() const
-	{
-		return MaxWidth;
-	};
-
-	UFUNCTION( BlueprintCallable, Category = "MaxWidth" )
-		void SetMaxWidth( float InWidth );
-
 
 	virtual void SetText( FText InText ) override;
 
 protected:
-
 
 	virtual void SynchronizeProperties() override;
 
@@ -37,8 +28,6 @@ protected:
 
 	virtual void Resize();
 
-protected:
-	UPROPERTY( EditAnywhere, BlueprintReadWrite, Getter, Setter, BlueprintSetter = "SetMaxWidth", Category = "MaxWidth", meta = ( ClampMin = 0.0 ) )
-		float MaxWidth;
+
 
 };

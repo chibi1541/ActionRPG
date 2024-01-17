@@ -5,8 +5,11 @@
 
 #include "Character/Components/ARCharacterStateComponent.h"
 #include "Character/HeroCharacter.h"
+#include "UserInterface/ARResizeTextBlock.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARHeroStatusWidget)
+
+#define LOCTEXT_NAMESPACE "MainGameHUD"
 
 UARHeroStatusWidget::UARHeroStatusWidget( const FObjectInitializer& ObjectInitializer )
 	: Super( ObjectInitializer )
@@ -58,18 +61,21 @@ void UARHeroStatusWidget::InitializeStatusWidget( UARCharacterStateComponent* St
 
 	ChangeShieldGaugePointRate();
 
+	UpdateHPText();
 }
 
 void UARHeroStatusWidget::OnChangedCurrentHealthPoint( float OldValue, float NewValue )
 {
 	CurHealthPoint = NewValue;
 	ChangeHealthPointRate();
+	UpdateHPText();
 }
 
 void UARHeroStatusWidget::OnChangedMaxHealthPoint( float OldValue, float NewValue )
 {
 	MaxHealthPoint = NewValue;
 	ChangeHealthPointRate();
+	UpdateHPText();
 }
 
 void UARHeroStatusWidget::OnChangedCurrentManaPoint( float OldValue, float NewValue )
@@ -130,3 +136,13 @@ FORCEINLINE void UARHeroStatusWidget::ChangeShieldGaugePointRate()
 
 }
 
+void UARHeroStatusWidget::UpdateHPText()
+{
+	// HP 올림 처리
+	int CurHPValue = FMath::CeilToInt( CurHealthPoint );
+	int MaxHPValue = FMath::CeilToInt( MaxHealthPoint );
+
+	HPText->SetText( FText::Format( LOCTEXT( "Current/Max_Status", "{0}/{1}" ), CurHPValue, MaxHPValue ) );
+}
+
+#undef LOCTEXT_NAMESPACE

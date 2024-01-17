@@ -8,7 +8,7 @@
 #include "ARHeroStatusWidget.generated.h"
 
 class UARCharacterStateComponent;
-class UTextBlock;
+class UARResizeTextBlock;
 
 UCLASS( Blueprintable )
 class ACTIONRPG_API UARHeroStatusWidget : public UUserWidget
@@ -61,12 +61,19 @@ public:
 #pragma endregion
 
 
+#pragma region UI
+	void UpdateHPText();
+
+
+#pragma endregion
+
 
 
 
 protected:
 
 	// Health Point
+
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Transient, meta = ( ClampMin = "0.0" ) )
 		float CurHealthPoint;
 
@@ -77,6 +84,7 @@ protected:
 		float HealthPointRate;
 
 	// Mana Point
+
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Transient, meta = ( ClampMin = "0.0" ) )
 		float CurManaPoint;
 
@@ -87,6 +95,7 @@ protected:
 		float ManaPointRate;
 
 	// Stamina Point
+
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Transient, meta = ( ClampMin = "0.0" ) )
 		float CurStaminaPoint;
 
@@ -97,6 +106,7 @@ protected:
 		float StaminaPointRate;
 
 	// ShieldGauge Point
+
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Transient, meta = ( ClampMin = "0.0" ) )
 		float CurShieldGaugePoint;
 
@@ -110,10 +120,10 @@ protected:
 	//UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Emblem" )
 
 	UPROPERTY( BlueprintReadWrite, meta = ( BindWidget ) )
-		TObjectPtr<UTextBlock> LevelText;
+		TObjectPtr<UARResizeTextBlock> LevelText;
 
 	UPROPERTY( BlueprintReadWrite, meta = ( BindWidget ) )
-		TObjectPtr<UTextBlock> HPText;
+		TObjectPtr<UARResizeTextBlock> HPText;
 
 private:
 

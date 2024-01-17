@@ -8,19 +8,11 @@
 UARResizeTextBlock::UARResizeTextBlock( const FObjectInitializer& ObjectInitializer )
 	:Super( ObjectInitializer )
 {
-
-}
-
-void UARResizeTextBlock::SetMaxWidth( float InWidth )
-{
-	MaxWidth = InWidth;
 }
 
 void UARResizeTextBlock::SetText( FText InText )
 {
 	Super::SetText( InText );
-
-	RLOG_L( Warning );
 
 	Resize();
 }
@@ -28,8 +20,6 @@ void UARResizeTextBlock::SetText( FText InText )
 void UARResizeTextBlock::SynchronizeProperties()
 {
 	Super::SynchronizeProperties();
-
-	RLOG_L( Warning );
 
 	Resize();
 
@@ -39,8 +29,6 @@ void UARResizeTextBlock::OnBindingChanged( const FName& Property )
 {
 	Super::OnBindingChanged( Property );
 
-	RLOG_L( Warning );
-
 	Resize();
 }
 
@@ -48,20 +36,20 @@ void UARResizeTextBlock::Resize()
 {
 	SetRenderScale( FVector2D( 1.f, 1.f ) );
 
-	if( MaxWidth == 0.f )
+	FVector2D LayoutSize = GetCachedGeometry().GetLocalSize();
+
+	RLOG( Warning, TEXT( "%f, %f" ), LayoutSize.X, LayoutSize.Y );
+
+	if( LayoutSize.X == 0.f )
 		return;
 
 	ForceLayoutPrepass();
 
 	FVector2D DesizedSize = GetDesiredSize();
 
-	FVector2D LayoutSize = GetCachedGeometry().GetLocalSize();
-
-	RLOG(Warning, TEXT("Layout Size : %f, %f"), LayoutSize.X, LayoutSize.Y );
-
-	if( DesizedSize.X > MaxWidth )
+	if( DesizedSize.X > LayoutSize.X )
 	{
-		float ScaleRate = MaxWidth / DesizedSize.X;
+		float ScaleRate = LayoutSize.X / DesizedSize.X;
 
 		SetRenderScale( FVector2D( ScaleRate, ScaleRate ) );
 	}

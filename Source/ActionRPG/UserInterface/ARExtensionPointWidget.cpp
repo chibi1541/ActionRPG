@@ -126,3 +126,5 @@ void UARExtensionPointWidget::OnAddOrRemoveExtension( EExtensionAction Action, c
 		}
 	}
 }
+
+#undef LOCTEXT_NAMESPACE
