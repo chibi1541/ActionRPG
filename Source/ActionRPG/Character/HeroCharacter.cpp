@@ -118,18 +118,18 @@ void AHeroCharacter::PossessedBy( AController* NewController )
 		// Create Main HUD Widget
 		if( UARGameUIManagerSubsystem* UIManager = GetGameInstance()->GetSubsystem<UARGameUIManagerSubsystem>() )
 		{
-			MainStatusWidgetHandle = UIManager->RegisterExtensionWidget( MainStatusWidgetTag, MainStatusWidget, GetCharacterStateComponenet() );
+			MainStatusWidgetHandle = UIManager->RegisterExtensionWidget( MainStatusWidgetTag, StatusWidget, GetCharacterStateComponenet() );
 		}
 	}
 	else
 	{
-		//if( UARGameUIManagerSubsystem* UIManager = GetGameInstance()->GetSubsystem<UARGameUIManagerSubsystem>() )
-		//{
-		//	if( !SubStatusWidgetHandle.IsValid() )
-		//	{
-		//		SubStatusWidgetHandle = UIManager->RegisterExtensionWidget( SubStatusWidgetTag, SubStatusWidget );
-		//	}
-		//}
+		if( UARGameUIManagerSubsystem* UIManager = GetGameInstance()->GetSubsystem<UARGameUIManagerSubsystem>() )
+		{
+			if( !SubStatusWidgetHandle.IsValid() )
+			{
+				SubStatusWidgetHandle = UIManager->RegisterExtensionWidget( SubStatusWidgetTag, StatusWidget, GetCharacterStateComponenet() );
+			}
+		}
 	}
 }
 

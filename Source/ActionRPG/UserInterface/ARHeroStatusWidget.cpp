@@ -5,7 +5,7 @@
 
 #include "Character/Components/ARCharacterStateComponent.h"
 #include "Character/HeroCharacter.h"
-#include "UserInterface/ARResizeTextBlock.h"
+#include "Components/TextBlock.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARHeroStatusWidget)
 

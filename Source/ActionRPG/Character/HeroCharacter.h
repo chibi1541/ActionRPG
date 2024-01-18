@@ -152,18 +152,15 @@ protected:
 
 #pragma region HUD_WIDGET
 
-	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HUD|MainStatus" )
-		TSubclassOf<UUserWidget> MainStatusWidget;
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HUD|Status" )
+		TSubclassOf<UUserWidget> StatusWidget;
 
-	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HUD|MainStatus" )
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HUD|Status" )
 		FGameplayTag MainStatusWidgetTag;
 
 	FUIExtensionHandle MainStatusWidgetHandle;
 
-	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HUD|SubStatus" )
-		TSubclassOf<UUserWidget> SubStatusWidget;
-
-	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HUD|SubStatus" )
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HUD|Status" )
 		FGameplayTag SubStatusWidgetTag;
 
 	FUIExtensionHandle SubStatusWidgetHandle;

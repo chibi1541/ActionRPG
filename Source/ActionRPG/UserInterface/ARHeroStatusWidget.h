@@ -8,7 +8,7 @@
 #include "ARHeroStatusWidget.generated.h"
 
 class UARCharacterStateComponent;
-class UARResizeTextBlock;
+class UTextBlock;
 
 UCLASS( Blueprintable )
 class ACTIONRPG_API UARHeroStatusWidget : public UUserWidget
@@ -120,10 +120,10 @@ protected:
 	//UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Emblem" )
 
 	UPROPERTY( BlueprintReadWrite, meta = ( BindWidget ) )
-		TObjectPtr<UARResizeTextBlock> LevelText;
+		TObjectPtr<UTextBlock> LevelText;
 
 	UPROPERTY( BlueprintReadWrite, meta = ( BindWidget ) )
-		TObjectPtr<UARResizeTextBlock> HPText;
+		TObjectPtr<UTextBlock> HPText;
 
 private:
 
