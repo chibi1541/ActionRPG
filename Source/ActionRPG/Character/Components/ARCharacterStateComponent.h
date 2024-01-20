@@ -110,7 +110,7 @@ public:
 		FGameplayEffectSpecHandle StiffEffectSpecHandle;
 
 	#pragma region Attrib Changed Event
-		
+
 	UPROPERTY( BlueprintAssignable )
 		FAttribChanged OnCurHealthChanged;
 

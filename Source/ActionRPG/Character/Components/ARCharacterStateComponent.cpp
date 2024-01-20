@@ -67,9 +67,9 @@ void UARCharacterStateComponent::BeginPlay()
 	if( HealthAttrib.IsValid() )
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetMaxHealthAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnMaxHealthChange );
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetStaminaAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnStaminaChange );
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetMaxStaminaAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnMaxStaminaChange );
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetHealthAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnHealthChange );
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetMaxStaminaAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnMaxStaminaChange );
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate( HealthAttrib->GetStaminaAttribute() ).AddUObject( this, &UARCharacterStateComponent::OnStaminaChange );
 
 		if( HealthAttrib->GetMaxShieldGauge() == 0.f )
 		{

@@ -4,14 +4,18 @@
 
 #include "ActionRPG_Lib.h"
 #include "Blueprint/UserWidget.h"
+#include "Blueprint/IUserObjectListEntry.h"
 
 #include "ARHeroStatusWidget.generated.h"
 
 class UARCharacterStateComponent;
 class UTextBlock;
+class UWidgetSwitcher;
+class UProgressBar;
+
 
 UCLASS( Blueprintable )
-class ACTIONRPG_API UARHeroStatusWidget : public UUserWidget
+class ACTIONRPG_API UARHeroStatusWidget : public UUserWidget, public IUserObjectListEntry
 {
 	GENERATED_BODY()
 
@@ -61,11 +65,14 @@ public:
 #pragma endregion
 
 
-#pragma region UI
+
 	void UpdateHPText();
 
+	void UpdateManaText();
 
-#pragma endregion
+	void UpdateShieldGaugeText();
+
+	void UpdateStaminaText();
 
 
 
@@ -117,13 +124,40 @@ protected:
 		float ShieldGaugePointRate;
 
 protected:
-	//UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Emblem" )
+
+#pragma region UI
+
+	UPROPERTY( BlueprintReadWrite, meta = ( BindWidget ) )
+		TObjectPtr<UWidgetSwitcher> EmblemSwitcher;
 
 	UPROPERTY( BlueprintReadWrite, meta = ( BindWidget ) )
 		TObjectPtr<UTextBlock> LevelText;
 
 	UPROPERTY( BlueprintReadWrite, meta = ( BindWidget ) )
 		TObjectPtr<UTextBlock> HPText;
+
+	UPROPERTY( BlueprintReadWrite, meta = ( BindWidget ) )
+		TObjectPtr<UTextBlock> ManaText;
+
+	UPROPERTY( BlueprintReadWrite, meta = ( BindWidget ) )
+		TObjectPtr<UTextBlock> ShieldGaugeText;
+
+	UPROPERTY( BlueprintReadWrite, meta = ( BindWidget ) )
+		TObjectPtr<UTextBlock> StaminaText;
+
+	UPROPERTY( BlueprintReadWrite, meta = ( BindWidget ) )
+		TObjectPtr<UProgressBar> HPBar;
+
+	UPROPERTY( BlueprintReadWrite, meta = ( BindWidget ) )
+		TObjectPtr<UProgressBar> ManaBar;
+
+	UPROPERTY( BlueprintReadWrite, meta = ( BindWidget ) )
+		TObjectPtr<UProgressBar> ShieldGaugeBar;
+
+	UPROPERTY( BlueprintReadWrite, meta = ( BindWidget ) )
+		TObjectPtr<UProgressBar> StaminaBar;
+
+#pragma endregion
 
 private:
 
