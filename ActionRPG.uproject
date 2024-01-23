@@ -14,7 +14,8 @@
 				"EnhancedInput",
 				"AIModule",
 				"DeveloperSettings",
-				"UMG"
+				"UMG",
+				"BlueprintGraph"
 			]
 		}
 	],
