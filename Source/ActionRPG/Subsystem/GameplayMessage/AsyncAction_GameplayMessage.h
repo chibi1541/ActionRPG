@@ -30,7 +30,7 @@ class ACTIONRPG_API UAsyncAction_GameplayMessage : public UCancellableAsyncActio
 
 public:
 
-	UFUNCTION( BlueprintCallable, Category = Messaging, meta = ( WorldContext = "WorldContextObject" ) )
+	UFUNCTION( BlueprintCallable, Category = Messaging, meta = ( WorldContext = "WorldContextObject", BlueprintInternalUseOnly = "true" ) )
 		static UAsyncAction_GameplayMessage* ListenForGameplayMessages( UObject* WorldContextObject, FGameplayTag Channel, UScriptStruct* PayloadType );
 
 

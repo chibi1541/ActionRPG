@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Subsystem/GameplayMessage/K2Node_AsyncAction_Message.h"
+#include "GameplayMessageNodes/K2Node_AsyncAction_GameplayMessages.h"
 
 #include "BlueprintActionDatabaseRegistrar.h"
 #include "BlueprintFunctionNodeSpawner.h"
@@ -34,14 +34,13 @@
 
 #include "Subsystem/GameplayMessage/AsyncAction_GameplayMessage.h"
 
-
-#include UE_INLINE_GENERATED_CPP_BY_NAME(K2Node_AsyncAction_Message)
+#include UE_INLINE_GENERATED_CPP_BY_NAME(K2Node_AsyncAction_GameplayMessages)
 
 class UEdGraph;
 
 #define LOCTEXT_NAMESPACE "K2Node"
 
-namespace UK2Node_AsyncAction_MessageHelper
+namespace UK2Node_AsyncAction_GameplayMessagesHelper
 {
 	static FName ActualChannelPinName = "ActualChannel";
 	static FName PayloadPinName = "Payload";
@@ -49,7 +48,7 @@ namespace UK2Node_AsyncAction_MessageHelper
 	static FName DelegateProxyPinName = "ProxyObject";
 };
 
-void UK2Node_AsyncAction_Message::PostReconstructNode()
+void UK2Node_AsyncAction_GameplayMessages::PostReconstructNode()
 {
 	Super::PostReconstructNode();
 
@@ -57,7 +56,7 @@ void UK2Node_AsyncAction_Message::PostReconstructNode()
 
 }
 
-void UK2Node_AsyncAction_Message::PinDefaultValueChanged( UEdGraphPin* ChangedPin )
+void UK2Node_AsyncAction_GameplayMessages::PinDefaultValueChanged( UEdGraphPin* ChangedPin )
 {
 	if( ChangedPin == GetPayloadTypePin() )
 	{
@@ -68,22 +67,22 @@ void UK2Node_AsyncAction_Message::PinDefaultValueChanged( UEdGraphPin* ChangedPi
 	}
 }
 
-void UK2Node_AsyncAction_Message::GetPinHoverText( const UEdGraphPin& Pin, FString& HoverTextOut ) const
+void UK2Node_AsyncAction_GameplayMessages::GetPinHoverText( const UEdGraphPin& Pin, FString& HoverTextOut ) const
 {
 	Super::GetPinHoverText( Pin, HoverTextOut );
-	if( Pin.PinName == UK2Node_AsyncAction_MessageHelper::PayloadPinName )
+	if( Pin.PinName == UK2Node_AsyncAction_GameplayMessagesHelper::PayloadPinName )
 	{
 		HoverTextOut = HoverTextOut + LOCTEXT( "PayloadOutTooltip", "\n\nThe message structure that we received" ).ToString();
 	}
 }
 
-void UK2Node_AsyncAction_Message::GetMenuActions( FBlueprintActionDatabaseRegistrar& ActionRegistrar ) const
+void UK2Node_AsyncAction_GameplayMessages::GetMenuActions( FBlueprintActionDatabaseRegistrar& ActionRegistrar ) const
 {
 	struct GetMenuActions_Utils
 	{
 		static void SetNodeFunc( UEdGraphNode* NewNode, bool /*bIsTemplateNode*/, TWeakObjectPtr<UFunction> FunctionPtr )
 		{
-			UK2Node_AsyncAction_Message* AsyncTaskNode = CastChecked<UK2Node_AsyncAction_Message>( NewNode );
+			UK2Node_AsyncAction_GameplayMessages* AsyncTaskNode = CastChecked<UK2Node_AsyncAction_GameplayMessages>( NewNode );
 			if( FunctionPtr.IsValid() )
 			{
 				UFunction* Func = FunctionPtr.Get();
@@ -97,7 +96,7 @@ void UK2Node_AsyncAction_Message::GetMenuActions( FBlueprintActionDatabaseRegist
 	};
 
 	UClass* NodeClass = GetClass();
-	ActionRegistrar.RegisterClassFactoryActions<UAsyncAction_GameplayMessage>(
+	ActionRegistrar.RegisterClassFactoryActions<UK2Node_AsyncAction_GameplayMessages>(
 		FBlueprintActionDatabaseRegistrar::FMakeFuncSpawnerDelegate::CreateLambda( [NodeClass]( const UFunction* FactoryFunc )->UBlueprintNodeSpawner*
 		{
 			UBlueprintNodeSpawner* NodeSpawner = UBlueprintFunctionNodeSpawner::Create( FactoryFunc );
@@ -111,20 +110,20 @@ void UK2Node_AsyncAction_Message::GetMenuActions( FBlueprintActionDatabaseRegist
 		} ) );
 }
 
-void UK2Node_AsyncAction_Message::AllocateDefaultPins()
+void UK2Node_AsyncAction_GameplayMessages::AllocateDefaultPins()
 {
 	Super::AllocateDefaultPins();
 
-	UEdGraphPin* DelegateProxyPin = FindPin( UK2Node_AsyncAction_MessageHelper::DelegateProxyPinName );
+	UEdGraphPin* DelegateProxyPin = FindPin( UK2Node_AsyncAction_GameplayMessagesHelper::DelegateProxyPinName );
 	if( ensure( DelegateProxyPin ) )
 	{
 		DelegateProxyPin->bHidden = true;
 	}
 
-	CreatePin( EGPD_Output, UEdGraphSchema_K2::PC_Wildcard, UK2Node_AsyncAction_MessageHelper::PayloadPinName );
+	CreatePin( EGPD_Output, UEdGraphSchema_K2::PC_Wildcard, UK2Node_AsyncAction_GameplayMessagesHelper::PayloadPinName );
 }
 
-bool UK2Node_AsyncAction_Message::HandleDelegates( const TArray<FBaseAsyncTaskHelper::FOutputPinAndLocalVariable>& VariableOutputs, UEdGraphPin* ProxyObjectPin, UEdGraphPin*& InOutLastThenPin, UEdGraph* SourceGraph, FKismetCompilerContext& CompilerContext )
+bool UK2Node_AsyncAction_GameplayMessages::HandleDelegates( const TArray<FBaseAsyncTaskHelper::FOutputPinAndLocalVariable>& VariableOutputs, UEdGraphPin* ProxyObjectPin, UEdGraphPin*& InOutLastThenPin, UEdGraph* SourceGraph, FKismetCompilerContext& CompilerContext )
 {
 	bool bIsErrorFree = true;
 
@@ -145,7 +144,7 @@ bool UK2Node_AsyncAction_Message::HandleDelegates( const TArray<FBaseAsyncTaskHe
 	return bIsErrorFree;
 }
 
-bool UK2Node_AsyncAction_Message::HandlePayloadImplementation( FMulticastDelegateProperty* CurrentProperty, const FBaseAsyncTaskHelper::FOutputPinAndLocalVariable& ProxyObjectVar, const FBaseAsyncTaskHelper::FOutputPinAndLocalVariable& PayloadVar, const FBaseAsyncTaskHelper::FOutputPinAndLocalVariable& ActualChannelVar, UEdGraphPin*& InOutLastActivatedThenPin, UEdGraph* SourceGraph, FKismetCompilerContext& CompilerContext )
+bool UK2Node_AsyncAction_GameplayMessages::HandlePayloadImplementation( FMulticastDelegateProperty* CurrentProperty, const FBaseAsyncTaskHelper::FOutputPinAndLocalVariable& ProxyObjectVar, const FBaseAsyncTaskHelper::FOutputPinAndLocalVariable& PayloadVar, const FBaseAsyncTaskHelper::FOutputPinAndLocalVariable& ActualChannelVar, UEdGraphPin*& InOutLastActivatedThenPin, UEdGraph* SourceGraph, FKismetCompilerContext& CompilerContext )
 {
 	bool bIsErrorFree = true;
 	const UEdGraphPin* PayloadPin = GetPayloadPin();
@@ -210,7 +209,7 @@ bool UK2Node_AsyncAction_Message::HandlePayloadImplementation( FMulticastDelegat
 	return bIsErrorFree;
 }
 
-void UK2Node_AsyncAction_Message::RefreshOutputPayloadType()
+void UK2Node_AsyncAction_GameplayMessages::RefreshOutputPayloadType()
 {
 	UEdGraphPin* PayloadPin = GetPayloadPin();
 	UEdGraphPin* PayloadTypePin = GetPayloadTypePin();
@@ -227,23 +226,23 @@ void UK2Node_AsyncAction_Message::RefreshOutputPayloadType()
 	}
 }
 
-UEdGraphPin* UK2Node_AsyncAction_Message::GetPayloadPin() const
+UEdGraphPin* UK2Node_AsyncAction_GameplayMessages::GetPayloadPin() const
 {
-	UEdGraphPin* Pin = FindPinChecked( UK2Node_AsyncAction_MessageHelper::PayloadPinName );
+	UEdGraphPin* Pin = FindPinChecked( UK2Node_AsyncAction_GameplayMessagesHelper::PayloadPinName );
 	check( Pin->Direction == EGPD_Output );
 	return Pin;
 }
 
-UEdGraphPin* UK2Node_AsyncAction_Message::GetPayloadTypePin() const
+UEdGraphPin* UK2Node_AsyncAction_GameplayMessages::GetPayloadTypePin() const
 {
-	UEdGraphPin* Pin = FindPinChecked( UK2Node_AsyncAction_MessageHelper::PayloadTypePinName );
+	UEdGraphPin* Pin = FindPinChecked( UK2Node_AsyncAction_GameplayMessagesHelper::PayloadTypePinName );
 	check( Pin->Direction == EGPD_Input );
 	return Pin;
 }
 
-UEdGraphPin* UK2Node_AsyncAction_Message::GetOutputChannelPin() const
+UEdGraphPin* UK2Node_AsyncAction_GameplayMessages::GetOutputChannelPin() const
 {
-	UEdGraphPin* Pin = FindPinChecked( UK2Node_AsyncAction_MessageHelper::ActualChannelPinName );
+	UEdGraphPin* Pin = FindPinChecked( UK2Node_AsyncAction_GameplayMessagesHelper::ActualChannelPinName );
 	check( Pin->Direction == EGPD_Output );
 	return Pin;
 }

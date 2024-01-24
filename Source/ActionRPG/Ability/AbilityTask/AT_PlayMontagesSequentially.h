@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Abilities/Tasks/AbilityTask.h"
 #include "UObject/ObjectMacros.h"
+#include "Animation/AnimInstance.h"
 
 #include "AT_PlayMontagesSequentially.generated.h"
 

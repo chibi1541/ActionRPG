@@ -30,6 +30,11 @@ public class ActionRPG : ModuleRules
                 "Slate",
                 "SlateCore",
                 "CommonUI",
+                "KismetCompiler",
+                "BlueprintGraph",
+                "PropertyEditor",
+                "UnrealEd",
+                "GraphEditor",
             }
             );
 

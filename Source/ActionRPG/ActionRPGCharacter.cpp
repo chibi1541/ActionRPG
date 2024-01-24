@@ -57,13 +57,13 @@ void AActionRPGCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}
+	//if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	//{
+	//	if( UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>( PlayerController->GetLocalPlayer() ) )
+	//	{
+	//		Subsystem->AddMappingContext( DefaultMappingContext, 0 );
+	//	}
+	//}
 }
 
 //////////////////////////////////////////////////////////////////////////

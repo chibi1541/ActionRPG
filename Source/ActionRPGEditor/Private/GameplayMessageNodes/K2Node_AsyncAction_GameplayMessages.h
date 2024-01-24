@@ -6,7 +6,7 @@
 #include "Containers/Array.h"
 #include "UObject/UObjectGlobals.h"
 
-#include "K2Node_AsyncAction_Message.generated.h"
+#include "K2Node_AsyncAction_GameplayMessages.generated.h"
 
 class FBlueprintActionDatabaseRegistrar;
 class FKismetCompilerContext;
@@ -20,7 +20,7 @@ class UObject;
  * 
  */
 UCLASS()
-class ACTIONRPG_API UK2Node_AsyncAction_Message : public UK2Node_AsyncAction
+class UK2Node_AsyncAction_GameplayMessages : public UK2Node_AsyncAction
 {
 	GENERATED_BODY()
 	

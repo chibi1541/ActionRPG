@@ -17,6 +17,14 @@
 				"UMG",
 				"BlueprintGraph"
 			]
+		},
+		{
+			"Name": "ActionRPGEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"BlueprintGraph"
+			]
 		}
 	],
 	"Plugins": [
