@@ -102,6 +102,9 @@ protected:
 	virtual void SetStamina( float Stamina );
 	virtual void SetShieldGauge( float ShieldGauge );
 
+private:
+	void SetHeroStatusWidget( const AController* NewController );
+
 protected:
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = Camera )
 		TObjectPtr<USpringArmComponent> CameraBoom;
@@ -161,12 +164,13 @@ protected:
 	FUIExtensionHandle MainStatusWidgetHandle;
 
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HUD|Status" )
-		FGameplayTag SubStatusWidgetTag;
+		FGameplayTag SubStatusChannel;
 
-	FUIExtensionHandle SubStatusWidgetHandle;
 
 #pragma endregion
 
+private:
+	bool bInitialize;
 
 
 public:

@@ -75,6 +75,9 @@ public:
 	void UpdateStaminaText();
 
 
+protected:
+	virtual void NativeOnListItemObjectSet( UObject* ListItemObject ) override;
+
 
 
 protected:

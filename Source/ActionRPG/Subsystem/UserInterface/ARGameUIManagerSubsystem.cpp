@@ -103,7 +103,6 @@ void UARGameUIManagerSubsystem::AddMainGameHUDWidget()
 		return;
 	}
 
-
 	if( ULocalPlayer* LocalPlayer = Cast<ULocalPlayer>( PrimaryLayout->GetOwningLocalPlayer() ) )
 	{
 		const UARGameInstance* GameInstance = Cast<UARGameInstance>( GetGameInstance() );

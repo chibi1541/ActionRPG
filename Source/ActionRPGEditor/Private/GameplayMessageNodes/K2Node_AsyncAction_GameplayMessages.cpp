@@ -96,7 +96,7 @@ void UK2Node_AsyncAction_GameplayMessages::GetMenuActions( FBlueprintActionDatab
 	};
 
 	UClass* NodeClass = GetClass();
-	ActionRegistrar.RegisterClassFactoryActions<UK2Node_AsyncAction_GameplayMessages>(
+	ActionRegistrar.RegisterClassFactoryActions<UAsyncAction_GameplayMessage>(
 		FBlueprintActionDatabaseRegistrar::FMakeFuncSpawnerDelegate::CreateLambda( [NodeClass]( const UFunction* FactoryFunc )->UBlueprintNodeSpawner*
 		{
 			UBlueprintNodeSpawner* NodeSpawner = UBlueprintFunctionNodeSpawner::Create( FactoryFunc );

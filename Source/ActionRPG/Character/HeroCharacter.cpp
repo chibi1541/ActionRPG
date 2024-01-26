@@ -23,6 +23,8 @@
 #include "Character/Attribute/ARIntRefAttribSet.h"
 
 #include "Blueprint/UserWidget.h"
+#include "Subsystem/GameplayMessage/ARGameplayMessageSubsystem.h"
+#include "UserInterface/SubHeroStatusMessage.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(HeroCharacter)
 
@@ -73,6 +75,7 @@ AHeroCharacter::AHeroCharacter( const FObjectInitializer& ObjectInitializer )
 	// Create a ComboAttackComponent
 	ComboAttackComponent = CreateDefaultSubobject<UARComboAttackComponent>( TEXT( "COMBOATTACKCOMP" ) );
 
+	bInitialize = false;
 }
 
 void AHeroCharacter::SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent )
@@ -107,29 +110,9 @@ void AHeroCharacter::PossessedBy( AController* NewController )
 {
 	Super::PossessedBy( NewController );
 
-
-	if( NewController->IsPlayerController() )
+	if( bInitialize )
 	{
-
-		auto PlayerController = Cast<APlayerController>( NewController );
-		PlayerController->PlayerCameraManager->ViewPitchMin = -60.f;
-		PlayerController->PlayerCameraManager->ViewPitchMax = 40.f;
-
-		// Create Main HUD Widget
-		if( UARGameUIManagerSubsystem* UIManager = GetGameInstance()->GetSubsystem<UARGameUIManagerSubsystem>() )
-		{
-			MainStatusWidgetHandle = UIManager->RegisterExtensionWidget( MainStatusWidgetTag, StatusWidget, GetCharacterStateComponenet() );
-		}
-	}
-	else
-	{
-		if( UARGameUIManagerSubsystem* UIManager = GetGameInstance()->GetSubsystem<UARGameUIManagerSubsystem>() )
-		{
-			if( !SubStatusWidgetHandle.IsValid() )
-			{
-				SubStatusWidgetHandle = UIManager->RegisterExtensionWidget( SubStatusWidgetTag, StatusWidget, GetCharacterStateComponenet() );
-			}
-		}
+		SetHeroStatusWidget( NewController );
 	}
 }
 
@@ -139,9 +122,6 @@ void AHeroCharacter::UnPossessed()
 	// 추후에 삭제될 코드
 	if( MainStatusWidgetHandle.IsValid() )
 		MainStatusWidgetHandle.Unregister();
-
-	if( SubStatusWidgetHandle.IsValid() )
-		SubStatusWidgetHandle.Unregister();
 
 	Super::UnPossessed();
 }
@@ -161,6 +141,13 @@ void AHeroCharacter::BeginPlay()
 	{
 		AbilitySystemComp->GetGameplayAttributeValueChangeDelegate( AgiRefAttribSet->GetModifiedMoveSpeedAttribute() ).AddUObject( this, &AHeroCharacter::OnSpeedChange );
 	}
+
+	if( auto NewController = GetController() )
+	{
+		SetHeroStatusWidget( NewController );
+	}
+
+	bInitialize = true;
 }
 
 void AHeroCharacter::InitAbilitySystem()
@@ -307,6 +294,32 @@ void AHeroCharacter::SetShieldGauge( float ShieldGauge )
 	if( VitRefAttribSet )
 	{
 		VitRefAttribSet->SetShieldGauge( ShieldGauge );
+	}
+}
+
+void AHeroCharacter::SetHeroStatusWidget( const AController* NewController )
+{
+	if( NewController->IsPlayerController() )
+	{
+		auto PlayerController = Cast<APlayerController>( NewController );
+		PlayerController->PlayerCameraManager->ViewPitchMin = -60.f;
+		PlayerController->PlayerCameraManager->ViewPitchMax = 40.f;
+
+		// Create Main HUD Widget
+		if( UARGameUIManagerSubsystem* UIManager = GetGameInstance()->GetSubsystem<UARGameUIManagerSubsystem>() )
+		{
+			MainStatusWidgetHandle = UIManager->RegisterExtensionWidget( MainStatusWidgetTag, StatusWidget, GetCharacterStateComponenet() );
+		}
+	}
+	else
+	{
+		if( UARGameplayMessageSubsystem* MessageManager = GetGameInstance()->GetSubsystem<UARGameplayMessageSubsystem>() )
+		{
+			FSubHeroStatusMessage Message;
+			Message.StateComponent = GetCharacterStateComponenet();
+
+			MessageManager->BroadcastMessage( SubStatusChannel, Message );
+		}
 	}
 }
 

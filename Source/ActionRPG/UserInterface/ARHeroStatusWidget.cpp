@@ -187,4 +187,13 @@ void UARHeroStatusWidget::UpdateStaminaText()
 	StaminaText->SetText( FText::Format( LOCTEXT( "Current/Max_Status", "{0} / {1}" ), CurStaminaValue, MaxStaminaValue ) );
 }
 
+void UARHeroStatusWidget::NativeOnListItemObjectSet( UObject* ListItemObject )
+{
+	UARCharacterStateComponent* StateComponent = Cast<UARCharacterStateComponent>( ListItemObject );
+	if( StateComponent )
+	{
+		InitializeStatusWidget( StateComponent );
+	}
+}
+
 #undef LOCTEXT_NAMESPACE
