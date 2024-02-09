@@ -164,6 +164,11 @@ void UARCharacterStateComponent::OnHealthChange( const FOnAttributeChangeData& D
 		IsDead = true;
 		AbilitySystemComponent->SetLooseGameplayTagCount( Tags.CharacterStateTag_Dead, 1 );
 		AbilitySystemComponent->CancelAllAbilities();
+
+		if( ABaseCharacter* Owner = Cast<ABaseCharacter>( GetOwner() ) )
+		{
+			Owner->Die();
+		}
 	}
 	else if( Data.NewValue > 0.f && IsDead )
 	{

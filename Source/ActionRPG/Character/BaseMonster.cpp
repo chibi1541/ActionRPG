@@ -11,6 +11,11 @@
 #include "GameplayEffect.h"
 #include "GameplayEffectExtension.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/WidgetComponent.h"
+#include "UserInterface/ARMonsterHPBarWidget.h"
+#include "Kismet/GameplayStatics.h"
+#include "Components/CapsuleComponent.h"
+
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BaseMonster)
 
@@ -22,6 +27,12 @@ ABaseMonster::ABaseMonster( const FObjectInitializer& ObjectInitializer )
 	AttackAttribSet = CreateDefaultSubobject<UARAttackAttribSet>( "ARAttackAttribSet" );
 	VitRefAttribSet = CreateDefaultSubobject<UARVitRefAttribSet>( "ARVirRefAttribSet" );
 	AgiRefAttribSet = CreateDefaultSubobject<UARAgiRefAttribSet>( "UARAgiRefAttribSet" );
+
+	FloatingHPBarComponent = CreateDefaultSubobject<UWidgetComponent>( FName( "FLOATHPBARCOMP" ) );
+	FloatingHPBarComponent->SetupAttachment( RootComponent );
+	FloatingHPBarComponent->SetRelativeLocation( FVector( 0, 0, 120 ) );
+	FloatingHPBarComponent->SetWidgetSpace( EWidgetSpace::Screen );
+	FloatingHPBarComponent->SetDrawSize( FVector2D( 80.f, 8.f ) );
 }
 
 void ABaseMonster::BeginPlay()
@@ -37,6 +48,20 @@ void ABaseMonster::BeginPlay()
 	if( AgiRefAttribSet )
 	{
 		AbilitySystemComp->GetGameplayAttributeValueChangeDelegate( AgiRefAttribSet->GetModifiedMoveSpeedAttribute() ).AddUObject( this, &ABaseMonster::OnSpeedChange );
+	}
+
+
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController( GetWorld(), 0 );
+
+	if( FloatingHPBarClass )
+	{
+		FloatingHPBar = CreateWidget<UARMonsterHPBarWidget>( PlayerController, FloatingHPBarClass );
+		if( FloatingHPBar && FloatingHPBarComponent )
+		{
+			FloatingHPBarComponent->SetWidget( FloatingHPBar );
+
+			FloatingHPBar->InitializeWidget( CharacterStateComponent );
+		}
 	}
 }
 
@@ -62,6 +87,50 @@ void ABaseMonster::SetShieldGauge( float ShieldGauge )
 	{
 		VitRefAttribSet->SetShieldGauge( ShieldGauge );
 	}
+}
+
+void ABaseMonster::FinishDying()
+{
+	Super::FinishDying();
+
+	Destroy();
+}
+
+void ABaseMonster::Die()
+{
+	Super::Die();
+
+	if( DyingMontages.Num() > 0 )
+	{
+		int DyingMotionIndex = FMath::RandRange( 0, DyingMontages.Num() - 1 );
+
+		GetMesh()->GetAnimInstance()->Montage_Play( DyingMontages[DyingMotionIndex] );
+	}
+
+	GetCapsuleComponent()->SetCollisionEnabled( ECollisionEnabled::NoCollision );
+	GetMesh()->SetCollisionEnabled( ECollisionEnabled::NoCollision );
+	GetCharacterMovement()->GravityScale = 0;
+	GetCharacterMovement()->Velocity = FVector( 0 );
+}
+
+float ABaseMonster::GetCurrentHealth() const
+{
+	if( VitRefAttribSet )
+	{
+		return VitRefAttribSet->GetHealth();
+	}
+
+	return 0.f;
+}
+
+float ABaseMonster::GetCurrentStamina() const
+{
+	if( VitRefAttribSet )
+	{
+		return VitRefAttribSet->GetStamina();
+	}
+
+	return 0.f;
 }
 
 float ABaseMonster::GetMaxHealth() const

@@ -19,7 +19,11 @@ class ACTIONRPG_API ABaseAIController : public AAIController
 {
 	GENERATED_BODY()
 
-		ABaseAIController( const FObjectInitializer& ObjectInitializer );
+private:
+
+	ABaseAIController( const FObjectInitializer& ObjectInitializer );
+
+	virtual void BeginPlay() override;
 
 public:
 	virtual void OnPossess( APawn* InPawn ) override;

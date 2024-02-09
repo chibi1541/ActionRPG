@@ -64,6 +64,13 @@ public:
 	UFUNCTION( BlueprintCallable, Category = "ActionRPG|BaseAttributes" )
 		int32 GetVitality() const;
 
+	UFUNCTION( BlueprintCallable )
+		virtual void FinishDying();
+
+	virtual void Die();
+
+	virtual bool GetDeadState() const;
+
 protected:
 	virtual void InitAbilitySystem();
 

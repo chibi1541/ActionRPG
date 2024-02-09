@@ -8,6 +8,8 @@
 #include "Ability/ARAbilitySystemComponent.h"
 #include "Character/BaseCharacter.h"
 #include "Character/Components/ARUtilityStateComponent.h"
+#include "Character/HeroCharacter.h"
+#include "EngineUtils.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BaseAIController)
 
@@ -21,6 +23,20 @@ ABaseAIController::ABaseAIController( const FObjectInitializer& ObjectInitialize
 	:Super( ObjectInitializer )
 {
 
+}
+
+void ABaseAIController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if( UWorld* World = GetWorld() )
+	{
+		for( TActorIterator<AHeroCharacter> ActorIter( World ); ActorIter; ++ActorIter )
+		{
+			AHeroCharacter* Hero = *ActorIter;
+			Blackboard->SetValueAsObject( TargetKey, Hero );
+		}
+	}
 }
 
 void ABaseAIController::OnPossess( APawn* InPawn )
@@ -60,6 +76,7 @@ void ABaseAIController::OnPossess( APawn* InPawn )
 			}
 		}
 	}
+
 
 }
 

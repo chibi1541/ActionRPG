@@ -11,6 +11,7 @@ class UARAttackAttribSet;
 class UARVitRefAttribSet;
 class UARAgiRefAttribSet;
 class UGameplayEffect;
+class UARMonsterHPBarWidget;
 
 /**
  *
@@ -31,19 +32,36 @@ protected:
 	virtual void SetStamina( float Stamina );
 	virtual void SetShieldGauge( float ShieldGauge );
 
+
+	virtual void FinishDying() override;
+
+	virtual void Die() override;
+
+public:
+	virtual float GetCurrentHealth() const;
+	virtual float GetCurrentStamina() const;
+
 	virtual float GetMaxHealth() const;
 	virtual float GetMaxStamina() const;
 	virtual float GetMaxShieldGauge() const;
 
-public:
 	UFUNCTION( BlueprintCallable, Category = "ActionRPG|AgilityAttributes" )
 	virtual float GetMoveSpeed() const;
 
-
 protected:
 
-	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HitReact|Montage" )
-		TObjectPtr<UAnimMontage> HitMontage;
+	UPROPERTY( BlueprintReadWrite, EditAnywhere, Category = "UI|HPBar" )
+		TSubclassOf<class UARMonsterHPBarWidget> FloatingHPBarClass;
+
+	UPROPERTY()
+		class UARMonsterHPBarWidget* FloatingHPBar;
+
+	UPROPERTY( BlueprintReadOnly, VisibleAnywhere, Category = "UI|HPBar" )
+		class UWidgetComponent* FloatingHPBarComponent;
+
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Montage|Dying" )
+		TArray<TObjectPtr<UAnimMontage>> DyingMontages;
 
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Attribute|Health" )
 		TSubclassOf<UGameplayEffect> HealthAttribInitializer;

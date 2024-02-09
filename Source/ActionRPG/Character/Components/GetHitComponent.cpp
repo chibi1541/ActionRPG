@@ -85,6 +85,10 @@ UAnimMontage* UGetHitComponent::GetMontagetoPlay( const FVector AttackVec ) cons
 
 float UGetHitComponent::HitReaction( const FVector AttackVec )
 {
+	const auto Character = CastChecked<ABaseCharacter>( GetOwner() );
+	if( Character && Character->GetDeadState() )
+		return 0.f;
+
 	UAnimMontage* PlayMontage = GetMontagetoPlay( AttackVec );
 	if( PlayMontage == nullptr )
 	{

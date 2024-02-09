@@ -145,6 +145,21 @@ void ABaseCharacter::OnSpeedChange( const FOnAttributeChangeData& Data )
 	GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
 }
 
+void ABaseCharacter::FinishDying()
+{
+
+}
+
+void ABaseCharacter::Die()
+{
+
+}
+
+bool ABaseCharacter::GetDeadState() const
+{
+	return ( CharacterStateComponent ) ? CharacterStateComponent->GetDeadState() : false;
+}
+
 int32 ABaseCharacter::GetCharacterLevel() const
 {
 	if( BaseAttribSet )
