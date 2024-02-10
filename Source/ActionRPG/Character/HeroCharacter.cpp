@@ -119,7 +119,6 @@ void AHeroCharacter::PossessedBy( AController* NewController )
 
 void AHeroCharacter::UnPossessed()
 {
-	// 추후에 삭제될 코드
 	if( MainStatusWidgetHandle.IsValid() )
 		MainStatusWidgetHandle.Unregister();
 
@@ -237,6 +236,14 @@ void AHeroCharacter::ComboAttack()
 	{
 		ComboAttackComponent->StartComboAttack();
 	}
+}
+
+void AHeroCharacter::BeginDestroy()
+{
+	if( MainStatusWidgetHandle.IsValid() )
+		MainStatusWidgetHandle.Unregister();
+
+	Super::BeginDestroy();
 }
 
 void AHeroCharacter::Input_AbilityInputTagPressed( FGameplayTag InputTag )

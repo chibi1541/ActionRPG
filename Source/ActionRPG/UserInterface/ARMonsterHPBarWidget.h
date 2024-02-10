@@ -28,6 +28,12 @@ public:
 	UFUNCTION( BlueprintImplementableEvent, BlueprintCallable )
 		void SetMonsterName( const FText& MonsterName );
 
+	UFUNCTION( BlueprintImplementableEvent, BlueprintCallable )
+		void SetCurrentHP( float CurrentHP );
+
+	UFUNCTION( BlueprintImplementableEvent, BlueprintCallable )
+		void SetMaxHP( float MaxHP );
+
 	UFUNCTION( BlueprintCallable )
 		void InitializeWidget( UARCharacterStateComponent* StateComponent );
 

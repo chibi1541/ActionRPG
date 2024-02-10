@@ -26,6 +26,7 @@ UENUM( BlueprintType )
 enum class EMonsterType : uint8
 {
 	MT_Proto		UMETA( DisplayName = "Proto" ),
+	MT_Boss			UMETA( DisplayName = "Boss" ),
 	Num				UMETA( Hidden )
 };
 

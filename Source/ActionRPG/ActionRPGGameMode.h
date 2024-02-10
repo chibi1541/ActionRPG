@@ -6,13 +6,24 @@
 #include "GameFramework/GameModeBase.h"
 #include "ActionRPGGameMode.generated.h"
 
-UCLASS(minimalapi)
+class AARGameState;
+
+UCLASS( minimalapi )
 class AActionRPGGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
 public:
 	AActionRPGGameMode();
+
+	virtual void PostInitializeComponents() override;
+
+	void AddMinionKillCount();
+
+protected:
+
+	TWeakObjectPtr<AARGameState> GameStatePtr;
+
 };
 
 

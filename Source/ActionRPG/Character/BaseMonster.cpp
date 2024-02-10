@@ -15,6 +15,7 @@
 #include "UserInterface/ARMonsterHPBarWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
+#include "ActionRPGGameMode.h"
 
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BaseMonster)
@@ -50,7 +51,6 @@ void ABaseMonster::BeginPlay()
 		AbilitySystemComp->GetGameplayAttributeValueChangeDelegate( AgiRefAttribSet->GetModifiedMoveSpeedAttribute() ).AddUObject( this, &ABaseMonster::OnSpeedChange );
 	}
 
-
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController( GetWorld(), 0 );
 
 	if( FloatingHPBarClass )
@@ -62,6 +62,11 @@ void ABaseMonster::BeginPlay()
 
 			FloatingHPBar->InitializeWidget( CharacterStateComponent );
 		}
+	}
+
+	if( GetController() == nullptr )
+	{
+		SpawnDefaultController();
 	}
 }
 
@@ -92,6 +97,9 @@ void ABaseMonster::SetShieldGauge( float ShieldGauge )
 void ABaseMonster::FinishDying()
 {
 	Super::FinishDying();
+
+	if( auto GameMode = Cast<AActionRPGGameMode>( GetWorld()->GetAuthGameMode() ) )
+		GameMode->AddMinionKillCount();
 
 	Destroy();
 }

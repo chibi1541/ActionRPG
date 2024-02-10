@@ -63,22 +63,13 @@ protected:
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Montage|Dying" )
 		TArray<TObjectPtr<UAnimMontage>> DyingMontages;
 
-	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Attribute|Health" )
-		TSubclassOf<UGameplayEffect> HealthAttribInitializer;
-
-	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Attribute|Attack" )
-		TSubclassOf<UGameplayEffect> AttackAttribInitializer;
-
-	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Attribute|Agility" )
-		TSubclassOf<UGameplayEffect> AgilityRefAttribInitializer;
-
-	UPROPERTY()
+	UPROPERTY( VisibleAnywhere, Category = "Attribute" )
 		TObjectPtr<UARAttackAttribSet> AttackAttribSet;
 
-	UPROPERTY()
+	UPROPERTY( VisibleAnywhere, Category = "Attribute" )
 		TObjectPtr<UARVitRefAttribSet> VitRefAttribSet;
 
-	UPROPERTY()
+	UPROPERTY( VisibleAnywhere, Category = "Attribute" )
 		TObjectPtr<UARAgiRefAttribSet> AgiRefAttribSet;
 
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "MonsterType" )

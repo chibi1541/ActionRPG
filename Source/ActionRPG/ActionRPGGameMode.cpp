@@ -5,6 +5,8 @@
 #include "Character/HeroCharacter.h"
 #include "Character/ARPlayerController.h"
 #include "UObject/ConstructorHelpers.h"
+#include "ARGameState.h"
+
 
 AActionRPGGameMode::AActionRPGGameMode()
 {
@@ -16,4 +18,22 @@ AActionRPGGameMode::AActionRPGGameMode()
 	}
 
 	PlayerControllerClass = AARPlayerController::StaticClass();
+}
+
+void AActionRPGGameMode::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	GameStatePtr = Cast<AARGameState>( GameState );
+}
+
+void AActionRPGGameMode::AddMinionKillCount()
+{
+	if( !GameStatePtr.IsValid() )
+	{
+		RLOG( Warning, TEXT( "ARGameState Not Valid" ) );
+		return;
+	}
+
+	GameStatePtr.Get()->AddMinionKillCount();
 }

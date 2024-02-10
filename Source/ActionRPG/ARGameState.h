@@ -7,7 +7,11 @@
 
 #include "ARGameState.generated.h"
 
-#define QUEST_MINION_COUNT 30
+#define MINION_CAPACITY 6
+#define QUEST_KILL_COUNT 2
+
+class AARMinionSpawner;
+
 
 /**
  *
@@ -20,16 +24,34 @@ class ACTIONRPG_API AARGameState : public AGameStateBase
 public:
 	AARGameState( const FObjectInitializer& ObjectInitializer );
 
+	virtual void PostInitializeComponents() override;
+
 public:
 	void AddMinionKillCount();
 
-	const int GetMinionKillCount() const;
+	UFUNCTION( BlueprintCallable )
+		const int GetMinionKillCount() const;
 
+	UFUNCTION( BlueprintCallable )
+		const int GetQuestKillCount() const;
 
 private:
+
+	void GenerateMinion();
+
+	void GenerateBoss();
+
+protected:
 
 	UPROPERTY( Transient )
 		int MinionKillCount;
 
+	TArray<TWeakObjectPtr<AARMinionSpawner>> Spawners;
+
+	TWeakObjectPtr<AARMinionSpawner> BossSpawner;
+
+	int SpawnerIndex;
+
+	bool bBossGene;
 
 };

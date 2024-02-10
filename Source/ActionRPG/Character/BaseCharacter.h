@@ -101,9 +101,6 @@ protected:
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Ability" )
 		TArray<TObjectPtr<UGameplayEffectSet>> GameplayEffectSets;
 
-	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "Attribute|Base" )
-		TSubclassOf<UGameplayEffect> BaseAttribInitializer;
-
 	UPROPERTY()
 		TObjectPtr<UARBaseAttribSet> BaseAttribSet;
 

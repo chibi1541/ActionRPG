@@ -19,6 +19,8 @@ void UARMonsterHPBarWidget::InitializeWidget( UARCharacterStateComponent* StateC
 
 		CurHealthPoint = ( Monster ) ? Monster->GetCurrentHealth() : 0.0f;
 		MaxHealthPoint = ( Monster ) ? Monster->GetMaxHealth() : 0.0f;
+		SetCurrentHP( CurHealthPoint );
+		SetHPRate( HealthPointRate );
 		HealthPointRate = ( MaxHealthPoint != 0.f ) ? CurHealthPoint / MaxHealthPoint : 0.f;
 		SetHPRate( HealthPointRate );
 	}
@@ -28,6 +30,7 @@ void UARMonsterHPBarWidget::OnChangedCurrentHealthPoint( float OldValue, float N
 {
 	CurHealthPoint = NewValue;
 	HealthPointRate = ( MaxHealthPoint != 0.f ) ? CurHealthPoint / MaxHealthPoint : 0.f;
+	SetCurrentHP( CurHealthPoint );
 	SetHPRate( HealthPointRate );
 }
 
@@ -35,5 +38,6 @@ void UARMonsterHPBarWidget::OnChangedMaxHealthPoint( float OldValue, float NewVa
 {
 	MaxHealthPoint = NewValue;
 	HealthPointRate = ( MaxHealthPoint != 0.f ) ? CurHealthPoint / MaxHealthPoint : 0.f;
+	SetMaxHP( MaxHealthPoint );
 	SetHPRate( HealthPointRate );
 }

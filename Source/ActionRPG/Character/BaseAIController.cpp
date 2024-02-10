@@ -29,15 +29,16 @@ void ABaseAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if( UWorld* World = GetWorld() )
+	if( Blackboard )
 	{
-		for( TActorIterator<AHeroCharacter> ActorIter( World ); ActorIter; ++ActorIter )
+		for( TActorIterator<AHeroCharacter> ActorIter( GetWorld() ); ActorIter; ++ActorIter )
 		{
 			AHeroCharacter* Hero = *ActorIter;
 			Blackboard->SetValueAsObject( TargetKey, Hero );
 		}
 	}
 }
+
 
 void ABaseAIController::OnPossess( APawn* InPawn )
 {
@@ -60,6 +61,15 @@ void ABaseAIController::OnPossess( APawn* InPawn )
 		if( RunBehaviorTree( BehaviorTree ) == false )
 		{
 			RLOG( Error, TEXT( "AIController couldn't run BehaviorTree!" ) );
+		}
+
+		if( UWorld* World = GetWorld() )
+		{
+			for( TActorIterator<AHeroCharacter> ActorIter( World ); ActorIter; ++ActorIter )
+			{
+				AHeroCharacter* Hero = *ActorIter;
+				Blackboard->SetValueAsObject( TargetKey, Hero );
+			}
 		}
 	}
 

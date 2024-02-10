@@ -94,6 +94,8 @@ protected:
 	virtual void Confirm();
 	virtual void ComboAttack();
 
+	virtual void BeginDestroy() override;
+
 	void Input_AbilityInputTagPressed( FGameplayTag InputTag );
 	void Input_AbilityInputTagReleased( FGameplayTag InputTag );
 
