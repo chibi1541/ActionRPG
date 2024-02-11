@@ -150,9 +150,17 @@ public:
 		FUIExtensionHandle RegisterExtensionWidget( const FGameplayTag& ExtensionPointTag, TSubclassOf<UUserWidget> WidgetClass, UObject* Data );
 
 
-	void UnregisterExtensionPoint( const FGameplayTag& ExtensionPointTag );
+	UFUNCTION( BlueprintCallable, BlueprintCosmetic, Category = "UI Extension" )
+		void UnregisterExtensionPoint( const FGameplayTag& ExtensionPointTag );
 
-	void UnregisterExtension( const FUIExtensionHandle& ExtensionHandle );
+	UFUNCTION( BlueprintCallable, BlueprintCosmetic, Category = "UI Extension" )
+		void UnregisterExtension( const FUIExtensionHandle& ExtensionHandle );
+
+	UFUNCTION( BlueprintCallable, Category = "LayoutWidget" )
+		void AddLayerWidget( const FGameplayTag& LayerTag, TSoftClassPtr<UCommonActivatableWidget> LayerClass );
+
+
+	void RemoveAllLayouts();
 
 protected:
 
@@ -170,4 +178,35 @@ private:
 
 	typedef TArray<TSharedPtr<FUIExtension>> FExtensionList;
 	TMap<FGameplayTag, FExtensionList> ExtensionMap;
+};
+
+
+UCLASS()
+class ACTIONRPG_API UUIExtensionHandleFunctions : public UBlueprintFunctionLibrary
+{
+	GENERATED_BODY()
+
+public:
+	UUIExtensionHandleFunctions() {}
+
+	UFUNCTION( BlueprintCallable, BlueprintCosmetic, Category = "UI Extension" )
+		static void Unregister( UPARAM( ref ) FUIExtensionHandle& Handle );
+
+	UFUNCTION( BlueprintCallable, BlueprintCosmetic, Category = "UI Extension" )
+		static bool IsValid( UPARAM( ref ) FUIExtensionHandle& Handle );
+};
+
+UCLASS()
+class ACTIONRPG_API UUIExtensionPointHandleFunctions : public UBlueprintFunctionLibrary
+{
+	GENERATED_BODY()
+
+public:
+	UUIExtensionPointHandleFunctions() {}
+
+	UFUNCTION( BlueprintCallable, BlueprintCosmetic, Category = "UI Extension" )
+		static void Unregister( UPARAM( ref ) FUIExtensionPointHandle& Handle );
+
+	UFUNCTION( BlueprintCallable, BlueprintCosmetic, Category = "UI Extension" )
+		static bool IsValid( UPARAM( ref ) FUIExtensionPointHandle& Handle );
 };

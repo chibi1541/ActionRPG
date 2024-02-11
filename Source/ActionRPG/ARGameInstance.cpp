@@ -3,6 +3,4 @@
 
 #include "ARGameInstance.h"
 
-#include "Subsystem/UserInterface/ARGameUIManagerSubsystem.h"
-
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARGameInstance)

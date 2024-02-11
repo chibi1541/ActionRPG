@@ -6,7 +6,6 @@
 #include "GameFactor/ARMinionSpawner.h"
 #include "Character/BaseMonster.h"
 
-
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARGameState)
 
 
@@ -16,22 +15,22 @@ AARGameState::AARGameState( const FObjectInitializer& ObjectInitializer )
 	MinionKillCount = 0;
 	SpawnerIndex = 0;
 
+	RemainTime = TIMERCOUNT;
+
 	Spawners.Empty();
 	bBossGene = false;
 }
 
-
-void AARGameState::PostInitializeComponents()
+void AARGameState::BeginPlay()
 {
-	Super::PostInitializeComponents();
-
+	
 	TArray<AActor*> OutSpawners;
 	UGameplayStatics::GetAllActorsOfClass( GetWorld(), AARMinionSpawner::StaticClass(), OutSpawners );
 
 	for( auto OutSpawner : OutSpawners )
 	{
 		if( auto Spawner = Cast<AARMinionSpawner>( OutSpawner ) )
-		{	
+		{
 			if( Spawner->GetSpawnerType() == ESpawnerType::ST_Minion )
 			{
 				Spawners.Add( Spawner );
@@ -43,10 +42,22 @@ void AARGameState::PostInitializeComponents()
 		}
 	}
 
-	for( int i = 0; i < MINION_CAPACITY; i++ )
+	ShowCountUIWidget();
+
+	GetWorldTimerManager().SetTimer( Timer, this, &AARGameState::CheckMinionTimer, 1.0f, true );
+
+	if( UARGameUIManagerSubsystem* UIManager = GetGameInstance()->GetSubsystem<UARGameUIManagerSubsystem>() )
 	{
-		GenerateMinion();
+		QuestWidgetHandle = UIManager->RegisterExtensionWidget( QuestWidgetTag, QuestWidget, nullptr );
 	}
+}
+
+void AARGameState::BeginDestroy()
+{
+	if( QuestWidgetHandle.IsValid() )
+		QuestWidgetHandle.Unregister();
+
+	Super::BeginDestroy();
 }
 
 void AARGameState::AddMinionKillCount()
@@ -58,7 +69,7 @@ void AARGameState::AddMinionKillCount()
 
 	if( MinionKillCount >= QUEST_KILL_COUNT )
 	{
-		if( bBossGene == false)
+		if( bBossGene == false )
 		{
 			GenerateBoss();
 
@@ -71,6 +82,11 @@ void AARGameState::AddMinionKillCount()
 	}
 }
 
+const float AARGameState::GetRemainTime() const
+{
+	return RemainTime;
+}
+
 const int AARGameState::GetMinionKillCount() const
 {
 	return MinionKillCount;
@@ -79,6 +95,21 @@ const int AARGameState::GetMinionKillCount() const
 const int AARGameState::GetQuestKillCount() const
 {
 	return QUEST_KILL_COUNT;
+}
+
+void AARGameState::CheckMinionTimer()
+{
+	RemainTime = RemainTime - GetWorldTimerManager().GetTimerElapsed(Timer);
+
+	if( RemainTime <= 0.f )
+	{
+		GetWorldTimerManager().ClearTimer( Timer );
+
+		for( int i = 0; i < MINION_CAPACITY; i++ )
+		{
+			GenerateMinion();
+		}
+	}
 }
 
 void AARGameState::GenerateMinion()
@@ -101,5 +132,8 @@ void AARGameState::GenerateMinion()
 
 void AARGameState::GenerateBoss()
 {
+	if( QuestWidgetHandle.IsValid() )
+		QuestWidgetHandle.Unregister();
+
 	BossSpawner->SpawnMinion();
 }

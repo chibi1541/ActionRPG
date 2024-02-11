@@ -176,7 +176,7 @@ void AHeroCharacter::Tick( float DeltaSeconds )
 
 void AHeroCharacter::Move( const FInputActionValue& Value )
 {
-	if( AbilitySystemComp->HasMatchingGameplayTag( TAG_MovingLocked ) == true )
+	if( AbilitySystemComp->HasMatchingGameplayTag( TAG_MovingLocked ) == true || GetDeadState() )
 		return;
 
 	if( GetWorld()->IsPaused() )
@@ -302,6 +302,16 @@ void AHeroCharacter::SetShieldGauge( float ShieldGauge )
 	{
 		VitRefAttribSet->SetShieldGauge( ShieldGauge );
 	}
+}
+
+void AHeroCharacter::Die()
+{
+	Super::Die();
+
+	GetCapsuleComponent()->SetCollisionEnabled( ECollisionEnabled::NoCollision );
+	GetMesh()->SetCollisionEnabled( ECollisionEnabled::NoCollision );
+	GetCharacterMovement()->GravityScale = 0;
+	GetCharacterMovement()->Velocity = FVector( 0 );
 }
 
 void AHeroCharacter::SetHeroStatusWidget( const AController* NewController )

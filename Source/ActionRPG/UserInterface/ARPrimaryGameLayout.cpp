@@ -20,3 +20,11 @@ UCommonActivatableWidgetContainerBase* UARPrimaryGameLayout::GetLayerWidget( con
 {
 	return Layers.FindRef( LayerTag );
 }
+
+void UARPrimaryGameLayout::RemoveWidgetFromPrimaryLayer( UCommonActivatableWidget* ActivatableWidget )
+{
+	for( const auto& LayerKVP : Layers )
+	{
+		LayerKVP.Value->RemoveWidget( *ActivatableWidget );
+	}
+}

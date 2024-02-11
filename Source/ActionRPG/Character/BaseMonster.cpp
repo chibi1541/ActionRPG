@@ -94,10 +94,8 @@ void ABaseMonster::SetShieldGauge( float ShieldGauge )
 	}
 }
 
-void ABaseMonster::FinishDying()
+void ABaseMonster::FinishDying_Implementation()
 {
-	Super::FinishDying();
-
 	if( auto GameMode = Cast<AActionRPGGameMode>( GetWorld()->GetAuthGameMode() ) )
 		GameMode->AddMinionKillCount();
 

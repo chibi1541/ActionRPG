@@ -104,6 +104,8 @@ protected:
 	virtual void SetStamina( float Stamina );
 	virtual void SetShieldGauge( float ShieldGauge );
 
+	virtual void Die() override;
+
 private:
 	void SetHeroStatusWidget( const AController* NewController );
 

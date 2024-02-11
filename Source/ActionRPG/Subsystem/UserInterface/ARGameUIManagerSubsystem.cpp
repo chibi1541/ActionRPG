@@ -60,8 +60,10 @@ void UARGameUIManagerSubsystem::Initialize( FSubsystemCollectionBase& Collection
 
 void UARGameUIManagerSubsystem::Deinitialize()
 {
+	for( auto Layout : Layouts )
+	{
 
-
+	}
 
 	Super::Deinitialize();
 }
@@ -73,6 +75,9 @@ TObjectPtr<UARPrimaryGameLayout> UARGameUIManagerSubsystem::GetLayoutWidgetClass
 
 void UARGameUIManagerSubsystem::CreatePrimaryLayoutWidget( const ULocalPlayer* LocalPlayer )
 {
+	//if( PrimaryLayout )
+	//	return;
+
 	const UARGameInstance* GameInstance = Cast<UARGameInstance>( GetGameInstance() );
 	check( GameInstance );
 
@@ -220,6 +225,29 @@ void UARGameUIManagerSubsystem::UnregisterExtension( const FUIExtensionHandle& E
 	}
 }
 
+void UARGameUIManagerSubsystem::AddLayerWidget( const FGameplayTag& LayerTag, TSoftClassPtr<UCommonActivatableWidget> LayerClass )
+{
+	if( !PrimaryLayout )
+	{
+		// error log 
+		return;
+	}
+
+	if( TSubclassOf<UCommonActivatableWidget> ConcreteWidgetClass = ( LayerClass.IsValid() ) ? LayerClass.Get() : LayerClass.LoadSynchronous() )
+		Layouts.Add( PrimaryLayout->PushWidgetToLayerStack( LayerTag, ConcreteWidgetClass ) );
+
+}
+
+void UARGameUIManagerSubsystem::RemoveAllLayouts()
+{
+	for( auto Layout : Layouts )
+	{
+		PrimaryLayout->RemoveWidgetFromPrimaryLayer( Layout.Get() );
+	}
+
+	Layouts.Empty();
+}
+
 void UARGameUIManagerSubsystem::NotifyRegisterExtensionPoint( TSharedPtr<FUIExtensionPoint>& ExtensionPoint )
 {
 	for( FGameplayTag Tag = ExtensionPoint->ExtensionPointTag; Tag.IsValid(); Tag = Tag.RequestDirectParent() )
@@ -269,3 +297,22 @@ void UARGameUIManagerSubsystem::NotifyRegisterExtensionWidget( EExtensionAction 
 	}
 }
 
+void UUIExtensionHandleFunctions::Unregister( FUIExtensionHandle& Handle )
+{
+	Handle.Unregister();
+}
+
+bool UUIExtensionHandleFunctions::IsValid( FUIExtensionHandle& Handle )
+{
+	return Handle.IsValid();
+}
+
+void UUIExtensionPointHandleFunctions::Unregister( FUIExtensionPointHandle& Handle )
+{
+	Handle.Unregister();
+}
+
+bool UUIExtensionPointHandleFunctions::IsValid( FUIExtensionPointHandle& Handle )
+{
+	return Handle.IsValid();
+}

@@ -33,7 +33,7 @@ protected:
 	virtual void SetShieldGauge( float ShieldGauge );
 
 
-	virtual void FinishDying() override;
+	virtual void FinishDying_Implementation() override;
 
 	virtual void Die() override;
 

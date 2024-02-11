@@ -39,6 +39,7 @@ struct ACTIONRPG_API FActionRPGGlobalTags : public FGameplayTagNativeAdder
 	FGameplayTag CharacterStateTag_DelayShieldRegene;
 	FGameplayTag CharacterStateTag_Blocking;
 	FGameplayTag CharacterStateTag_ShieldEmpty;
+	FGameplayTag CharacterStateTag_Endure;
 
 
 	// Cost Tags
@@ -87,6 +88,7 @@ protected:
 		CharacterStateTag_DelayShieldRegene = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.DelayShieldRegene" ) );
 		CharacterStateTag_Blocking = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Blocking" ) );
 		CharacterStateTag_ShieldEmpty = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.ShieldEmpty" ) );
+		CharacterStateTag_Endure = Manager.AddNativeGameplayTag( TEXT( "Gameplay.Character.State.Endure" ) );
 
 		AbilityCostTag_Stamina = Manager.AddNativeGameplayTag( TEXT( "Ability.Cost.Stamina" ) );
 

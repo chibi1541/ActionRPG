@@ -89,6 +89,9 @@ float UGetHitComponent::HitReaction( const FVector AttackVec )
 	if( Character && Character->GetDeadState() )
 		return 0.f;
 
+	if( Character && Character->GetEndureState() )
+		return 0.f;
+
 	UAnimMontage* PlayMontage = GetMontagetoPlay( AttackVec );
 	if( PlayMontage == nullptr )
 	{

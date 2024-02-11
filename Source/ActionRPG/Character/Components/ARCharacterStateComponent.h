@@ -85,6 +85,9 @@ public:
 	UFUNCTION( BlueprintCallable, Category = "CharacterState|Guard" )
 		bool GetGuardState() const;
 
+	UFUNCTION( BlueprintCallable, Category = "CharacterState|Endure" )
+		bool GetEndureState() const;
+
 private:
 	TWeakObjectPtr<UGetHitComponent> GetHitComp;
 

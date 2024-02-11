@@ -52,4 +52,6 @@ public:
 
 		return nullptr;
 	}
+
+	void RemoveWidgetFromPrimaryLayer( UCommonActivatableWidget* ActivatableWidget );
 };

@@ -6,7 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "ARMinionSpawnerManager.generated.h"
 
-#define MINION_CAPACITY 8
 
 class AARMinionSpawner;
 

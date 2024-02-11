@@ -304,3 +304,10 @@ bool UARCharacterStateComponent::GetGuardState() const
 {
 	return IsGuard;
 }
+
+bool UARCharacterStateComponent::GetEndureState() const
+{
+	const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
+
+	return AbilitySystemComponent->HasMatchingGameplayTag( Tags.CharacterStateTag_Endure );
+}

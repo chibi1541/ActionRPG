@@ -19,7 +19,6 @@ class ACTIONRPG_API AARPlayerController : public APlayerController
 public:
 	virtual void ReceivedPlayer() override;
 
-
 protected:
 	virtual void PostProcessInput( const float DeltaTime, const bool bGamePaused ) override;
 
