@@ -14,11 +14,14 @@ AARGameState::AARGameState( const FObjectInitializer& ObjectInitializer )
 {
 	MinionKillCount = 0;
 	SpawnerIndex = 0;
+	MinionCapacity = 0;
 
 	RemainTime = TIMERCOUNT;
 
 	Spawners.Empty();
 	bBossGene = false;
+
+	bGamePaused = false;
 }
 
 void AARGameState::BeginPlay()
@@ -42,13 +45,13 @@ void AARGameState::BeginPlay()
 		}
 	}
 
-	ShowCountUIWidget();
-
 	GetWorldTimerManager().SetTimer( Timer, this, &AARGameState::CheckMinionTimer, 1.0f, true );
 
 	if( UARGameUIManagerSubsystem* UIManager = GetGameInstance()->GetSubsystem<UARGameUIManagerSubsystem>() )
 	{
 		QuestWidgetHandle = UIManager->RegisterExtensionWidget( QuestWidgetTag, QuestWidget, nullptr );
+
+		CountWidgetHandle = UIManager->RegisterExtensionWidget( StartCountTag, StartCountWidget, nullptr );
 	}
 }
 
@@ -57,6 +60,9 @@ void AARGameState::BeginDestroy()
 	if( QuestWidgetHandle.IsValid() )
 		QuestWidgetHandle.Unregister();
 
+	if( CountWidgetHandle.IsValid() )
+		CountWidgetHandle.Unregister();
+
 	Super::BeginDestroy();
 }
 
@@ -64,10 +70,10 @@ void AARGameState::AddMinionKillCount()
 {
 	MinionKillCount++;
 
-	if( MinionKillCount >= QUEST_KILL_COUNT )
-		MinionKillCount = QUEST_KILL_COUNT;
+	if( MinionKillCount >= QuestMinionCount )
+		MinionKillCount = QuestMinionCount;
 
-	if( MinionKillCount >= QUEST_KILL_COUNT )
+	if( MinionKillCount >= QuestMinionCount )
 	{
 		if( bBossGene == false )
 		{
@@ -82,6 +88,16 @@ void AARGameState::AddMinionKillCount()
 	}
 }
 
+void AARGameState::SetPausedState( bool bPause )
+{
+	bGamePaused = bPause;
+}
+
+const bool AARGameState::GetPausedState() const
+{
+	return bGamePaused;
+}
+
 const float AARGameState::GetRemainTime() const
 {
 	return RemainTime;
@@ -94,7 +110,7 @@ const int AARGameState::GetMinionKillCount() const
 
 const int AARGameState::GetQuestKillCount() const
 {
-	return QUEST_KILL_COUNT;
+	return QuestMinionCount;
 }
 
 void AARGameState::CheckMinionTimer()
@@ -105,10 +121,13 @@ void AARGameState::CheckMinionTimer()
 	{
 		GetWorldTimerManager().ClearTimer( Timer );
 
-		for( int i = 0; i < MINION_CAPACITY; i++ )
+		for( int i = 0; i < MinionCapacity; i++ )
 		{
 			GenerateMinion();
 		}
+
+		if( CountWidgetHandle.IsValid() )
+			CountWidgetHandle.Unregister();
 	}
 }
 

@@ -11,6 +11,8 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARBlueprintFunctionLibrary)
 
+#if WITH_EDITOR
+
 FString UARBlueprintFunctionLibrary::GetExportFileName( const UObject* Object, const FString& Extension )
 {
 	static const FString PathPrefix = TEXT( "/Game" );
@@ -86,3 +88,5 @@ void UARBlueprintFunctionLibrary::ExportObjectAsJson( const UObject* Object, con
 		RLOG( Error, TEXT( "UARBlueprintFunctionLibrary::ExportObjectAsJson: Failed to Export, %s" ), *Object->GetName() );
 	}
 }
+
+#endif

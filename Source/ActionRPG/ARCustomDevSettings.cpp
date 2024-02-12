@@ -8,9 +8,9 @@
 #define LOCTEXT_NAMESPACE "CustomDevSettings"
 
 UARCustomDevSettings::UARCustomDevSettings( const FObjectInitializer& ObjectInitializer )
-	:Super( ObjectInitializer ),
+	:Super( ObjectInitializer )
 #if WITH_EDITORONLY_DATA
-	DataResourceFolder( "Data" ), bAutoExportOnEdit( true )
+	, DataResourceFolder( "Data" ), bAutoExportOnEdit( true )
 #endif
 {
 

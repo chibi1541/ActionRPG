@@ -12,6 +12,8 @@ class UDataTable;
 /**
  *
  */
+
+
 UCLASS()
 class ACTIONRPG_API UARBlueprintFunctionLibrary : public UBlueprintFunctionLibrary
 {
@@ -19,18 +21,24 @@ class ACTIONRPG_API UARBlueprintFunctionLibrary : public UBlueprintFunctionLibra
 
 public:
 
-	UFUNCTION()
-	static FString GetExportFileName( const UObject* Object, const FString& Extension );
+#if WITH_EDITOR
 
 	UFUNCTION()
-	static void SaveStringToFile( const FString& String, const FString& FilePath );
+		static FString GetExportFileName( const UObject* Object, const FString& Extension );
 
 	UFUNCTION()
-	static void ExportDataTableAsCSV( const UDataTable* Table );
+		static void SaveStringToFile( const FString& String, const FString& FilePath );
 
 	UFUNCTION()
-	static bool UObjectToJsonString( const UObject* Object, FString& OutJsonString );
+		static void ExportDataTableAsCSV( const UDataTable* Table );
 
 	UFUNCTION()
-	static void ExportObjectAsJson( const UObject* Object, const FString& OutExportPath );
+		static bool UObjectToJsonString( const UObject* Object, FString& OutJsonString );
+
+	UFUNCTION()
+		static void ExportObjectAsJson( const UObject* Object, const FString& OutExportPath );
+
+#endif
 };
+
+

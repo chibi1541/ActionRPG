@@ -67,7 +67,7 @@ public:
 	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
 		void FinishDying();
 
-		virtual void FinishDying_Implementation();
+	virtual void FinishDying_Implementation();
 
 	virtual void Die();
 
@@ -91,7 +91,8 @@ protected:
 	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "Components|State" )
 		TObjectPtr<UARUtilityStateComponent> UtilityStateComponent;
 
-	TObjectPtr<UARAbilitySystemComponent> AbilitySystemComp;
+	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "Components|State" )
+		TObjectPtr<UARAbilitySystemComponent> AbilitySystemComp;
 
 	UPROPERTY( EditAnywhere, BlueprintReadOnly )
 		TObjectPtr<UARTargetingComponent> TargetingComponent;

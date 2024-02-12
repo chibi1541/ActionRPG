@@ -40,6 +40,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	void ActiveEndureEffect();
+
 protected:
 	FOnMontageBlendingOutStarted BlendingOutDelegate;
 	FOnMontageEnded MontageEndedDelegate;
@@ -62,6 +64,17 @@ protected:
 	UPROPERTY( EditAnywhere, Category = "CancelAbility" )
 		FGameplayTagContainer CancelAbilityTaskTag;
 
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "EndureEffect" )
+		TSubclassOf<UGameplayEffect> EndureEffect;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "EndureEffect" )
+		int HitCountForActiveEffect;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "EndureEffect" )
+		float EndureDuration;
+
+	FGameplayEffectSpecHandle EndureEffectSpecHandle;
+
 private:
 	UPROPERTY()
 		TObjectPtr<UARAbilitySystemComponent> ASC;
@@ -70,6 +83,8 @@ private:
 		TObjectPtr<UAnimInstance> AnimInstance;
 
 	FDelegateHandle GuardingHandle;
+
+	int CurrentHitCount;
 
 };
 

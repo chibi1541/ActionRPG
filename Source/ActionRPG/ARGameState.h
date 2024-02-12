@@ -50,8 +50,19 @@ public:
 
 	FUIExtensionHandle QuestWidgetHandle;
 
-	UFUNCTION( BlueprintImplementableEvent, BlueprintCallable )
-		void ShowCountUIWidget();
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HUD|Count" )
+		TSubclassOf<UUserWidget> StartCountWidget;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "HUD|Count" )
+		FGameplayTag StartCountTag;
+
+	FUIExtensionHandle CountWidgetHandle;
+
+	UFUNCTION( BlueprintCallable )
+		const bool GetPausedState() const;
+
+	UFUNCTION( BlueprintCallable )
+		void SetPausedState( bool bPause );
 
 private:
 
@@ -66,6 +77,12 @@ protected:
 	UPROPERTY( Transient )
 		int MinionKillCount;
 
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Quest" )
+		int QuestMinionCount;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Capacity" )
+		int MinionCapacity;
+
 	const float TIMERCOUNT = 5.f;
 
 	float RemainTime;
@@ -79,5 +96,7 @@ protected:
 	bool bBossGene;
 
 	FTimerHandle Timer;
+
+	bool bGamePaused;
 
 };

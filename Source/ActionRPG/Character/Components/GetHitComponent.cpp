@@ -15,6 +15,10 @@
 UGetHitComponent::UGetHitComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+
+	EndureDuration = 0.f;
+	HitCountForActiveEffect = 0;
+	CurrentHitCount = 0;
 }
 
 
@@ -40,6 +44,20 @@ void UGetHitComponent::BeginPlay()
 
 	ASC->ActiveGameplayEffectCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Stiff ).AddDynamic( this, &UGetHitComponent::OnHit );
 	ASC->GameplayEffectDurationChangeCallBacks.FindOrAdd( EGameplayEffectDelegateType::EDT_Stiff ).AddDynamic( this, &UGetHitComponent::OnEffectDurationChange );
+
+	FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
+	EffectContext.AddSourceObject( this );
+
+	EndureEffectSpecHandle = ASC->MakeOutgoingSpec( EndureEffect, 1, EffectContext );
+	if( EndureEffectSpecHandle.IsValid() )
+	{
+		EndureEffectSpecHandle.Data->SetDuration( EndureDuration, false );
+	}
+}
+
+void UGetHitComponent::ActiveEndureEffect()
+{
+	ASC->ApplyGameplayEffectSpecToTarget( *EndureEffectSpecHandle.Data.Get(), ASC );
 }
 
 UAnimMontage* UGetHitComponent::GetMontagetoPlay( const FVector AttackVec ) const
@@ -112,6 +130,16 @@ void UGetHitComponent::OnHit( const FGameplayEffectSpec& EffectSpec )
 		if( HitReaction( HitNormal ) != 0.f )
 		{
 			ASC->CancelAbilities( &CancelAbilityTaskTag );
+			if( HitCountForActiveEffect > 0 )
+			{
+				CurrentHitCount++;
+
+				if( CurrentHitCount >= HitCountForActiveEffect )
+				{
+					CurrentHitCount = 0;
+					ActiveEndureEffect();
+				}
+			}
 		}
 	}
 }
