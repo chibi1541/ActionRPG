@@ -6,7 +6,6 @@
 #include "Ability/ARAbilitySystemComponent.h"
 #include "Character/BaseCharacter.h"
 #include "Ability/ActionRPGGlobalTags.h"
-#include "Interface/ARUsedTraceHitInterface.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARGA_SpendStamina)
 
@@ -28,8 +27,6 @@ void UARGA_SpendStamina::ActivateAbility( const FGameplayAbilitySpecHandle Handl
 	{
 		EndAbility( Handle, ActorInfo, ActivationInfo, true, true );
 	}
-
-	auto Interface = Cast<IARUsedTraceHitInterface>(this);
 
 	bool bComplete = SpendStamina();
 
