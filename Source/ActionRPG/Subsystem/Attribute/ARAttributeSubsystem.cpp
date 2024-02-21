@@ -37,8 +37,8 @@ void UARAttributeSubsystem::Initialize( FSubsystemCollectionBase& Collection )
 	{
 		for( EHeroClass HeroClass : TEnumRange<EHeroClass>() )
 		{
-			//const FString ClassName = EnumDisplayNameToString( HeroClass );
-			const FString ClassName = FString::FromInt( ( int )HeroClass );
+			const FString ClassName = EnumDisplayNameToString( HeroClass );
+			//const FString ClassName = FString::FromInt( ( int )HeroClass );
 
 			FARCharCoeffTableData* Data = Table->FindRow<FARCharCoeffTableData>( FName( *ClassName ), FString(), true );
 			if( Data )
@@ -66,8 +66,8 @@ void UARAttributeSubsystem::Initialize( FSubsystemCollectionBase& Collection )
 	{
 		for( EMonsterType MonsterType : TEnumRange<EMonsterType>() )
 		{
-			//const FString MonsterName = EnumDisplayNameToString( MonsterType );
-			const FString MonsterName = FString::FromInt( (int)MonsterType );
+			const FString MonsterName = EnumDisplayNameToString( MonsterType );
+			//const FString MonsterName = FString::FromInt( (int)MonsterType );
 
 			FARCharCoeffTableData* Data = Table->FindRow<FARCharCoeffTableData>( FName( *MonsterName ), FString(), true );
 			if( Data )
