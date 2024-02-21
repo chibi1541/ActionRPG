@@ -6,7 +6,6 @@
 #include "Character/BaseCharacter.h"
 #include "GameplayEffect.h"
 #include "GameplayEffectExtension.h"
-#include "Ability/GA_Guard.h"
 #include "Ability/ActionRPGGlobalTags.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARVitRefAttribSet)
