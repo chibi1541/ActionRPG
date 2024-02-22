@@ -9,54 +9,54 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ARGA_SpendStamina)
 
-UARGA_SpendStamina::UARGA_SpendStamina( const FObjectInitializer& ObjectInitializer )
-	:Super( ObjectInitializer )
+UARGA_SpendStamina::UARGA_SpendStamina(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
 {
 	StaminaCost = 0.f;
 
-	ExhaustedTag = FGameplayTag::RequestGameplayTag( FName( "Gameplay.Character.State.Exhausted" ) );
-	StaminaSpendTag = FGameplayTag::RequestGameplayTag( FName( "Gameplay.Character.State.SpendStamina" ) );
+	ExhaustedTag = FGameplayTag::RequestGameplayTag(FName("Gameplay.Character.State.Exhausted"));
+	StaminaSpendTag = FGameplayTag::RequestGameplayTag(FName("Gameplay.Character.State.SpendStamina"));
 
-	ActivationBlockedTags.AddTag( ExhaustedTag );
-	ActivationOwnedTags.AddTag( StaminaSpendTag );
+	ActivationBlockedTags.AddTag(ExhaustedTag);
+	ActivationOwnedTags.AddTag(StaminaSpendTag);
 }
 
-void UARGA_SpendStamina::ActivateAbility( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData )
+void UARGA_SpendStamina::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	if( CommitAbility( Handle, ActorInfo, ActivationInfo ) == false )
+	if (CommitAbility(Handle, ActorInfo, ActivationInfo) == false)
 	{
-		EndAbility( Handle, ActorInfo, ActivationInfo, true, true );
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 	}
 
 	bool bComplete = SpendStamina();
 
-	if( bComplete == false )
+	if (bComplete == false)
 	{
-		RLOG( Error, TEXT( "GameplayEffect Implement is Failed" ) );
-		EndAbility( Handle, ActorInfo, ActivationInfo, true, true );
+		RLOG(Error, TEXT("GameplayEffect Implement is Failed"));
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 		return;
 	}
 
-	if( TriggerEventData )
+	if (TriggerEventData)
 	{
 		CurrentEventData = *TriggerEventData;
 	}
 
-	if( bHasBlueprintActivate )
+	if (bHasBlueprintActivate)
 	{
 		K2_ActivateAbility();
 	}
-	else if( bHasBlueprintActivateFromEvent )
+	else if (bHasBlueprintActivateFromEvent)
 	{
-		if( TriggerEventData )
+		if (TriggerEventData)
 		{
-			K2_ActivateAbilityFromEvent( *TriggerEventData );
+			K2_ActivateAbilityFromEvent(*TriggerEventData);
 		}
 		else
 		{
 			bool bReplicateEndAbility = false;
 			bool bWasCancelled = true;
-			EndAbility( Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled );
+			EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 		}
 	}
 }
@@ -66,21 +66,26 @@ bool UARGA_SpendStamina::SpendStamina()
 	bool Return = false;
 	AbilitySystemComponent.Reset();
 
-	const auto Character = Cast<ABaseCharacter>( GetAvatarActorFromActorInfo() );
-	if( Character )
+	const auto Character = Cast<ABaseCharacter>(GetAvatarActorFromActorInfo());
+	if (Character)
 	{
 		AbilitySystemComponent = Character->GetAbilitySystemComponent();
-		if( AbilitySystemComponent.IsValid() )
+		if (AbilitySystemComponent.IsValid())
 		{
 			FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
-			if( StaminaSpandEffect )
+			if (StaminaSpandEffect)
 			{
-				FGameplayEffectSpecHandle StaminaCostHandle = AbilitySystemComponent->MakeOutgoingSpec( StaminaSpandEffect, Character->GetCharacterLevel(), EffectContext );
-				if( StaminaCostHandle.IsValid() )
+				FGameplayEffectSpecHandle StaminaCostHandle = AbilitySystemComponent->MakeOutgoingSpec(
+					StaminaSpandEffect, Character->GetCharacterLevel(), EffectContext);
+				if (StaminaCostHandle.IsValid())
 				{
+					// Pass the value of StaminaCost to CostEffect using GameplayTag
 					const FActionRPGGlobalTags& Tags = FActionRPGGlobalTags::Get();
-					StaminaCostHandle.Data->SetSetByCallerMagnitude( Tags.AbilityCostTag_Stamina, StaminaCost );
-					FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *StaminaCostHandle.Data.Get(), AbilitySystemComponent.Get() );
+					StaminaCostHandle.Data->SetSetByCallerMagnitude(
+						Tags.AbilityCostTag_Stamina, StaminaCost);
+					FActiveGameplayEffectHandle ActiveGEHandle =
+						AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(
+							*StaminaCostHandle.Data.Get(), AbilitySystemComponent.Get());
 
 					Return = true;
 				}
@@ -93,34 +98,34 @@ bool UARGA_SpendStamina::SpendStamina()
 
 const bool UARGA_SpendStamina::IsExhausted() const
 {
-	if( !AbilitySystemComponent.IsValid() )
+	if (!AbilitySystemComponent.IsValid())
 	{
-		RLOG( Error, TEXT( "AbilitySystemComponent is nullptr" ) );
+		RLOG(Error, TEXT("AbilitySystemComponent is nullptr"));
 		return true;
 	}
 
-	return AbilitySystemComponent->HasMatchingGameplayTag( ExhaustedTag );
+	return AbilitySystemComponent->HasMatchingGameplayTag(ExhaustedTag);
 }
 
-void UARGA_SpendStamina::EndAbility( const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled )
+void UARGA_SpendStamina::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
-	const auto Character = Cast<ABaseCharacter>( GetAvatarActorFromActorInfo() );
-	if( Character )
+	const auto Character = Cast<ABaseCharacter>(GetAvatarActorFromActorInfo());
+	if (Character)
 	{
 		AbilitySystemComponent = Character->GetAbilitySystemComponent();
-		if( AbilitySystemComponent.IsValid() )
+		if (AbilitySystemComponent.IsValid())
 		{
 			FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
-			if( StaminaRegenDelayEffect )
+			if (StaminaRegenDelayEffect)
 			{
-				FGameplayEffectSpecHandle StaminaDelayHandle = AbilitySystemComponent->MakeOutgoingSpec( StaminaRegenDelayEffect, Character->GetCharacterLevel(), EffectContext );
-				if( StaminaDelayHandle.IsValid() )
+				FGameplayEffectSpecHandle StaminaDelayHandle = AbilitySystemComponent->MakeOutgoingSpec(StaminaRegenDelayEffect, Character->GetCharacterLevel(), EffectContext);
+				if (StaminaDelayHandle.IsValid())
 				{
-					FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget( *StaminaDelayHandle.Data.Get(), AbilitySystemComponent.Get() );
+					FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*StaminaDelayHandle.Data.Get(), AbilitySystemComponent.Get());
 				}
 			}
 		}
 	}
 
-	Super::EndAbility( Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled );
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }

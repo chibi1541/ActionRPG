@@ -28,13 +28,13 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(HeroCharacter)
 
-UE_DEFINE_GAMEPLAY_TAG( TAG_MovingLocked, "Gameplay.MovingLocked" );
+UE_DEFINE_GAMEPLAY_TAG(TAG_MovingLocked, "Gameplay.MovingLocked");
 
-AHeroCharacter::AHeroCharacter( const FObjectInitializer& ObjectInitializer )
-	:Super( ObjectInitializer )
+AHeroCharacter::AHeroCharacter(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
 {
 	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize( 42.f, 96.0f );
+	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -43,7 +43,7 @@ AHeroCharacter::AHeroCharacter( const FObjectInitializer& ObjectInitializer )
 
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
-	GetCharacterMovement()->RotationRate = FRotator( 0.0f, 500.0f, 0.0f ); // ...at this rotation rate
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
 
 	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
 	// instead of recompiling to adjust them
@@ -54,72 +54,72 @@ AHeroCharacter::AHeroCharacter( const FObjectInitializer& ObjectInitializer )
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>( TEXT( "CameraBoom" ) );
-	CameraBoom->SetupAttachment( RootComponent );
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 500.0f; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 
 	// Create a follow camera
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>( TEXT( "FollowCamera" ) );
-	FollowCamera->SetupAttachment( CameraBoom, USpringArmComponent::SocketName ); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-	VitRefAttribSet = CreateDefaultSubobject<UARVitRefAttribSet>( TEXT( "ARVitRefAttribSet" ) );
+	VitRefAttribSet = CreateDefaultSubobject<UARVitRefAttribSet>(TEXT("ARVitRefAttribSet"));
 
-	AttackAttribSet = CreateDefaultSubobject<UARAttackAttribSet>( TEXT( "ARAttackAttribSet" ) );
+	AttackAttribSet = CreateDefaultSubobject<UARAttackAttribSet>(TEXT("ARAttackAttribSet"));
 
-	AgiRefAttribSet = CreateDefaultSubobject<UARAgiRefAttribSet>( TEXT( "ARAgiRefAttribSet" ) );
+	AgiRefAttribSet = CreateDefaultSubobject<UARAgiRefAttribSet>(TEXT("ARAgiRefAttribSet"));
 
-	IntRefAttribSet = CreateDefaultSubobject<UARIntRefAttribSet>( TEXT( "ARIntRefAttribSet" ) );
+	IntRefAttribSet = CreateDefaultSubobject<UARIntRefAttribSet>(TEXT("ARIntRefAttribSet"));
 
 	// Create a ComboAttackComponent
-	ComboAttackComponent = CreateDefaultSubobject<UARComboAttackComponent>( TEXT( "COMBOATTACKCOMP" ) );
+	ComboAttackComponent = CreateDefaultSubobject<UARComboAttackComponent>(TEXT("COMBOATTACKCOMP"));
 
 	bInitialize = false;
 }
 
-void AHeroCharacter::SetupPlayerInputComponent( class UInputComponent* PlayerInputComponent )
+void AHeroCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
-	Super::SetupPlayerInputComponent( PlayerInputComponent );
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	RCHECK( DefaultMappingContext );
-	RCHECK( InputConfig );
+	RCHECK(DefaultMappingContext);
+	RCHECK(InputConfig);
 
 	//Add Input Mapping Context
-	if( APlayerController* PlayerController = Cast<APlayerController>( GetController() ) )
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
-		if( UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>( PlayerController->GetLocalPlayer() ) )
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
-			Subsystem->AddMappingContext( DefaultMappingContext, 0 );
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
 
-	UHeroInputComponent* HeroIC = CastChecked<UHeroInputComponent>( PlayerInputComponent );
+	UHeroInputComponent* HeroIC = CastChecked<UHeroInputComponent>(PlayerInputComponent);
 
 	const FActionRPGGlobalTags& GameplayTags = FActionRPGGlobalTags::Get();
 
-	HeroIC->BindAbilityActions( InputConfig, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased );
+	HeroIC->BindAbilityActions(InputConfig, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased);
 
-	HeroIC->BindNativeAction( InputConfig, GameplayTags.InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::Move, true );
-	HeroIC->BindNativeAction( InputConfig, GameplayTags.InputTag_Look, ETriggerEvent::Triggered, this, &ThisClass::Look, true );
-	HeroIC->BindNativeAction( InputConfig, GameplayTags.InputTag_Confirm, ETriggerEvent::Triggered, this, &ThisClass::Confirm, true );
-	HeroIC->BindNativeAction( InputConfig, GameplayTags.InputTag_Attack, ETriggerEvent::Triggered, this, &ThisClass::ComboAttack, true );
+	HeroIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::Move, true);
+	HeroIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Look, ETriggerEvent::Triggered, this, &ThisClass::Look, true);
+	HeroIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Confirm, ETriggerEvent::Triggered, this, &ThisClass::Confirm, true);
+	HeroIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Attack, ETriggerEvent::Triggered, this, &ThisClass::ComboAttack, true);
 }
 
-void AHeroCharacter::PossessedBy( AController* NewController )
+void AHeroCharacter::PossessedBy(AController* NewController)
 {
-	Super::PossessedBy( NewController );
+	Super::PossessedBy(NewController);
 
-	if( bInitialize )
+	if (bInitialize)
 	{
-		SetHeroStatusWidget( NewController );
+		SetHeroStatusWidget(NewController);
 	}
 }
 
 
 void AHeroCharacter::UnPossessed()
 {
-	if( MainStatusWidgetHandle.IsValid() )
+	if (MainStatusWidgetHandle.IsValid())
 		MainStatusWidgetHandle.Unregister();
 
 	Super::UnPossessed();
@@ -129,21 +129,21 @@ void AHeroCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetHealth( GetMaxHealth() );
-	SetStamina( GetMaxStamina() );
-	SetShieldGauge( GetMaxShieldGauge() );
-	SetMana( GetMaxMana() );
+	SetHealth(GetMaxHealth());
+	SetStamina(GetMaxStamina());
+	SetShieldGauge(GetMaxShieldGauge());
+	SetMana(GetMaxMana());
 
 	GetCharacterMovement()->MaxWalkSpeed = GetMoveSpeed();
 
-	if( AgiRefAttribSet )
+	if (AgiRefAttribSet)
 	{
-		AbilitySystemComp->GetGameplayAttributeValueChangeDelegate( AgiRefAttribSet->GetModifiedMoveSpeedAttribute() ).AddUObject( this, &AHeroCharacter::OnSpeedChange );
+		AbilitySystemComp->GetGameplayAttributeValueChangeDelegate(AgiRefAttribSet->GetModifiedMoveSpeedAttribute()).AddUObject(this, &AHeroCharacter::OnSpeedChange);
 	}
 
-	if( auto NewController = GetController() )
+	if (auto NewController = GetController())
 	{
-		SetHeroStatusWidget( NewController );
+		SetHeroStatusWidget(NewController);
 	}
 
 	bInitialize = true;
@@ -153,60 +153,60 @@ void AHeroCharacter::InitAbilitySystem()
 {
 	Super::InitAbilitySystem();
 
-	if( TagRelationshipTable != nullptr )
+	if (TagRelationshipTable != nullptr)
 	{
-		AbilitySystemComp->SetTagRelationshipTable( TagRelationshipTable );
+		AbilitySystemComp->SetTagRelationshipTable(TagRelationshipTable);
 	}
 }
 
-void AHeroCharacter::Tick( float DeltaSeconds )
+void AHeroCharacter::Tick(float DeltaSeconds)
 {
-	Super::Tick( DeltaSeconds );
+	Super::Tick(DeltaSeconds);
 
-	if( GetWorld()->IsPaused() )
+	if (GetWorld()->IsPaused())
 	{
-		APlayerController* PlayerController = Cast<APlayerController>( GetController() );
-		if( PlayerController )
+		APlayerController* PlayerController = Cast<APlayerController>(GetController());
+		if (PlayerController)
 		{
 			GetWorld()->bIsCameraMoveableWhenPaused = true;
-			PlayerController->UpdateCameraManager( DeltaSeconds );
+			PlayerController->UpdateCameraManager(DeltaSeconds);
 		}
 	}
 }
 
-void AHeroCharacter::Move( const FInputActionValue& Value )
+void AHeroCharacter::Move(const FInputActionValue& Value)
 {
-	if( AbilitySystemComp->HasMatchingGameplayTag( TAG_MovingLocked ) == true || GetDeadState() )
+	if (AbilitySystemComp->HasMatchingGameplayTag(TAG_MovingLocked) == true || GetDeadState())
 		return;
 
-	if( GetWorld()->IsPaused() )
+	if (GetWorld()->IsPaused())
 	{
 		return;
 	}
 
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
-	if( Controller != nullptr )
+	if (Controller != nullptr)
 	{
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation( 0, Rotation.Yaw, 0 );
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
 		// get forward vector
-		const FVector ForwardDirection = FRotationMatrix( YawRotation ).GetUnitAxis( EAxis::X );
+		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 
 		// get right vector 
-		const FVector RightDirection = FRotationMatrix( YawRotation ).GetUnitAxis( EAxis::Y );
+		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
 		// add movement 
-		AddMovementInput( ForwardDirection, MovementVector.Y );
-		AddMovementInput( RightDirection, MovementVector.X );
+		AddMovementInput(ForwardDirection, MovementVector.Y);
+		AddMovementInput(RightDirection, MovementVector.X);
 	}
 }
 
-void AHeroCharacter::Look( const FInputActionValue& Value )
+void AHeroCharacter::Look(const FInputActionValue& Value)
 {
-	if( TargetingComponent->GetTargetCharacter() )
+	if (TargetingComponent->GetTargetCharacter())
 	{
 		return;
 	}
@@ -214,17 +214,17 @@ void AHeroCharacter::Look( const FInputActionValue& Value )
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
-	if( Controller != nullptr )
+	if (Controller != nullptr)
 	{
 		// add yaw and pitch input to controller
-		AddControllerYawInput( LookAxisVector.X );
-		AddControllerPitchInput( LookAxisVector.Y );
+		AddControllerYawInput(LookAxisVector.X);
+		AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
 
 void AHeroCharacter::Confirm()
 {
-	if( AbilitySystemComp )
+	if (AbilitySystemComp)
 	{
 		AbilitySystemComp->InputConfirm();
 	}
@@ -232,7 +232,7 @@ void AHeroCharacter::Confirm()
 
 void AHeroCharacter::ComboAttack()
 {
-	if( ComboAttackComponent )
+	if (ComboAttackComponent)
 	{
 		ComboAttackComponent->StartComboAttack();
 	}
@@ -240,67 +240,67 @@ void AHeroCharacter::ComboAttack()
 
 void AHeroCharacter::BeginDestroy()
 {
-	if( MainStatusWidgetHandle.IsValid() )
+	if (MainStatusWidgetHandle.IsValid())
 		MainStatusWidgetHandle.Unregister();
 
 	Super::BeginDestroy();
 }
 
-void AHeroCharacter::Input_AbilityInputTagPressed( FGameplayTag InputTag )
+void AHeroCharacter::Input_AbilityInputTagPressed(FGameplayTag InputTag)
 {
-	if( GetWorld()->IsPaused() && !InputConfig->IsTriggerWhenPaused( InputTag, false ) )
+	if (GetWorld()->IsPaused() && !InputConfig->IsTriggerWhenPaused(InputTag, false))
 	{
 		return;
 	}
 
-	if( UARAbilitySystemComponent* ArASC = GetARAbilitySystemComponent() )
+	if (UARAbilitySystemComponent* ArASC = GetARAbilitySystemComponent())
 	{
-		ArASC->AbilityInputTagPressed( InputTag );
+		ArASC->AbilityInputTagPressed(InputTag);
 	}
 }
 
-void AHeroCharacter::Input_AbilityInputTagReleased( FGameplayTag InputTag )
+void AHeroCharacter::Input_AbilityInputTagReleased(FGameplayTag InputTag)
 {
-	if( GetWorld()->IsPaused() && !InputConfig->IsTriggerWhenPaused( InputTag, false ) )
+	if (GetWorld()->IsPaused() && !InputConfig->IsTriggerWhenPaused(InputTag, false))
 	{
 		return;
 	}
 
-	if( UARAbilitySystemComponent* ArASC = GetARAbilitySystemComponent() )
+	if (UARAbilitySystemComponent* ArASC = GetARAbilitySystemComponent())
 	{
-		ArASC->AbilityInputTagReleased( InputTag );
+		ArASC->AbilityInputTagReleased(InputTag);
 	}
 }
 
-void AHeroCharacter::SetHealth( float Health )
+void AHeroCharacter::SetHealth(float Health)
 {
-	if( VitRefAttribSet )
+	if (VitRefAttribSet)
 	{
-		VitRefAttribSet->SetHealth( Health );
+		VitRefAttribSet->SetHealth(Health);
 	}
 }
 
-void AHeroCharacter::SetMana( float Mana )
+void AHeroCharacter::SetMana(float Mana)
 {
-	if( IntRefAttribSet )
+	if (IntRefAttribSet)
 	{
-		IntRefAttribSet->SetMana( Mana );
+		IntRefAttribSet->SetMana(Mana);
 	}
 }
 
-void AHeroCharacter::SetStamina( float Stamina )
+void AHeroCharacter::SetStamina(float Stamina)
 {
-	if( VitRefAttribSet )
+	if (VitRefAttribSet)
 	{
-		VitRefAttribSet->SetStamina( Stamina );
+		VitRefAttribSet->SetStamina(Stamina);
 	}
 }
 
-void AHeroCharacter::SetShieldGauge( float ShieldGauge )
+void AHeroCharacter::SetShieldGauge(float ShieldGauge)
 {
-	if( VitRefAttribSet )
+	if (VitRefAttribSet)
 	{
-		VitRefAttribSet->SetShieldGauge( ShieldGauge );
+		VitRefAttribSet->SetShieldGauge(ShieldGauge);
 	}
 }
 
@@ -308,41 +308,42 @@ void AHeroCharacter::Die()
 {
 	Super::Die();
 
-	GetCapsuleComponent()->SetCollisionEnabled( ECollisionEnabled::NoCollision );
-	GetMesh()->SetCollisionEnabled( ECollisionEnabled::NoCollision );
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->GravityScale = 0;
-	GetCharacterMovement()->Velocity = FVector( 0 );
+	GetCharacterMovement()->Velocity = FVector(0);
 }
 
-void AHeroCharacter::SetHeroStatusWidget( const AController* NewController )
+void AHeroCharacter::SetHeroStatusWidget(const AController* NewController)
 {
-	if( NewController->IsPlayerController() )
+	if (NewController->IsPlayerController())
 	{
-		auto PlayerController = Cast<APlayerController>( NewController );
+		auto PlayerController = Cast<APlayerController>(NewController);
 		PlayerController->PlayerCameraManager->ViewPitchMin = -60.f;
 		PlayerController->PlayerCameraManager->ViewPitchMax = 40.f;
 
 		// Create Main HUD Widget
-		if( UARGameUIManagerSubsystem* UIManager = GetGameInstance()->GetSubsystem<UARGameUIManagerSubsystem>() )
+		if (UARGameUIManagerSubsystem* UIManager = GetGameInstance()->GetSubsystem<UARGameUIManagerSubsystem>())
 		{
-			MainStatusWidgetHandle = UIManager->RegisterExtensionWidget( MainStatusWidgetTag, StatusWidget, GetCharacterStateComponenet() );
+			MainStatusWidgetHandle = UIManager->RegisterExtensionWidget(MainStatusWidgetTag, StatusWidget, GetCharacterStateComponenet());
 		}
 	}
 	else
 	{
-		if( UARGameplayMessageSubsystem* MessageManager = GetGameInstance()->GetSubsystem<UARGameplayMessageSubsystem>() )
+		if (UARGameplayMessageSubsystem* MessageManager = GetGameInstance()->
+			GetSubsystem<UARGameplayMessageSubsystem>())
 		{
 			FSubHeroStatusMessage Message;
 			Message.StateComponent = GetCharacterStateComponenet();
 
-			MessageManager->BroadcastMessage( SubStatusChannel, Message );
+			MessageManager->BroadcastMessage(SubStatusChannel, Message);
 		}
 	}
 }
 
 float AHeroCharacter::GetMaxHealth() const
 {
-	if( VitRefAttribSet )
+	if (VitRefAttribSet)
 	{
 		return VitRefAttribSet->GetMaxHealth();
 	}
@@ -352,7 +353,7 @@ float AHeroCharacter::GetMaxHealth() const
 
 float AHeroCharacter::GetCurrentHealth() const
 {
-	if( VitRefAttribSet )
+	if (VitRefAttribSet)
 	{
 		return VitRefAttribSet->GetHealth();
 	}
@@ -362,7 +363,7 @@ float AHeroCharacter::GetCurrentHealth() const
 
 float AHeroCharacter::GetMaxMana() const
 {
-	if( IntRefAttribSet )
+	if (IntRefAttribSet)
 	{
 		return IntRefAttribSet->GetMaxMana();
 	}
@@ -372,7 +373,7 @@ float AHeroCharacter::GetMaxMana() const
 
 float AHeroCharacter::GetCurrentMana() const
 {
-	if( IntRefAttribSet )
+	if (IntRefAttribSet)
 	{
 		return IntRefAttribSet->GetMana();
 	}
@@ -382,7 +383,7 @@ float AHeroCharacter::GetCurrentMana() const
 
 float AHeroCharacter::GetMaxStamina() const
 {
-	if( VitRefAttribSet )
+	if (VitRefAttribSet)
 	{
 		return VitRefAttribSet->GetMaxStamina();
 	}
@@ -392,7 +393,7 @@ float AHeroCharacter::GetMaxStamina() const
 
 float AHeroCharacter::GetCurrentStamina() const
 {
-	if( VitRefAttribSet )
+	if (VitRefAttribSet)
 	{
 		return VitRefAttribSet->GetStamina();
 	}
@@ -402,7 +403,7 @@ float AHeroCharacter::GetCurrentStamina() const
 
 float AHeroCharacter::GetMaxShieldGauge() const
 {
-	if( VitRefAttribSet )
+	if (VitRefAttribSet)
 	{
 		return VitRefAttribSet->GetMaxShieldGauge();
 	}
@@ -412,7 +413,7 @@ float AHeroCharacter::GetMaxShieldGauge() const
 
 float AHeroCharacter::GetCurrentShieldGauge() const
 {
-	if( VitRefAttribSet )
+	if (VitRefAttribSet)
 	{
 		return VitRefAttribSet->GetShieldGauge();
 	}
@@ -422,7 +423,7 @@ float AHeroCharacter::GetCurrentShieldGauge() const
 
 float AHeroCharacter::GetMoveSpeed() const
 {
-	if( AgiRefAttribSet )
+	if (AgiRefAttribSet)
 	{
 		return AgiRefAttribSet->GetModifiedMoveSpeed();
 	}
@@ -432,7 +433,7 @@ float AHeroCharacter::GetMoveSpeed() const
 
 float AHeroCharacter::GetAttackSpeed() const
 {
-	if( AgiRefAttribSet )
+	if (AgiRefAttribSet)
 	{
 		return AgiRefAttribSet->GetAttackSpeed();
 	}
@@ -440,12 +441,12 @@ float AHeroCharacter::GetAttackSpeed() const
 	return 0.f;
 }
 
-const UInputAction* AHeroCharacter::GetInputAction( const FGameplayTag InputTag ) const
+const UInputAction* AHeroCharacter::GetInputAction(const FGameplayTag InputTag) const
 {
-	if( !InputConfig )
+	if (!InputConfig)
 	{
 		return nullptr;
 	}
 
-	return InputConfig->FindAbilityInputActionForTag( InputTag, true );
+	return InputConfig->FindAbilityInputActionForTag(InputTag, true);
 }

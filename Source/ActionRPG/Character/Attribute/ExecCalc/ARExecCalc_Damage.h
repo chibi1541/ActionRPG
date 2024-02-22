@@ -16,5 +16,6 @@ class ACTIONRPG_API UARExecCalc_Damage : public UGameplayEffectExecutionCalculat
 	GENERATED_UCLASS_BODY()
 
 public:
-	virtual void Execute_Implementation( const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput ) const override;
+	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
+		OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 };
