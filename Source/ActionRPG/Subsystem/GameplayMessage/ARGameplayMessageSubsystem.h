@@ -97,7 +97,7 @@ public:
 		};
 
 		const UScriptStruct* StructType = TBaseStructure<FMessageStructType>::Get();
-		return RegisterListenerInternal( Channel, ThunkCallback, StructType, MatchType );
+		return RegisterListenerInternal( Channel, ThunkCallback, StructType );
 	}
 
 	template <typename FMessageStructType, typename TOwner = UObject>

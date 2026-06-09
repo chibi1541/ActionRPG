@@ -9,6 +9,7 @@
 #include "Character/BaseCharacter.h"
 #include "DrawDebugHelpers.h"
 #include "Character/Components/ARCharacterStateComponent.h"
+#include "Engine/OverlapResult.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(BTService_Search)
 
